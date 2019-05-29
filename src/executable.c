@@ -357,6 +357,38 @@ static int initialize_program(int argc, char *argv[],
         if (init_operators(rops, T3NS)) { return 1; }
         toc(&chrono, INIT_OPS);
 
+        // @JOSJA
+        // hardcoded settings to test excited state calculations
+        int excitation = 1;
+        int i = 0;
+
+        // char statefiles[] = 'ground.h5';
+
+        // // Read and continue previous calculation.
+        // if (arguments.h5file) {
+        //         tic(&chrono, READ_HDF5);
+        //         printf(">> Reading %s...\n", arguments.h5file);
+        //         if(read_from_disk(arguments.h5file, T3NS, rops)) { return 1; }
+        //         minocc = 0;
+        //         toc(&chrono, READ_HDF5);
+        // }
+
+        // @JOSJA
+        // initialize the Overlap Object calculator for excited states
+        if (excitation > 0) {
+            tic(&chrono, INIT_OOCALC);
+            //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }
+            toc(&chrono, INIT_OOCALC);
+        }
+        
+        
+        // while (i < excitation) {
+        //     if
+        //     if (h5ground)
+        //     i++;
+        // }
+        // toc(&chrono, INIT_OOCALC);
+
         print_input(scheme);
 
         printf("Timers for preparing calculation:\n");
