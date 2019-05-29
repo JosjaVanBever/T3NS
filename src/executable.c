@@ -385,6 +385,13 @@ int main(int argc, char *argv[])
                 cleanup_before_exit(&T3NS, &rops, &scheme);
                 return EXIT_FAILURE;
         }
+
+        // TEST PRINT
+        printf("Here T3NS is constructed.\n");
+        for (int i = 0 ; i < netw.sites; ++i) {
+            print_siteTensor(&bookie, &T3NS[i]);
+        }
+
         execute_optScheme(T3NS, rops, &scheme, pbuffer);
         struct disentScheme sch = {
                 .max_sweeps = 30,

@@ -1054,6 +1054,9 @@ void matvecT3NS(const double * vec, double * result, void * vdata)
                 result[i] = 0;
         }
 
+        // TEST PRINT
+        printf("In method matvecT3NS: here overlap calculation should come.");
+
         if (data->sr.dimsofsb != NULL) {
                 exec_secondrun(vec, result, data);
         } else {
