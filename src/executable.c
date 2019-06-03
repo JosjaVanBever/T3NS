@@ -38,13 +38,15 @@
 #include "options.h"
 #include "RedDM.h"
 #include "timers.h"
+#include "overlap_calculator.h"
 
 static const char *timernames[] = {
         "Reading HDF5", 
         "Reading input files",
         "Preparing bookkeeper", 
         "Initializing wave function",
-        "Initializing renormalized operators"
+        "Initializing renormalized operators",
+        "Initializing the overlap objects"   // @JOSJA
 };
 
 enum timerkeys {
@@ -52,7 +54,8 @@ enum timerkeys {
         READ_INPUTS,
         PREP_BOOKIE,
         INIT_WAV,
-        INIT_OPS
+        INIT_OPS,
+        INIT_OOCALC   // @JOSJA
 };
 
 static const int timkeys[] = {
@@ -60,7 +63,8 @@ static const int timkeys[] = {
         READ_INPUTS,
         PREP_BOOKIE,
         INIT_WAV,
-        INIT_OPS
+        INIT_OPS,
+        INIT_OOCALC   // @JOSJA
 };
 
 
@@ -359,19 +363,15 @@ static int initialize_program(int argc, char *argv[],
 
         // @JOSJA
         // hardcoded settings to test excited state calculations
+        // excitation = 0 for ground state, 1 for 1st excitation ...
         int excitation = 1;
-        int i = 0;
-
-        // char statefiles[] = 'ground.h5';
-
-        // // Read and continue previous calculation.
-        // if (arguments.h5file) {
-        //         tic(&chrono, READ_HDF5);
-        //         printf(">> Reading %s...\n", arguments.h5file);
-        //         if(read_from_disk(arguments.h5file, T3NS, rops)) { return 1; }
-        //         minocc = 0;
-        //         toc(&chrono, READ_HDF5);
-        // }
+        // info necessary to create overlap object calculators
+        // hardcoded initialisation to optimizing T3NS
+        T3NSfill * states = malloc(excitation * sizeof(T3NSfill));
+        for (int i=0; i<excitation; i++) {
+            states[i].data = T3NS;
+            states[i].bookie = &prevbookie;
+        }
 
         // @JOSJA
         // initialize the Overlap Object calculator for excited states
@@ -380,14 +380,9 @@ static int initialize_program(int argc, char *argv[],
             //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }
             toc(&chrono, INIT_OOCALC);
         }
-        
-        
-        // while (i < excitation) {
-        //     if
-        //     if (h5ground)
-        //     i++;
-        // }
-        // toc(&chrono, INIT_OOCALC);
+
+        // input information for OO calculators not necessary anymore
+        free(states);
 
         print_input(scheme);
 
