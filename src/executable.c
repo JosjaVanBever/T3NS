@@ -377,6 +377,10 @@ static int initialize_program(int argc, char *argv[],
         // initialize the Overlap Object calculator for excited states
         if (excitation > 0) {
             tic(&chrono, INIT_OOCALC);
+            OverlapCalculator * OOcalc;
+            init_overlap_calculator(5, &OOcalc);
+            int result = get_result(OOcalc);
+            fprintf(stdout, "The result is %d\n", result);
             //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }
             toc(&chrono, INIT_OOCALC);
         }
