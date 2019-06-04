@@ -40,6 +40,7 @@ set(T3NSLIB_SOURCE_FILES
     "wrapper_solvers.c"
     "RedDM.c"
     "timers.c"
+    "cpp_interface.cpp"
     "overlap_calculator.cpp"
     )
 

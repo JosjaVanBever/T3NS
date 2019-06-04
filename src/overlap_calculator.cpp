@@ -17,15 +17,14 @@
 
 #include "overlap_calculator.h"
 
-void init_overlap_calculator(int test, OverlapCalculator ** result) {
-	*result = new OverlapCalculator(test);
-}
-
-int get_result(OverlapCalculator* calc) {
-	return calc->get_result();
-}
 
 OverlapCalculator::OverlapCalculator(int test)
 {
 	this->test = test;
+}
+
+OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns)
+{
+    this->test = opt_t3ns->bookie->nr_bonds;
+    cout << "Test was set to " << test << endl;
 }

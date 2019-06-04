@@ -38,7 +38,7 @@
 #include "options.h"
 #include "RedDM.h"
 #include "timers.h"
-#include "overlap_calculator.h"
+#include "cpp_interface.h"
 
 static const char *timernames[] = {
         "Reading HDF5", 
@@ -376,9 +376,12 @@ static int initialize_program(int argc, char *argv[],
         // @JOSJA
         // initialize the Overlap Object calculator for excited states
         if (excitation > 0) {
+
+            fprintf(stdout, "Nr_bonds was %d\n", states[0].bookie->nr_bonds);
+
             tic(&chrono, INIT_OOCALC);
             OverlapCalculator * OOcalc;
-            init_overlap_calculator(5, &OOcalc);
+            init_overlap_calculator(&states[0], &OOcalc);
             int result = get_result(OOcalc);
             fprintf(stdout, "The result is %d\n", result);
             //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }

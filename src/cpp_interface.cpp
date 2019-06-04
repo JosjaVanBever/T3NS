@@ -15,23 +15,16 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef OVERLAP_CALCULATOR
-#define OVERLAP_CALCULATOR
-
 #include "cpp_interface.h"
-#include "bookkeeper.h"
-#include <iostream>
-using namespace std;
 
-// The overlap calculator does not allocate any of the T3NS data operated on.
-// It does allocate its own temporary results.
-class OverlapCalculator {
-    public:
-        OverlapCalculator(int test);
-        OverlapCalculator(T3NSfill* opt_t3ns);
-        int get_result() { return test; };
-    private:
-        int test;
-};
+// void init_overlap_calculator(int test, OverlapCalculator ** result) {
+// 	*result = new OverlapCalculator(test);
+// }
 
-#endif
+void init_overlap_calculator(T3NSfill* opt_t3ns, OverlapCalculator ** result) {
+    *result = new OverlapCalculator(opt_t3ns);
+}
+
+int get_result(OverlapCalculator* calc) {
+	return calc->get_result();
+}
