@@ -370,7 +370,7 @@ static int initialize_program(int argc, char *argv[],
         T3NSfill * states = malloc(excitation * sizeof(T3NSfill));
         for (int i=0; i<excitation; i++) {
             states[i].data = T3NS;
-            states[i].bookie = &prevbookie;
+            states[i].bookie = &bookie;
         }
 
         // @JOSJA
@@ -378,6 +378,7 @@ static int initialize_program(int argc, char *argv[],
         if (excitation > 0) {
 
             fprintf(stdout, "Nr_bonds was %d\n", states[0].bookie->nr_bonds);
+            fprintf(stdout, "Nr_bonds of global is %d\n", bookie.nr_bonds);
 
             tic(&chrono, INIT_OOCALC);
             OverlapCalculator * OOcalc;
