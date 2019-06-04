@@ -40,8 +40,8 @@ set(T3NSLIB_SOURCE_FILES
     "wrapper_solvers.c"
     "RedDM.c"
     "timers.c"
-    "cpp_interface.cpp"
-    "overlap_calculator.cpp"
+    "excited/cpp_interface.cpp"
+    "excited/overlap_calculator.cpp"
     )
 
 add_library(T3NS-shared SHARED ${T3NSLIB_SOURCE_FILES})
