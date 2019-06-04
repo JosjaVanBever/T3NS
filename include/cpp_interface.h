@@ -27,6 +27,23 @@
 #define CPP_INTERFACE
 
 
+#ifdef __cplusplus
+extern "C" {
+
+// declare a C++ interface to get acces to native C functions
+// from a C++ context
+/*********************START*C++-INTERFACE*********************/
+
+// native C functions that are called from a C++ context
+void implicit_convertion_test();
+
+/***********************END*C++-INTERFACE*********************/
+
+}
+#endif
+
+// declare the C interface to get acces to native C++ functions
+// from a C context
 /**********************START*C-INTERFACE**********************/
 
 // Structure that contains the internal information of a T3NS
@@ -40,7 +57,7 @@ typedef struct T3NSfill {
 /************************END*C-INTERFACE**********************/
 
 
-// declare the OverlapCalculator class or structure
+// declare a OverlapCalculator class or structure
 #ifdef __cplusplus
     class OverlapCalculator;
     // contains the implementation of the OverlapCalculator class
@@ -52,11 +69,12 @@ typedef struct T3NSfill {
 #endif
 
 
-// declare the C interface
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+// declare a C interface to get acces to native C++ functions
+// from a C context
 /**********************START*C-INTERFACE**********************/
 
 // C interface to the public functions provided for the

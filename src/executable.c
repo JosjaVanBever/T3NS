@@ -14,6 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+#include "test.h"  // @JOSJA: for temporary testing
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -372,6 +373,8 @@ static int initialize_program(int argc, char *argv[],
             states[i].data = T3NS;
             states[i].bookie = &bookie;
         }
+
+        implicit_convertion_test();
 
         // @JOSJA
         // initialize the Overlap Object calculator for excited states

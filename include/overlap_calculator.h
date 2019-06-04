@@ -21,6 +21,7 @@
 #include "cpp_interface.h"
 #include "bookkeeper.h"
 #include <iostream>
+#include "test.h"
 using namespace std;
 
 // The overlap calculator does not allocate any of the T3NS data operated on.
@@ -29,7 +30,7 @@ class OverlapCalculator {
     public:
         OverlapCalculator(int test);
         OverlapCalculator(T3NSfill* opt_t3ns);
-        int get_result() { return test; };
+        int get_result() { implicit_convertion_test(); return test; };
     private:
         int test;
 };
