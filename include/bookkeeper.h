@@ -168,3 +168,16 @@ void bookkeeper_get_symsecs(const struct bookkeeper * keeper,
 
 void bookkeeper_get_symsecs_arr(const struct bookkeeper * keeper, int n, 
                                 struct symsecs * symarr, const int * bonds);
+
+
+// @JOSJA: don't do horrible copying but instead move the pointers
+// to the relevant adresses
+
+// the above mentioned functions can be incorporated in this functions,
+// or one could consider using pointers instead of copying in general
+
+void bookkeeper_get_symsecs_address(const struct bookkeeper * keeper, 
+                            struct symsecs ** res, int bond);
+
+void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper, int n, 
+                                struct symsecs ** symarr, const int * bonds);

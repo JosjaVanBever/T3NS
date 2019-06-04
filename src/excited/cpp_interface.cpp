@@ -21,10 +21,13 @@
 // 	*result = new OverlapCalculator(test);
 // }
 
-void init_overlap_calculator(T3NSfill* opt_t3ns, OverlapCalculator ** result) {
-    *result = new OverlapCalculator(opt_t3ns);
+void init_overlap_calculator(T3NSfill* opt, T3NSfill* ref,
+        struct network * netw, OverlapCalculator** result)
+{
+    *result = new OverlapCalculator(opt, ref, netw);
 }
 
-int get_result(OverlapCalculator* calc) {
+int get_result(OverlapCalculator* calc)
+{
 	return calc->get_result();
 }

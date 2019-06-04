@@ -34,8 +34,19 @@ extern "C" {
 // from a C++ context
 /*********************START*C++-INTERFACE*********************/
 
+#include "test.h"
+#include "network.h"
+// #include "bookkeeper.h"
+
 // native C functions that are called from a C++ context
+void get_bonds_of_site(int site, int * bonds);
+void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
+        int n, struct symsecs ** symarr, const int * bonds);
+void * safe_malloc_helper(long long s, size_t t, const char *typ, 
+                          const char *file, int line, const char *func);
+
 void implicit_convertion_test();
+void print_bookkeeper(struct bookkeeper * keeper, int fci);
 
 /***********************END*C++-INTERFACE*********************/
 
@@ -82,8 +93,8 @@ extern "C" {
 //  -> constructor
 // extern void init_overlap_calculator(int test,
 //     OverlapCalculator** result);
-extern void init_overlap_calculator(T3NSfill* opt_t3ns,
-    OverlapCalculator** result);
+extern void init_overlap_calculator(T3NSfill* opt, T3NSfill* ref,
+    struct network * netw, OverlapCalculator** result);
 //  -> get_result
 extern int get_result(OverlapCalculator*);
 

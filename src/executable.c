@@ -374,8 +374,6 @@ static int initialize_program(int argc, char *argv[],
             states[i].bookie = &bookie;
         }
 
-        implicit_convertion_test();
-
         // @JOSJA
         // initialize the Overlap Object calculator for excited states
         if (excitation > 0) {
@@ -385,7 +383,7 @@ static int initialize_program(int argc, char *argv[],
 
             tic(&chrono, INIT_OOCALC);
             OverlapCalculator * OOcalc;
-            init_overlap_calculator(&states[0], &OOcalc);
+            init_overlap_calculator(&states[0], &states[1], &netw, &OOcalc);
             int result = get_result(OOcalc);
             fprintf(stdout, "The result is %d\n", result);
             //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }

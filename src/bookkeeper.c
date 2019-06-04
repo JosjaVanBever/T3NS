@@ -823,3 +823,42 @@ void bookkeeper_get_symsecs_arr(const struct bookkeeper * keeper, int n,
         }
 }
 
+
+
+// @JOSJA: don't do horrible copying but instead move the pointers
+// to the relevant adresses
+
+// the above mentioned functions can be incorporated in this functions,
+// or one could consider using pointers instead of copying in general
+
+void bookkeeper_get_symsecs_address(const struct bookkeeper * keeper, 
+                            struct symsecs ** res, int bond)
+{
+        if (bond >= 2 * keeper->nr_bonds) {
+                // Its a physical bond.
+                bond -= 2 * keeper->nr_bonds;
+                bond %= keeper->psites;
+                *res = &(keeper->p_symsecs[bond]);
+        } else if (bond >= 0) {
+                /* its a bond of the tensor network, its stored in our bookkeeper
+                 * ket bonds are               0 ---- keeper->nr_bonds - 1,
+                 * bra bonds are keeper->nr_bonds ---- 2 * keeper->nr_bonds - 1
+                 */
+                bond %= keeper->nr_bonds;
+                res = &(keeper->v_symsecs[bond]);
+        } else if (bond  == -1) {
+                get_hamiltoniansymsecs(res, bond);
+        } else {
+                fprintf(stderr, "Error @%s: asked symsec of bond %d.\n", 
+                        __func__, bond);
+                exit(EXIT_FAILURE);
+        }
+}
+
+void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper, int n, 
+                                struct symsecs ** symarr, const int * bonds)
+{
+        for (int i = 0; i < n; ++i) {
+                bookkeeper_get_symsecs_address(keeper, &symarr[i], bonds[i]);
+        }
+}
