@@ -18,8 +18,8 @@
 #ifndef OVERLAP_CALCULATOR
 #define OVERLAP_CALCULATOR
 
-#include "cpp_interface.h"
 #include "tensor_info.h"
+#include "cpp_interface.h"
 #include "bookkeeper.h"
 #include <iostream>
 #include "test.h"
@@ -32,12 +32,12 @@ class OverlapCalculator {
         // constructor and destructor
         OverlapCalculator(T3NSfill* opt, T3NSfill* ref, struct network * netw);
         ~OverlapCalculator();
-        
+
         // test function
         int get_result() { implicit_convertion_test(); return test; };
     private:
         // main data
-        TensorInfoPair * tensorpairs;
+        struct TensorInfoPair * tensorpairs;
         int nr_tensorpairs;  // length of tensorpairs
 
         // test variable

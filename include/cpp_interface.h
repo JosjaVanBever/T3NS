@@ -36,7 +36,10 @@ extern "C" {
 
 #include "test.h"
 #include "network.h"
-// #include "bookkeeper.h"
+#include "bookkeeper.h"
+#include "symsecs.h"
+#include "siteTensor.h"
+#include <stdio.h>
 
 // native C functions that are called from a C++ context
 void get_bonds_of_site(int site, int * bonds);
@@ -47,6 +50,9 @@ void * safe_malloc_helper(long long s, size_t t, const char *typ,
 
 void implicit_convertion_test();
 void print_bookkeeper(struct bookkeeper * keeper, int fci);
+void print_symsecinfo(struct symsecs * ss);
+void print_siteTensor(const struct bookkeeper * keeper, 
+                      const struct siteTensor * tens);
 
 /***********************END*C++-INTERFACE*********************/
 

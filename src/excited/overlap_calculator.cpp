@@ -43,7 +43,7 @@ OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns,
     assert(opt_t3ns->bookie->nr_bonds != netw->nr_bonds);
 
     // TEMPORARY
-    print_bookkeeper(opt_t3ns->bookie,0);
+    print_bookkeeper(opt_t3ns->bookie, 0);
 
     // initialize the tensorpairs
     nr_tensorpairs = netw->sites;
@@ -54,11 +54,14 @@ OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns,
         get_bonds_of_site(i, CB_nrs);
         // create opt TensorInfo
         bookkeeper_get_symsecs_address_arr(opt_t3ns->bookie, 3, COB_syms, CB_nrs);
-        tensorpairs[i].opt = TensorInfo(opt_t3ns->data[i], COB_syms);
+        // tensorpairs[i].opt = TensorInfo(opt_t3ns->data[i], COB_syms);
         // create ref TensorInfo
-        bookkeeper_get_symsecs_address_arr(opt_t3ns->bookie, 3, CRB_syms, CB_nrs);
-        tensorpairs[i].ref = TensorInfo(ref_t3ns->data[i], CRB_syms);
+        bookkeeper_get_symsecs_address_arr(ref_t3ns->bookie, 3, CRB_syms, CB_nrs);  //SEG FAULT?!!
+        // tensorpairs[i].ref = TensorInfo(ref_t3ns->data[i], CRB_syms);
     }
+
+    // TEMPORARY
+    // print_tensorinfopair(&tensorpairs[0], opt_t3ns->bookie);
 
     // TESTING CODE
     this->test = opt_t3ns->bookie->nr_bonds;
