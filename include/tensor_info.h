@@ -25,11 +25,15 @@
 class TensorInfo {
 	public:
 		// constructor
-		TensorInfo(struct siteTensor * data);
+		TensorInfo(struct siteTensor * data, struct symsecs ** syms);
 
-		// get the data
+		// getters
+		void get_syms(struct symsecs ** result) const;
 		struct siteTensor * get_data() const { return data; }
 	private:
+		// Main data:
+		// symmetry structures in order |a>|b><c| (cf. siteTensor)
+		struct symsecs * syms[3];
 		// actual siteTensor containing the data
 		struct siteTensor * data;
 };
@@ -47,7 +51,8 @@ struct TensorInfoPair {
 void print_tensorInfo(const struct bookkeeper * keeper,
 		const TensorInfo * tensor);
 
-void print_TensorInfoPair(const struct bookkeeper * keeper,
+void print_TensorInfoPair(const struct bookkeeper * opt_bookie,
+		const struct bookkeeper * ref_bookie,
 		const struct TensorInfoPair * pair);
 
 

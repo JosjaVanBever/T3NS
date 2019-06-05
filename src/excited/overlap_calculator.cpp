@@ -42,11 +42,16 @@ OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns) :
         get_bonds_of_site(i, CB_nrs);
         // create opt TensorInfo
         bookkeeper_get_symsecs_address_arr(opt_t3ns->bookie, 3, COB_syms, CB_nrs);
-        tensorpairs[i].opt = TensorInfo(opt_t3ns->data[i]);
+        tensorpairs[i].opt = TensorInfo(opt_t3ns->data[i], COB_syms);
         // create ref TensorInfo
         bookkeeper_get_symsecs_address_arr(ref_t3ns->bookie, 3, CRB_syms, CB_nrs);
-        tensorpairs[i].ref = TensorInfo(ref_t3ns->data[i]);
-    } 
+        tensorpairs[i].ref = TensorInfo(ref_t3ns->data[i], CRB_syms);
+    }
+
+    for (int i=0; i<nr_tensorpairs; i++) {
+        fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);
+        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]));
+    }
 }
 
 
