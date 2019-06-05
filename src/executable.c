@@ -366,10 +366,11 @@ static int initialize_program(int argc, char *argv[],
         // hardcoded settings to test excited state calculations
         // excitation = 0 for ground state, 1 for 1st excitation ...
         int excitation = 1;
+        int nr_states = excitation + 1;
         // info necessary to create overlap object calculators
         // hardcoded initialisation to optimizing T3NS
-        struct T3NSfill * states = malloc(excitation * sizeof(struct T3NSfill));
-        for (int i=0; i<excitation; i++) {
+        struct T3NSfill * states = malloc(nr_states * sizeof(struct T3NSfill));
+        for (int i=0; i<nr_states; i++) {
             states[i].data = T3NS;
             states[i].bookie = &bookie;
         }
@@ -429,7 +430,7 @@ static int initialize_program(int argc, char *argv[],
             init_overlap_calculator(&states[0], &states[1], &OOcalc);
 
             // moffelzone
-            (*(states[0].data))->nrblocks -= 1;
+            // (*(states[0].data))->nrblocks -= 1;
 
             int result = get_result(OOcalc);
             fprintf(stdout, "The result is %d\n", result);

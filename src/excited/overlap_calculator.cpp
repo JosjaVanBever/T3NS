@@ -26,6 +26,7 @@ OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns) :
     // NN = Nearest Neighbouring sites
     int CB_nrs[3];                 // Current Bond numbers
     struct symsecs * COB_syms[3];  // Current Optimizing Bond symsecs
+    struct symsecs * CRB_syms[3];  // Current Reference Bond symsecs
 
     // do some consistency checks of the input
     assert(opt_t3ns->bookie->nr_bonds == ref_t3ns->bookie->nr_bonds);
@@ -42,6 +43,9 @@ OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns) :
         // create opt TensorInfo
         bookkeeper_get_symsecs_address_arr(opt_t3ns->bookie, 3, COB_syms, CB_nrs);
         tensorpairs[i].opt = TensorInfo(opt_t3ns->data[i]);
+        // create ref TensorInfo
+        bookkeeper_get_symsecs_address_arr(ref_t3ns->bookie, 3, CRB_syms, CB_nrs);
+        tensorpairs[i].ref = TensorInfo(ref_t3ns->data[i]);
 
         // @TEST
         std::cout << "tensorpairs[i].opt.data: ";
