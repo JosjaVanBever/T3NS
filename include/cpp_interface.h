@@ -35,9 +35,11 @@ extern "C" {
 /*********************START*C++-INTERFACE*********************/
 
 #include "network.h"
+// #include "symsecs.h"
 
 // native C functions that are called from a C++ context
 void get_bonds_of_site(int site, int * bonds);
+// void print_symsecinfo(struct symsecs * ss);
 
 /***********************END*C++-INTERFACE*********************/
 

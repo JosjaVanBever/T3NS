@@ -374,12 +374,49 @@ static int initialize_program(int argc, char *argv[],
             states[i].bookie = &bookie;
         }
 
+
+        /***************************begin test area************************/
+        int CB_nrs[3] = {0, 42, 1};
+        struct symsecs COB_syms[3];
+
+        struct symsecs * CTB_syms[3];
+
+        // this function should be modified
+        bookkeeper_get_symsecs_arr(&bookie, 3, COB_syms, CB_nrs);
+
+        CTB_syms[0] = &(bookie.v_symsecs[0]);
+
+
+        int cheat = bookie.v_symsecs[0].totaldims;
+        int cheat2 = COB_syms[0].totaldims;
+        fprintf(stdout,"COB before: ");
+        print_symsecinfo(&COB_syms[0]);
+        fprintf(stdout,"CTB before: ");
+        print_symsecinfo(CTB_syms[0]);
+        COB_syms[0].totaldims = 20;
+        bookie.v_symsecs[0].totaldims = 10;
+
+        fprintf(stdout,"COB after: ");
+        // we want to get "bond dimension : 10 (1) in 1 non-empty sectors." here!
+        print_symsecinfo(&COB_syms[0]);
+        fprintf(stdout,"CTB after: ");
+        print_symsecinfo(CTB_syms[0]);
+
+        bookie.v_symsecs[0].totaldims = cheat;
+        COB_syms[0].totaldims = cheat2;
+        fprintf(stdout,"COB restore: ");
+        print_symsecinfo(&COB_syms[0]);
+        fprintf(stdout,"CTB restore: ");
+        print_symsecinfo(CTB_syms[0]);
+        /***************************end test area************************/
+
         // @JOSJA
         // initialize the Overlap Object calculator for excited states
         if (excitation > 0) {
 
             fprintf(stdout, "Nr_bonds was %d\n", states[0].bookie->nr_bonds);
             fprintf(stdout, "Nr_bonds of global is %d\n", bookie.nr_bonds);
+
 
             tic(&chrono, INIT_OOCALC);
             OverlapCalculator * OOcalc;
