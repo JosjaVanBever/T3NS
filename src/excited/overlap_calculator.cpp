@@ -18,13 +18,14 @@
 #include "overlap_calculator.h"
 
 
-OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns)
+OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns) :
+        opt_bookie(opt_t3ns->bookie), ref_bookie(ref_t3ns->bookie)
 {
     // help variables
     // C == Current; O == Optimizing; R == Reference; B == Bond
     // NN = Nearest Neighbouring sites
-    int CB_nrs[3];               // Current Bond numbers
-    struct symsecs COB_syms[3];  // Current Optimizing Bond symsecs
+    int CB_nrs[3];                 // Current Bond numbers
+    struct symsecs * COB_syms[3];  // Current Optimizing Bond symsecs
 
     // do some consistency checks of the input
     assert(opt_t3ns->bookie->nr_bonds == ref_t3ns->bookie->nr_bonds);
@@ -39,7 +40,15 @@ OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns)
         // get bond indices
         get_bonds_of_site(i, CB_nrs);
         // create opt TensorInfo
-        // bookkeeper_get_symsecs_arr(opt_t3ns->bookie, 3, COB_syms, CB_nrs);
+        bookkeeper_get_symsecs_address_arr(opt_t3ns->bookie, 3, COB_syms, CB_nrs);
+        tensorpairs[i].opt = TensorInfo(opt_t3ns->data[i]);
+
+        // @TEST
+        std::cout << "tensorpairs[i].opt.data: ";
+        print_siteTensor(opt_t3ns->bookie, tensorpairs[i].opt.get_data());
+
+        // @TEST
+        print_symsecinfo(COB_syms[0]);
         
         // @TEST
         std::cout << "collected bondnrs: " << CB_nrs[0] << ", " << CB_nrs[1]

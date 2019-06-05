@@ -410,6 +410,10 @@ static int initialize_program(int argc, char *argv[],
         print_symsecinfo(&COB_syms[0]);
         fprintf(stdout,"CTB restore: ");
         print_symsecinfo(CTB_syms[0]);
+
+
+        print_siteTensor(&bookie, *(states[0].data));
+
         /***************************end test area************************/
 
         // @JOSJA
@@ -423,6 +427,10 @@ static int initialize_program(int argc, char *argv[],
             tic(&chrono, INIT_OOCALC);
             OverlapCalculator * OOcalc;
             init_overlap_calculator(&states[0], &states[1], &OOcalc);
+
+            // moffelzone
+            (*(states[0].data))->nrblocks -= 1;
+
             int result = get_result(OOcalc);
             fprintf(stdout, "The result is %d\n", result);
             //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }

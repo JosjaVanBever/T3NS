@@ -34,12 +34,18 @@ extern "C" {
 // from a C++ context
 /*********************START*C++-INTERFACE*********************/
 
-#include "network.h"
+// #include "network.h"
 // #include "symsecs.h"
+// #include "bookkeeper.h"
 
 // native C functions that are called from a C++ context
 void get_bonds_of_site(int site, int * bonds);
-// void print_symsecinfo(struct symsecs * ss);
+void print_symsecinfo(struct symsecs * ss);
+void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
+        int n, struct symsecs ** symarr, const int * bonds);
+void print_siteTensor(const struct bookkeeper * keeper, 
+        const struct siteTensor * tens);
+
 
 /***********************END*C++-INTERFACE*********************/
 
