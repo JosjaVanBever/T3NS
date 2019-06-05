@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "test.h"  // @JOSJA: for temporary testing
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -368,13 +368,11 @@ static int initialize_program(int argc, char *argv[],
         int excitation = 1;
         // info necessary to create overlap object calculators
         // hardcoded initialisation to optimizing T3NS
-        T3NSfill * states = malloc(excitation * sizeof(T3NSfill));
+        struct T3NSfill * states = malloc(excitation * sizeof(struct T3NSfill));
         for (int i=0; i<excitation; i++) {
             states[i].data = T3NS;
             states[i].bookie = &bookie;
         }
-
-        implicit_convertion_test();
 
         // @JOSJA
         // initialize the Overlap Object calculator for excited states
@@ -385,7 +383,7 @@ static int initialize_program(int argc, char *argv[],
 
             tic(&chrono, INIT_OOCALC);
             OverlapCalculator * OOcalc;
-            init_overlap_calculator(&states[0], &OOcalc);
+            init_overlap_calculator(&states[0], &states[1], &OOcalc);
             int result = get_result(OOcalc);
             fprintf(stdout, "The result is %d\n", result);
             //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }

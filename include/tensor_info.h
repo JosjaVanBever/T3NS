@@ -15,11 +15,30 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "overlap_calculator.h"
+#ifndef TENSOR_INFO_H
+#define TENSOR_INFO_H
 
 
-OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns)
-{
-    this->test = opt_t3ns->bookie->nr_bonds;
-    std::cout << "Test was set to " << test << std::endl;
-}
+class TensorInfo {
+	public:
+		// constructor
+		TensorInfo(struct siteTensor * data);
+
+		// get the data
+		struct siteTensor * get_data() const { return data; }
+	private:
+		// actual siteTensor containing the data
+		struct siteTensor * data;
+};
+
+
+struct TensorInfoPair {
+	// tensor of the reference state, e.g. the ground state
+	TensorInfo ref;
+	// tensor of the state that is being optimized,
+	// e.g. the excited state
+	TensorInfo opt;
+};
+
+
+#endif

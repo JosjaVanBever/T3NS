@@ -15,11 +15,6 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "overlap_calculator.h"
+#include "tensor_info.h"
 
-
-OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns)
-{
-    this->test = opt_t3ns->bookie->nr_bonds;
-    std::cout << "Test was set to " << test << std::endl;
-}
+TensorInfo::TensorInfo(struct siteTensor * data) : data(data) {}

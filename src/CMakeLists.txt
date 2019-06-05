@@ -42,7 +42,7 @@ set(T3NSLIB_SOURCE_FILES
     "timers.c"
     "excited/cpp_interface.cpp"
     "excited/overlap_calculator.cpp"
-    "test.c"
+    "excited/tensor_info.cpp"
     )
 
 add_library(T3NS-shared SHARED ${T3NSLIB_SOURCE_FILES})

@@ -23,8 +23,8 @@
 */
 
 
-#ifndef CPP_INTERFACE
-#define CPP_INTERFACE
+#ifndef CPP_INTERFACE_H
+#define CPP_INTERFACE_H
 
 
 #ifdef __cplusplus
@@ -35,7 +35,7 @@ extern "C" {
 /*********************START*C++-INTERFACE*********************/
 
 // native C functions that are called from a C++ context
-void implicit_convertion_test();
+// NO FUNCTIONS YET
 
 /***********************END*C++-INTERFACE*********************/
 
@@ -49,10 +49,10 @@ void implicit_convertion_test();
 // Structure that contains the internal information of a T3NS
 // Several T3NSfill's are used together with their common network
 // structure to create OverlapCalculators.
-typedef struct T3NSfill {
+struct T3NSfill {
     struct siteTensor ** data;
     struct bookkeeper * bookie;
-} T3NSfill;
+};
 
 /************************END*C-INTERFACE**********************/
 
@@ -82,8 +82,8 @@ extern "C" {
 //  -> constructor
 // extern void init_overlap_calculator(int test,
 //     OverlapCalculator** result);
-extern void init_overlap_calculator(T3NSfill* opt_t3ns,
-    OverlapCalculator** result);
+extern void init_overlap_calculator(struct T3NSfill* opt,
+        struct T3NSfill* ref, OverlapCalculator** result);
 //  -> get_result
 extern int get_result(OverlapCalculator*);
 
