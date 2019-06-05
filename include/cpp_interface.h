@@ -26,6 +26,28 @@
 #ifndef CPP_INTERFACE
 #define CPP_INTERFACE
 
+// // language dependend include guard preparation
+// #if defined(__cplusplus) && !defined(CPP_TO_C_INTERFACE)
+//     #define CPP_TO_C_INTERFACE
+//     #define MAKE_INTERFACE
+// #elif !defined(C_TO_CPP_INTERFACE)
+//     #define C_TO_CPP_INTERFACE
+//     #define MAKE_INTERFACE
+// #endif
+
+// // actual include guards
+// #ifdef MAKE_INTERFACE
+// #undef MAKE_INTERFACE
+
+// #ifdef __cplusplus && #ifndef CPP_TO_C_INTERFACE
+// #define CPP_TO_C_INTERFACE
+// //     #ifndef CPP_TO_C_INTERFACE
+//     #define CPP_TO_C_INTERFACE
+// #else
+//     #ifndef C_TO_CPP_INTERFACE
+//     #define C_TO_CPP_INTERFACE
+// #endif
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,6 +68,10 @@ void implicit_convertion_test();
 // from a C context
 /**********************START*C-INTERFACE**********************/
 
+
+// #ifndef STRUCT_T3NSFILL
+// #define STRUCT_T3NSFILL
+
 // Structure that contains the internal information of a T3NS
 // Several T3NSfill's are used together with their common network
 // structure to create OverlapCalculators.
@@ -53,6 +79,9 @@ typedef struct T3NSfill {
     struct siteTensor ** data;
     struct bookkeeper * bookie;
 } T3NSfill;
+
+// #endif
+
 
 /************************END*C-INTERFACE**********************/
 
@@ -94,4 +123,5 @@ extern int get_result(OverlapCalculator*);
 #endif
 
 
+// close include guards
 #endif

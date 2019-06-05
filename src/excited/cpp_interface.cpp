@@ -17,9 +17,17 @@
 
 #include "cpp_interface.h"
 
+#ifndef CPP_INTERFACE
+#warning 'cpp_interface.h not included'
+#endif
+
 // void init_overlap_calculator(int test, OverlapCalculator ** result) {
 // 	*result = new OverlapCalculator(test);
 // }
+
+// #ifndef TESTT3NSFILL
+// #warning 'T3NSfill was not defined'
+// #endif
 
 void init_overlap_calculator(T3NSfill* opt_t3ns, OverlapCalculator ** result) {
     *result = new OverlapCalculator(opt_t3ns);
