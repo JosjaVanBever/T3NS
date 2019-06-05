@@ -48,6 +48,9 @@ OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns) :
         tensorpairs[i].ref = TensorInfo(ref_t3ns->data[i]);
 
         // @TEST
+        print_TensorInfoPair(ref_t3ns->bookie, &tensorpairs[i]);
+
+        // @TEST
         std::cout << "tensorpairs[i].opt.data: ";
         print_siteTensor(opt_t3ns->bookie, tensorpairs[i].opt.get_data());
 
@@ -69,3 +72,10 @@ OverlapCalculator::~OverlapCalculator()
 {
     free (tensorpairs);
 }
+
+
+// @ TEST
+int OverlapCalculator::get_result() {
+    std::cout << "tensorpairs[i].opt.data: ";
+    print_siteTensor(opt_bookie, tensorpairs[0].opt.get_data());
+    return test; };

@@ -18,6 +18,9 @@
 #ifndef TENSOR_INFO_H
 #define TENSOR_INFO_H
 
+#include "cpp_interface.h"
+#include <stdio.h>
+
 
 class TensorInfo {
 	public:
@@ -39,6 +42,13 @@ struct TensorInfoPair {
 	// e.g. the excited state
 	TensorInfo opt;
 };
+
+
+void print_tensorInfo(const struct bookkeeper * keeper,
+		const TensorInfo * tensor);
+
+void print_TensorInfoPair(const struct bookkeeper * keeper,
+		const struct TensorInfoPair * pair);
 
 
 #endif

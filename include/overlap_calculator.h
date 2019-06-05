@@ -32,10 +32,7 @@ class OverlapCalculator {
         ~OverlapCalculator();
 
         // @TEST
-        int get_result() {
-            std::cout << "tensorpairs[i].opt.data: ";
-            print_siteTensor(opt_bookie, tensorpairs[0].opt.get_data());
-            return test; };
+        int get_result();
     private:
         // Main data:
         struct TensorInfoPair * tensorpairs;

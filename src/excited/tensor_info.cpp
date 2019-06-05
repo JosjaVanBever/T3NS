@@ -18,3 +18,22 @@
 #include "tensor_info.h"
 
 TensorInfo::TensorInfo(struct siteTensor * data) : data(data) {}
+
+
+void print_tensorInfo(const struct bookkeeper * keeper,
+		const TensorInfo * tensor)
+{
+	fprintf(stdout,"SiteTensor data:\n");
+	print_siteTensor(keeper, tensor->get_data());
+	// fprintf(stdout,"Sumsectors array:\n");
+}
+
+
+void print_TensorInfoPair(const struct bookkeeper * keeper,
+		const struct TensorInfoPair * pair)
+{
+	fprintf(stdout,"TensorInfoPair with\nopt:\n");
+	print_tensorInfo(keeper, &(pair->opt));
+	fprintf(stdout,"ref:\n");
+	print_tensorInfo(keeper, &(pair->ref));
+}
