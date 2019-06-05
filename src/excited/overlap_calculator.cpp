@@ -20,6 +20,36 @@
 
 OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns)
 {
+    // help variables
+    // C == Current; O == Optimizing; R == Reference; B == Bond
+    // NN = Nearest Neighbouring sites
+    int CB_nrs[3];               // Current Bond numbers
+
+    // do some consistency checks of the input
+    assert(opt_t3ns->bookie->nr_bonds == ref_t3ns->bookie->nr_bonds);
+    assert(opt_t3ns->bookie->nr_bonds != netw->nr_bonds);
+
+    // initialize the tensorpairs
+    nr_tensorpairs = 2; // netw->sites;
+    tensorpairs = (struct TensorInfoPair *) malloc(nr_tensorpairs *
+            sizeof(struct TensorInfoPair));
+    // fill the tensorpairs
+    for (int i=0; i<nr_tensorpairs; i++) {
+        // get bond indices
+        get_bonds_of_site(i, CB_nrs);
+        
+        // @TEST
+        std::cout << "collected bondnrs: " << CB_nrs[0] << ", " << CB_nrs[1]
+                << " and " << CB_nrs[2] << std::endl;
+    }
+
+    // @TEST
     this->test = opt_t3ns->bookie->nr_bonds;
     std::cout << "Test was set to " << test << std::endl;
+}
+
+
+OverlapCalculator::~OverlapCalculator()
+{
+    free (tensorpairs);
 }

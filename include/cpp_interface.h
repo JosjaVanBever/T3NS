@@ -34,8 +34,10 @@ extern "C" {
 // from a C++ context
 /*********************START*C++-INTERFACE*********************/
 
+#include "network.h"
+
 // native C functions that are called from a C++ context
-// NO FUNCTIONS YET
+void get_bonds_of_site(int site, int * bonds);
 
 /***********************END*C++-INTERFACE*********************/
 
