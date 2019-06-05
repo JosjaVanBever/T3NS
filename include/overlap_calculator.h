@@ -41,9 +41,6 @@ class OverlapCalculator {
         // Help data:
         struct bookkeeper * opt_bookie;
         struct bookkeeper * ref_bookie;
-
-        // @TEST
-        int test;
 };
 
 #endif

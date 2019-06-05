@@ -46,25 +46,7 @@ OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns) :
         // create ref TensorInfo
         bookkeeper_get_symsecs_address_arr(ref_t3ns->bookie, 3, CRB_syms, CB_nrs);
         tensorpairs[i].ref = TensorInfo(ref_t3ns->data[i]);
-
-        // @TEST
-        print_TensorInfoPair(ref_t3ns->bookie, &tensorpairs[i]);
-
-        // @TEST
-        std::cout << "tensorpairs[i].opt.data: ";
-        print_siteTensor(opt_t3ns->bookie, tensorpairs[i].opt.get_data());
-
-        // @TEST
-        print_symsecinfo(COB_syms[0]);
-        
-        // @TEST
-        std::cout << "collected bondnrs: " << CB_nrs[0] << ", " << CB_nrs[1]
-                << " and " << CB_nrs[2] << std::endl;
-    }
-
-    // @TEST
-    this->test = opt_t3ns->bookie->nr_bonds;
-    std::cout << "Test was set to " << test << std::endl;
+    } 
 }
 
 
@@ -78,4 +60,4 @@ OverlapCalculator::~OverlapCalculator()
 int OverlapCalculator::get_result() {
     std::cout << "tensorpairs[i].opt.data: ";
     print_siteTensor(opt_bookie, tensorpairs[0].opt.get_data());
-    return test; };
+    return 0; };
