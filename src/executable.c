@@ -383,8 +383,10 @@ static int initialize_program(int argc, char *argv[],
 
         // this function should be modified
         bookkeeper_get_symsecs_arr(&bookie, 3, COB_syms, CB_nrs);
+        // bookkeeper_get_symsecs_address(&bookie, &CTB_syms[0], CB_nrs[0]);
+        bookkeeper_get_symsecs_address_arr(&bookie, 3, CTB_syms, CB_nrs);
 
-        CTB_syms[0] = &(bookie.v_symsecs[0]);
+        // CTB_syms[0] = &(bookie.v_symsecs[0]);
 
 
         int cheat = bookie.v_symsecs[0].totaldims;
@@ -458,22 +460,24 @@ int main(int argc, char *argv[])
                 cleanup_before_exit(&T3NS, &rops, &scheme);
                 return EXIT_FAILURE;
         }
-        execute_optScheme(T3NS, rops, &scheme, pbuffer);
-        struct disentScheme sch = {
-                .max_sweeps = 30,
-                .gambling = true,
-                .beta = 20,
-                .svd_sel = scheme.regimes[0].svd_sel
-        };
-        disentangle_state(T3NS, &sch, 0);
-        destroy_all_rops(&rops);
-        clear_instructions();
-        reinit_hamiltonian();
 
-        init_operators(&rops, &T3NS);
-        execute_optScheme(T3NS, rops, &scheme, pbuffer);
-        disentangle_state(T3NS, &sch, 0);
-        print_target_state_coeff(T3NS);
+        // @JOSJA: want to test different things
+        // execute_optScheme(T3NS, rops, &scheme, pbuffer);
+        // struct disentScheme sch = {
+        //         .max_sweeps = 30,
+        //         .gambling = true,
+        //         .beta = 20,
+        //         .svd_sel = scheme.regimes[0].svd_sel
+        // };
+        // disentangle_state(T3NS, &sch, 0);
+        // destroy_all_rops(&rops);
+        // clear_instructions();
+        // reinit_hamiltonian();
+
+        // init_operators(&rops, &T3NS);
+        // execute_optScheme(T3NS, rops, &scheme, pbuffer);
+        // disentangle_state(T3NS, &sch, 0);
+        // print_target_state_coeff(T3NS);
 
         cleanup_before_exit(&T3NS, &rops, &scheme);
         printf("SUCCESFULL END!\n");
