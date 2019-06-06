@@ -372,7 +372,7 @@ static int initialize_program(int argc, char *argv[],
         struct T3NSfill * states = malloc(nr_states * sizeof(struct T3NSfill));
         for (int i=0; i<nr_states; i++) {
             // extract_addresses(T3NS, netw->nr_sites_opt, states[i].data);
-            states[i].data = T3NS;
+            states[i].data = *T3NS;
             states[i].bookie = &bookie;
         }
 
@@ -389,7 +389,7 @@ static int initialize_program(int argc, char *argv[],
             init_overlap_calculator(&states[0], &states[1], &OOcalc);
 
             // moffelzone
-            // (*(states[0].data))->nrblocks -= 1;
+            // ((*T3NS)[1]).nrblocks -= 1;   last moffel succesful!
             // bookie.v_symsecs[0].totaldims = 10;
             // int result = get_result(OOcalc);
             // fprintf(stdout, "The result is %d\n", result);

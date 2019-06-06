@@ -60,7 +60,9 @@ void print_siteTensor(const struct bookkeeper * keeper,
 // Several T3NSfill's are used together with their common network
 // structure to create OverlapCalculators.
 struct T3NSfill {
-    struct siteTensor ** data;
+    // pointer to the first element in an array of siteTensors
+    struct siteTensor * data;
+    // bookeeper containing the symmetry information of the T3NS
     struct bookkeeper * bookie;
 };
 

@@ -20,6 +20,7 @@
 
 #include "cpp_interface.h"
 #include "bookkeeper.h"
+#include "siteTensor.h"
 #include "tensor_info.h"
 #include <iostream>
 
