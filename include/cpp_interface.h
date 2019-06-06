@@ -37,6 +37,7 @@ extern "C" {
 // #include "network.h"
 // #include "symsecs.h"
 // #include "bookkeeper.h"
+#include <stdio.h>
 
 // native C functions that are called from a C++ context
 void get_bonds_of_site(int site, int * bonds);
@@ -45,6 +46,9 @@ void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
         int n, struct symsecs ** symarr, const int * bonds);
 void print_siteTensor(const struct bookkeeper * keeper, 
         const struct siteTensor * tens);
+void init_null_sparseblocks(struct sparseblocks * blocks);
+void * safe_malloc_helper(long long s, size_t t, const char * typ, 
+        const char * file, int line, const char * func);
 
 
 /***********************END*C++-INTERFACE*********************/

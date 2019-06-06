@@ -18,11 +18,22 @@
 #ifndef OVERLAP_CALCULATOR_H
 #define OVERLAP_CALCULATOR_H
 
+#include "overlap_object.h"
+
+// interface
 #include "cpp_interface.h"
+// C libraries
 #include "bookkeeper.h"
+// C++ libraries
 #include "siteTensor.h"
 #include "tensor_info.h"
+
+// external libraries
 #include <iostream>
+
+#ifndef OVERLAP_OBJECT_H
+#error 'OverlapObject not defined!'
+#endif
 
 // The overlap calculator does not allocate any of the T3NS data operated on.
 // It does allocate its own temporary results.
@@ -39,8 +50,8 @@ class OverlapCalculator {
         // Main data:
         struct TensorInfoPair * tensorpairs;
             int nr_tensorpairs;  // length of tensorpairs
-        // OverlapObject * overlaps;
-        //     int nr_overlaps;  // length of overlaps
+        OverlapObject * overlaps;
+            int nr_overlaps;  // length of overlaps
 
         // Help data:
         struct bookkeeper * opt_bookie;
