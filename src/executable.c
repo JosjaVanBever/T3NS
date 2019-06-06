@@ -376,9 +376,15 @@ static int initialize_program(int argc, char *argv[],
             states[i].bookie = &bookie;
         }
 
-        // @TEST
-        print_siteTensor(&bookie, &((*T3NS)[0]));
-        print_siteTensor(&bookie, &((*T3NS)[1]));
+        // // @TEST
+        // print_siteTensor(&bookie, &((*T3NS)[0]));
+        // print_siteTensor(&bookie, &((*T3NS)[1]));
+        
+        for (int i=0; i< bookie.nr_bonds; i++) {
+            struct symsecs testsymsec;
+            bookkeeper_get_symsecs(&bookie, &testsymsec, i);
+            print_symsecs(&bookie, &testsymsec, 0);
+        }
 
         // @JOSJA
         // initialize the Overlap Object calculator for excited states
@@ -391,7 +397,7 @@ static int initialize_program(int argc, char *argv[],
             // moffelzone
             // ((*T3NS)[1]).nrblocks -= 1;   last moffel succesful!
             // bookie.v_symsecs[0].totaldims = 10;
-            // int result = get_result(OOcalc);
+            int result = get_result(OOcalc);
             // fprintf(stdout, "The result is %d\n", result);
 
             //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }

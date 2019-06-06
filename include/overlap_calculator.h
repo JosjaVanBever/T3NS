@@ -30,6 +30,8 @@
 
 // external libraries
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 
 #ifndef OVERLAP_OBJECT_H
 #error 'OverlapObject not defined!'
@@ -48,7 +50,7 @@ class OverlapCalculator {
         // -> get the OO link attached to who and pointing to other
         int get_internal_link(int who, int other, OverlapObjectLink * result);
         // -> get the OO links attached to who but not pointing to exclude
-        int get_external_link(int who, int exclude, OverlapObjectLink * result);
+        int get_external_links(int who, int exclude, OverlapObjectLink * result);
 
         // @TEST
         int get_result();

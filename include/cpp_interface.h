@@ -43,6 +43,8 @@ extern "C" {
 // native C functions that are called from a C++ context
 extern void get_bonds_of_site(int site, int * bonds);
 extern void print_symsecinfo(struct symsecs * ss);
+void bookkeeper_get_symsecs_address(const struct bookkeeper * keeper, 
+        struct symsecs ** res, int bond);
 extern void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
         int n, struct symsecs ** symarr, const int * bonds);
 extern void print_siteTensor(const struct bookkeeper * keeper, 
@@ -50,6 +52,7 @@ extern void print_siteTensor(const struct bookkeeper * keeper,
 extern void init_null_sparseblocks(struct sparseblocks * blocks);
 extern void * safe_malloc_helper(long long s, size_t t, const char * typ, 
         const char * file, int line, const char * func);
+extern void print_network(void);
 
 
 /***********************END*C++-INTERFACE*********************/

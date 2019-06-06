@@ -46,6 +46,8 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
     int CB_nrs[3];                 // Current Bond numbers
     struct symsecs * COB_syms[3];  // Current Optimizing Bond symsecs
     struct symsecs * CRB_syms[3];  // Current Reference Bond symsecs
+    struct symsecs * CO_syms;      // Current optimizing symsecs
+    struct symsecs * CR_syms;      // Current reference symsecs
 
     // do some consistency checks of the input
     assert(opt_t3ns->bookie->nr_bonds == ref_t3ns->bookie->nr_bonds);
@@ -67,16 +69,26 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
         tensorpairs[i].ref = TensorInfo(&(ref_t3ns->data[i]), CRB_syms);
     }
 
-    for (int i=0; i<nr_tensorpairs; i++) {
-        fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);
-        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]));
+    // initialize empty overlaps
+    nr_overlaps = network->nr_bonds;
+    overlaps = (OverlapObject *) safe_malloc(nr_overlaps, OverlapObject);
+    for (int i=0; i<nr_overlaps; i++) {
+        bookkeeper_get_symsecs_address(ref_t3ns->bookie, &CR_syms, i);
+        bookkeeper_get_symsecs_address(opt_t3ns->bookie, &CO_syms, i);
+        overlaps[i] = OverlapObject(CR_syms, CO_syms);
     }
+
+    // for (int i=0; i<nr_tensorpairs; i++) {
+    //     fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);
+    //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]));
+    // }
 }
 
 
 OverlapCalculator::~OverlapCalculator()
 {
     safe_free(tensorpairs);
+    safe_free(overlaps);
 }
 
 
@@ -88,7 +100,7 @@ int OverlapCalculator::get_internal_link(int who, int other,
 }
 
 // get the OO links attached to who but not pointing to exclude
-int OverlapCalculator::get_external_link(int who, int exclude,
+int OverlapCalculator::get_external_links(int who, int exclude,
         OverlapObjectLink * result)
 {
     return get_links(who, exclude, &avoid_other, NULL, result);
@@ -144,10 +156,23 @@ int OverlapCalculator::get_links(int who, int other,
 
 // @ TEST
 int OverlapCalculator::get_result() {
-    for (int i=0; i<nr_tensorpairs; i++) {
-        fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);
-        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]));
-    }
+    print_network();
+
+    /* initialize random seed: */
+    srand(time(NULL));
+
+    fprintf(stdout, "Testing link searchers:\n");
+    int i = rand() % network->sites;
+    int j = rand() % network->sites;
+    fprintf(stdout, "i is %d and j is %d:\n", i, j);
+    OverlapObjectLink internal, external[3];
+    int nr_internal = get_internal_link(i, j, &internal);
+    int nr_external = get_external_links(i, j, external);
+
+    // for (int i=0; i<nr_tensorpairs; i++) {
+    //     fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);
+    //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]));
+    // }
     // std::cout << "tensorpairs[i].opt.data: ";
     // print_siteTensor(opt_bookie, tensorpairs[0].opt.get_data());
     return 0; };

@@ -23,7 +23,7 @@ OverlapObject::OverlapObject(struct symsecs * ref, struct symsecs * opt,
 			int opt_dim) : ref(ref), opt(opt)
 {
 	// redefine opt_dim if smaller than 0
-	if (opt_dim < 0) { 2 * opt->totaldims; }
+	if (opt_dim < 0) { opt_dim = 2 * opt->totaldims; }
 
 	// help variable
 	int nrBlocks = ref->nrSecs;
