@@ -44,8 +44,8 @@ class OverlapCalculator {
                 const struct network * netw);
         ~OverlapCalculator();
 
-        // @TEST
-        int get_result();
+        // // @TEST
+        // int get_result();
     private:
         // Main data:
         struct TensorInfoPair * tensorpairs;
@@ -53,9 +53,9 @@ class OverlapCalculator {
         OverlapObject * overlaps;
             int nr_overlaps;  // length of overlaps
 
-        // Help data:
-        struct bookkeeper * opt_bookie;
-        struct bookkeeper * ref_bookie;
+        // // Help data:
+        // struct bookkeeper * opt_bookie;
+        // struct bookkeeper * ref_bookie;
 };
 
 #endif

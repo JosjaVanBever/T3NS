@@ -101,8 +101,8 @@ extern "C" {
 extern void init_overlap_calculator(const T3NSfill * opt,
         const T3NSfill * ref, const struct network * netw,
         OverlapCalculator ** result);
-//  -> get_result
-extern int get_result(OverlapCalculator*);
+// //  -> get_result
+// extern int get_result(OverlapCalculator*);
 
 /************************END*C-INTERFACE**********************/
 

@@ -27,7 +27,7 @@ void init_overlap_calculator(const T3NSfill * opt, const T3NSfill * ref,
     *result = new OverlapCalculator(opt, ref, netw);
 }
 
-int get_result(OverlapCalculator* calc)
-{
-	return calc->get_result();
-}
+// int get_result(OverlapCalculator* calc)
+// {
+// 	return calc->get_result();
+// }

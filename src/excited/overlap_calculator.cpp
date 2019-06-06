@@ -19,8 +19,8 @@
 
 
 OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
-        const T3NSfill * ref_t3ns, const struct network * netw) :
-        opt_bookie(opt_t3ns->bookie), ref_bookie(ref_t3ns->bookie)
+        const T3NSfill * ref_t3ns, const struct network * netw) //:
+        //opt_bookie(opt_t3ns->bookie), ref_bookie(ref_t3ns->bookie)
 {
     // help variables
     // C == Current; O == Optimizing; R == Reference; B == Bond
@@ -49,10 +49,10 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
         tensorpairs[i].ref = TensorInfo(&(ref_t3ns->data[i]), CRB_syms);
     }
 
-    for (int i=0; i<nr_tensorpairs; i++) {
-        fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);
-        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]));
-    }
+    // for (int i=0; i<nr_tensorpairs; i++) {
+    //     fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);
+    //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]));
+    // }
 }
 
 
@@ -62,12 +62,12 @@ OverlapCalculator::~OverlapCalculator()
 }
 
 
-// @ TEST
-int OverlapCalculator::get_result() {
-    for (int i=0; i<nr_tensorpairs; i++) {
-        fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);
-        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]));
-    }
-    // std::cout << "tensorpairs[i].opt.data: ";
-    // print_siteTensor(opt_bookie, tensorpairs[0].opt.get_data());
-    return 0; };
+// // @ TEST
+// int OverlapCalculator::get_result() {
+//     for (int i=0; i<nr_tensorpairs; i++) {
+//         fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);
+//         print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]));
+//     }
+//     // std::cout << "tensorpairs[i].opt.data: ";
+//     // print_siteTensor(opt_bookie, tensorpairs[0].opt.get_data());
+//     return 0; };
