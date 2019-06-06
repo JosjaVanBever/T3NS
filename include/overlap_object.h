@@ -75,6 +75,10 @@ class OverlapObject {
 };
 
 
+void print_overlap_object(const struct bookkeeper * ref_bookie,
+		const struct bookkeeper * opt_bookie, OverlapObject * OO);
+
+
 typedef struct OverlapObjectLink {
 	OverlapObject* OO;
 	int leg;  // index of the leg to which the OOlink is associated

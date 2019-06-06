@@ -60,6 +60,7 @@ class OverlapCalculator {
             int nr_tensorpairs;  // length of tensorpairs
         OverlapObject * overlaps;
             int nr_overlaps;  // length of overlaps
+        // remark: there are also overlaps living on a bond to -1!
 
         // Help data:
         const struct bookkeeper * opt_bookie;

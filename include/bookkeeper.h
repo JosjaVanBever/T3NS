@@ -161,7 +161,8 @@ int preparebookkeeper(struct bookkeeper * prevbookie, int max_dim,
  * \param [in] sector The symsec.
  * \param [in] fci Boolean if fcidim should be printed or truncated dims.
  */
-void print_symsecs(struct bookkeeper * keeper, struct symsecs *cursymsec, int fci);
+void print_symsecs(const struct bookkeeper * keeper,
+        const struct symsecs *cursymsec, int fci);
 
 void bookkeeper_get_symsecs(const struct bookkeeper * keeper, 
                             struct symsecs *res, int bond);

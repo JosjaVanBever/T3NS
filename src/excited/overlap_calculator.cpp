@@ -61,6 +61,10 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
     for (int i=0; i<nr_tensorpairs; i++) {
         // get bond indices
         get_bonds_of_site(i, CB_nrs);
+
+        // @TEST:
+        // printf("CB_nrs: %d %d %d\n", CB_nrs[0], CB_nrs[1], CB_nrs[2]);
+
         // create opt TensorInfo
         bookkeeper_get_symsecs_address_arr(opt_t3ns->bookie, 3, COB_syms, CB_nrs);
         tensorpairs[i].opt = TensorInfo(&(opt_t3ns->data[i]), COB_syms);
@@ -136,15 +140,23 @@ int OverlapCalculator::get_links(int who, int other,
     // loop over the bond indices
     for (int i=0; i<3; i++) {
         // if the bond is a virtual bond
-        if (bond_inds[i] != -1) {
+        // (possibly starting or ending in vacuum)
+        if (!is_pbond(bond_inds[i])) {
+            printf("bond_inds[%d]: %d\n", i, bond_inds[i]);
             // ask the tensors linked by the bond
             bond_link = &(network->bonds[bond_inds[i]]);
             int from = (*bond_link)[0];
+            printf("from: %d\n", from);
             int to = (*bond_link)[1];
+            printf("to: %d\n", to);
+            // @TEST
+            // if (to != -1 && from != -1) {
+            //     printf("Eureka!");
+            // }
             // if appropriate, add an OO_link to the result
             if (check(other, from, to)) {
-                result->OO = &(overlaps[bond_inds[i]]);
-                result->leg = i;
+                (result[size]).OO = &(overlaps[bond_inds[i]]);
+                (result[size]).leg = i;
                 // and ask the question if their was one
                 if (question) { question(to, who); }
                 size++; }}}
@@ -158,16 +170,41 @@ int OverlapCalculator::get_links(int who, int other,
 int OverlapCalculator::get_result() {
     print_network();
 
+    for (int i=0; i<nr_overlaps; i++) {
+        fprintf(stdout, "overlaps[%d]:\n", i);
+        print_overlap_object(ref_bookie, opt_bookie, &(overlaps[i]));
+    }
+
     /* initialize random seed: */
     srand(time(NULL));
 
     fprintf(stdout, "Testing link searchers:\n");
-    int i = rand() % network->sites;
-    int j = rand() % network->sites;
+    // int i = rand() % network->sites;
+    // int j = rand() % network->sites;
+    int i = 0;
+    int j = 1;
     fprintf(stdout, "i is %d and j is %d:\n", i, j);
-    OverlapObjectLink internal, external[3];
-    int nr_internal = get_internal_link(i, j, &internal);
+    OverlapObjectLink internal[3], external[6];
+    int nr_internal = get_internal_link(i, j, internal);
     int nr_external = get_external_links(i, j, external);
+    
+
+    //SEGFAULT!
+    fprintf(stdout, "nr_internal: %d\n", nr_internal);
+    fprintf(stdout, "Internal:\n");
+    for (int i=0; i<nr_internal; i++) {
+        fprintf(stdout, "nr_internal: %d\n", nr_external);
+        print_overlap_object(ref_bookie, opt_bookie, internal[i].OO);
+    }
+
+    fprintf(stdout, "nr_external: %d\n", nr_external);
+
+    fprintf(stdout, "External:\n");
+    for (int i=0; i<nr_external; i++) {
+        print_overlap_object(ref_bookie, opt_bookie, external[i].OO);
+    }
+
+    printf("We made it?\n");
 
     // for (int i=0; i<nr_tensorpairs; i++) {
     //     fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);

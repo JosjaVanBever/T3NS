@@ -60,3 +60,13 @@ void OverlapObject::reallocate_bytes(int bytes)
 	allocsize = bytes;
 	blocks.tel = (EL_TYPE *) realloc(blocks.tel, bytes);
 }
+
+
+void print_overlap_object(const struct bookkeeper * ref_bookie,
+		const struct bookkeeper * opt_bookie, OverlapObject * OO)
+{
+	fprintf(stdout, "ref: ");
+	print_symsecs(ref_bookie, OO->get_ref(), 0);
+	fprintf(stdout, "opt: ");
+	print_symsecs(opt_bookie, OO->get_opt(), 0);
+}

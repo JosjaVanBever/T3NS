@@ -42,8 +42,11 @@ extern "C" {
 
 // native C functions that are called from a C++ context
 extern void get_bonds_of_site(int site, int * bonds);
+extern bool is_pbond(int bond);
 extern void print_symsecinfo(struct symsecs * ss);
-void bookkeeper_get_symsecs_address(const struct bookkeeper * keeper, 
+extern void print_symsecs(const struct bookkeeper * keeper,
+        const struct symsecs *cursymsec, int fci);
+extern void bookkeeper_get_symsecs_address(const struct bookkeeper * keeper, 
         struct symsecs ** res, int bond);
 extern void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
         int n, struct symsecs ** symarr, const int * bonds);

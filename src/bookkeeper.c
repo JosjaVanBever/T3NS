@@ -762,8 +762,8 @@ int preparebookkeeper(struct bookkeeper * prevbookie, int max_dim,
         return 0;
 }
 
-void print_symsecs(struct bookkeeper * keeper, struct symsecs *currsymsec, 
-                   int fci)
+void print_symsecs(const struct bookkeeper * keeper,
+        const struct symsecs *currsymsec, int fci)
 {
         char buffer[255];
         for (int i = 0; i < currsymsec->nrSecs; ++i) {

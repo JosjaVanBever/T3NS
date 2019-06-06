@@ -42,7 +42,7 @@ void print_tensorInfo(const struct bookkeeper * keeper,
 	struct symsecs * syms[3];
 	tensor->get_syms(syms);
 	for (int i=0; i<3; i++) {
-		print_symsecinfo(syms[i]);
+		print_symsecs(keeper, syms[i], 0);
 	}
 }
 
