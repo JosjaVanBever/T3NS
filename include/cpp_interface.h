@@ -66,9 +66,9 @@ extern void * safe_malloc_helper(long long s, size_t t, const char * typ,
 // structure to create OverlapCalculators.
 typedef struct T3NSfill {
     // pointer to the first element in an array of siteTensors
-    struct siteTensor * data;
+    struct siteTensor * data;  // in practice 'const'
     // bookeeper containing the symmetry information of the T3NS
-    struct bookkeeper * bookie;
+    const struct bookkeeper * bookie;
 } T3NSfill;
 
 /************************END*C-INTERFACE**********************/

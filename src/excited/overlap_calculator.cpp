@@ -37,7 +37,8 @@ int get_result(OverlapCalculator* calc)
 
 OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
         const T3NSfill * ref_t3ns, const struct network * netw) :
-        opt_bookie(opt_t3ns->bookie), ref_bookie(ref_t3ns->bookie)
+        opt_bookie(opt_t3ns->bookie), ref_bookie(ref_t3ns->bookie),
+        network(netw)
 {
     // help variables
     // C == Current; O == Optimizing; R == Reference; B == Bond
@@ -48,10 +49,10 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
 
     // do some consistency checks of the input
     assert(opt_t3ns->bookie->nr_bonds == ref_t3ns->bookie->nr_bonds);
-    assert(opt_t3ns->bookie->nr_bonds != netw->nr_bonds);
+    assert(opt_t3ns->bookie->nr_bonds != network->nr_bonds);
 
     // initialize the tensorpairs
-    nr_tensorpairs = netw->sites;
+    nr_tensorpairs = network->sites;
     tensorpairs = (struct TensorInfoPair *) safe_malloc(nr_tensorpairs,
             struct TensorInfoPair);
     // fill the tensorpairs
@@ -76,6 +77,68 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
 OverlapCalculator::~OverlapCalculator()
 {
     safe_free(tensorpairs);
+}
+
+
+// get the OO link attached to who and pointing to other
+int OverlapCalculator::get_internal_link(int who, int other,
+        OverlapObjectLink * result)
+{
+    return get_links(who, other, &found_other, NULL, result);
+}
+
+// get the OO links attached to who but not pointing to exclude
+int OverlapCalculator::get_external_link(int who, int exclude,
+        OverlapObjectLink * result)
+{
+    return get_links(who, exclude, &avoid_other, NULL, result);
+}
+
+
+// is other in (from,to)?
+bool found_other(int other, int from, int to)
+{
+    return from == other || to == other;
+}
+
+// is other not in (from, to)?
+bool avoid_other(int other, int from, int to)
+{
+    return from != other && to != other;
+}
+
+
+// Get the appropriate links from who with respect to other,
+//   using the criterium check and performing the action question(to, who)
+//   to the matches 'to' with the criterium.
+int OverlapCalculator::get_links(int who, int other,
+        bool (*check)(int,int,int), void (*question)(int,int),
+        OverlapObjectLink * result)
+{
+    int bond_inds[3];     // bond indices
+    int (*bond_link)[2];  // adress of current bond
+    int size = 0;         // size of the result
+
+    // get the bond indices for 'who'
+    get_bonds_of_site(who, bond_inds);
+    // loop over the bond indices
+    for (int i=0; i<3; i++) {
+        // if the bond is a virtual bond
+        if (bond_inds[i] != -1) {
+            // ask the tensors linked by the bond
+            bond_link = &(network->bonds[bond_inds[i]]);
+            int from = (*bond_link)[0];
+            int to = (*bond_link)[1];
+            // if appropriate, add an OO_link to the result
+            if (check(other, from, to)) {
+                result->OO = &(overlaps[bond_inds[i]]);
+                result->leg = i;
+                // and ask the question if their was one
+                if (question) { question(to, who); }
+                size++; }}}
+
+    // return the size of the final result
+    return size;
 }
 
 

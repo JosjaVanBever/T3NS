@@ -44,6 +44,12 @@ class OverlapCalculator {
                 const struct network * netw);
         ~OverlapCalculator();
 
+        // @TEST: temporary public
+        // -> get the OO link attached to who and pointing to other
+        int get_internal_link(int who, int other, OverlapObjectLink * result);
+        // -> get the OO links attached to who but not pointing to exclude
+        int get_external_link(int who, int exclude, OverlapObjectLink * result);
+
         // @TEST
         int get_result();
     private:
@@ -54,8 +60,22 @@ class OverlapCalculator {
             int nr_overlaps;  // length of overlaps
 
         // Help data:
-        struct bookkeeper * opt_bookie;
-        struct bookkeeper * ref_bookie;
+        const struct bookkeeper * opt_bookie;
+        const struct bookkeeper * ref_bookie;
+        const struct network * network;
+
+        // Help functions:
+        // Get the appropriate OO links from 'who' with respect to 'other',
+        //   using the criterium 'check' and performing the action
+        //   question(to, who) to the matches 'to' with the criterium.
+        int get_links(int who, int other, bool (*check)(int,int,int),
+                void (*question)(int,int), OverlapObjectLink * result);
 };
+
+// External help functions:
+// -> is other in (from,to)?
+bool found_other(int other, int from, int to);
+// -> is other not in (from, to)?
+bool avoid_other(int other, int from, int to);
 
 #endif
