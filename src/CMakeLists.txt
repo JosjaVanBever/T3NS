@@ -40,9 +40,6 @@ set(T3NSLIB_SOURCE_FILES
     "wrapper_solvers.c"
     "RedDM.c"
     "timers.c"
-    "excited/cpp_interface.cpp"
-    "excited/overlap_calculator.cpp"
-    "excited/tensor_info.cpp"
     "excited/overlap_object.cpp"
     )
 

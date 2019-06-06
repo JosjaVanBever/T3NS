@@ -27,62 +27,62 @@
 #define CPP_INTERFACE_H
 
 
-#ifdef __cplusplus
-extern "C" {
+// #ifdef __cplusplus
+// extern "C" {
 
-// declare a C++ interface to get acces to native C functions
-// from a C++ context
-/*********************START*C++-INTERFACE*********************/
+// // declare a C++ interface to get acces to native C functions
+// // from a C++ context
+// /*********************START*C++-INTERFACE*********************/
 
-// #include "network.h"
-// #include "symsecs.h"
-// #include "bookkeeper.h"
-#include <stdio.h>
+// // #include "network.h"
+// // #include "symsecs.h"
+// // #include "bookkeeper.h"
+// #include <stdio.h>
 
-// // native C functions that are called from a C++ context
-// void get_bonds_of_site(int site, int * bonds);
-// void print_symsecinfo(struct symsecs * ss);
-// void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
-//         int n, struct symsecs ** symarr, const int * bonds);
-// void print_siteTensor(const struct bookkeeper * keeper, 
-//         const struct siteTensor * tens);
-// void init_null_sparseblocks(struct sparseblocks * blocks);
-// void * safe_malloc_helper(long long s, size_t t, const char * typ, 
-//         const char * file, int line, const char * func);
+// // // native C functions that are called from a C++ context
+// // void get_bonds_of_site(int site, int * bonds);
+// // void print_symsecinfo(struct symsecs * ss);
+// // void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
+// //         int n, struct symsecs ** symarr, const int * bonds);
+// // void print_siteTensor(const struct bookkeeper * keeper, 
+// //         const struct siteTensor * tens);
+// // void init_null_sparseblocks(struct sparseblocks * blocks);
+// // void * safe_malloc_helper(long long s, size_t t, const char * typ, 
+// //         const char * file, int line, const char * func);
 
 
-/***********************END*C++-INTERFACE*********************/
+// /***********************END*C++-INTERFACE*********************/
 
-}
-#endif
+// }
+// #endif
 
-// declare the C interface to get acces to native C++ functions
-// from a C context
-/**********************START*C-INTERFACE**********************/
+// // declare the C interface to get acces to native C++ functions
+// // from a C context
+// /**********************START*C-INTERFACE**********************/
 
-// Structure that contains the internal information of a T3NS
-// Several T3NSfill's are used together with their common network
-// structure to create OverlapCalculators.
-typedef struct T3NSfill {
-    // pointer to the first element in an array of siteTensors
-    struct siteTensor * data;
-    // bookeeper containing the symmetry information of the T3NS
-    struct bookkeeper * bookie;
-} T3NSfill;
+// // Structure that contains the internal information of a T3NS
+// // Several T3NSfill's are used together with their common network
+// // structure to create OverlapCalculators.
+// typedef struct T3NSfill {
+//     // pointer to the first element in an array of siteTensors
+//     struct siteTensor * data;
+//     // bookeeper containing the symmetry information of the T3NS
+//     struct bookkeeper * bookie;
+// } T3NSfill;
 
 /************************END*C-INTERFACE**********************/
 
 
 // declare a OverlapCalculator class or structure
-#ifdef __cplusplus
-    class OverlapCalculator;
+// #ifdef __cplusplus
+    // class OverlapCalculator;
     // contains the implementation of the OverlapCalculator class
     #include "overlap_calculator.h"
-#else
-    // declare a C struct to reference the OverlapCalculator
-    // class from a C context
-    typedef struct OverlapCalculator OverlapCalculator;
-#endif
+// #else
+//     // declare a C struct to reference the OverlapCalculator
+//     // class from a C context
+//     typedef struct OverlapCalculator OverlapCalculator;
+// #endif
 
 
 // #ifdef __cplusplus

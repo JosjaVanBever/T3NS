@@ -39,7 +39,7 @@
 #include "options.h"
 #include "RedDM.h"
 #include "timers.h"
-#include "cpp_interface.h"
+// #include "cpp_interface.h"
 
 static const char *timernames[] = {
         "Reading HDF5", 
@@ -365,41 +365,41 @@ static int initialize_program(int argc, char *argv[],
         // @JOSJA
         // hardcoded settings to test excited state calculations
         // excitation = 0 for ground state, 1 for 1st excitation ...
-        int excitation = 1;
-        int nr_states = excitation + 1;
-        // info necessary to create overlap object calculators
-        // hardcoded initialisation to optimizing T3NS
-        struct T3NSfill * states = malloc(nr_states * sizeof(struct T3NSfill));
-        for (int i=0; i<nr_states; i++) {
-            // extract_addresses(T3NS, netw->nr_sites_opt, states[i].data);
-            states[i].data = *T3NS;
-            states[i].bookie = &bookie;
-        }
+        // int excitation = 1;
+        // int nr_states = excitation + 1;
+        // // info necessary to create overlap object calculators
+        // // hardcoded initialisation to optimizing T3NS
+        // struct T3NSfill * states = malloc(nr_states * sizeof(struct T3NSfill));
+        // for (int i=0; i<nr_states; i++) {
+        //     // extract_addresses(T3NS, netw->nr_sites_opt, states[i].data);
+        //     states[i].data = *T3NS;
+        //     states[i].bookie = &bookie;
+        // }
 
-        // @TEST
-        print_siteTensor(&bookie, &((*T3NS)[0]));
-        print_siteTensor(&bookie, &((*T3NS)[1]));
+        // // @TEST
+        // print_siteTensor(&bookie, &((*T3NS)[0]));
+        // print_siteTensor(&bookie, &((*T3NS)[1]));
 
         // @JOSJA
         // initialize the Overlap Object calculator for excited states
-        if (excitation > 0) {
+        // if (excitation > 0) {
 
-            tic(&chrono, INIT_OOCALC);
-            OverlapCalculator * OOcalc;
-            init_overlap_calculator(&states[0], &states[1], &netw, &OOcalc);
+        //     tic(&chrono, INIT_OOCALC);
+        //     OverlapCalculator * OOcalc;
+        //     // init_overlap_calculator(&states[0], &states[1], &netw, &OOcalc);
 
-            // moffelzone
-            // ((*T3NS)[1]).nrblocks -= 1;   last moffel succesful!
-            // bookie.v_symsecs[0].totaldims = 10;
-            // int result = get_result(OOcalc);
-            // fprintf(stdout, "The result is %d\n", result);
+        //     // moffelzone
+        //     // ((*T3NS)[1]).nrblocks -= 1;   last moffel succesful!
+        //     // bookie.v_symsecs[0].totaldims = 10;
+        //     // int result = get_result(OOcalc);
+        //     // fprintf(stdout, "The result is %d\n", result);
 
-            //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }
-            toc(&chrono, INIT_OOCALC);
-        }
+        //     //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }
+        //     toc(&chrono, INIT_OOCALC);
+        // }
 
-        // input information for OO calculators not necessary anymore
-        free(states);
+        // // input information for OO calculators not necessary anymore
+        // free(states);
 
         print_input(scheme);
 
