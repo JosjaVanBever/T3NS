@@ -52,8 +52,8 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
 
     // initialize the tensorpairs
     nr_tensorpairs = netw->sites;
-    tensorpairs = (struct TensorInfoPair *) malloc(nr_tensorpairs *
-            sizeof(struct TensorInfoPair));
+    tensorpairs = (struct TensorInfoPair *) safe_malloc(nr_tensorpairs,
+            struct TensorInfoPair);
     // fill the tensorpairs
     for (int i=0; i<nr_tensorpairs; i++) {
         // get bond indices
@@ -75,7 +75,7 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
 
 OverlapCalculator::~OverlapCalculator()
 {
-    free (tensorpairs);
+    safe_free(tensorpairs);
 }
 
 

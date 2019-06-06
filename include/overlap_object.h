@@ -40,14 +40,20 @@ class OverlapObject {
 				int opt_dim = -1);  // <0 => 2 * opt->totaldims
 
 		// destructor
-		~ OverlapObject() { free(blocks.beginblock); free(blocks.tel);
-				free(ldim); free(sdim); }
+		~OverlapObject();
+
+		// reallocate the element array explicitely
+		// @param: opt_dim = total/bond dimension for the optimizing bond
+		void reallocate_optdim(int opt_dim);
 
 		// get the reference or optimizing symsec
 		struct symsecs * get_ref() { return ref; }
 		struct symsecs * get_opt() { return opt; }
 
 	private:
+		// help function for reallocation of the element array
+		void reallocate_bytes(int bytes);
+
 		// Main data:
 		// Symmetry sectors in the reference and optimizing bond
 		//   to wich the OO is associated
@@ -67,5 +73,12 @@ class OverlapObject {
 		// allocated size of the tel array; should be >= usedsize
 		int allocsize;
 };
+
+
+typedef struct OverlapObjectLink {
+	OverlapObject* OO;
+	int leg;  // index of the leg to which the OOlink is associated
+} OverlapObjectLink;
+
 
 #endif
