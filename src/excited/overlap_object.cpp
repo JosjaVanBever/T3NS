@@ -17,24 +17,24 @@
 
 #include "overlap_object.h"
 
-OverlapObject::OverlapObject(struct symsecs * ref, struct symsecs * opt,
-			int opt_dim) : ref(ref), opt(opt),
-			allocsize(opt_dim)
-{
-	// redefine opt_dim if smaller than 0
-	if (opt_dim < 0) { 2 * opt->totaldims; }
+// OverlapObject::OverlapObject(struct symsecs * ref, struct symsecs * opt,
+// 			int opt_dim) //: ref(ref), opt(opt),
+// 			//allocsize(opt_dim)
+// {
+// 	// // redefine opt_dim if smaller than 0
+// 	// if (opt_dim < 0) { 2 * opt->totaldims; }
 
-	// help variable
-	int nrBlocks = ref->nrSecs;
+// 	// // help variable
+// 	// int nrBlocks = ref->nrSecs;
 
-	// initialize the sparseblocks
-	init_null_sparseblocks(&blocks);
-	// -> allocate the tel array
-	blocks.tel = (EL_TYPE *) safe_malloc(ref->totaldims * opt_dim, EL_TYPE);
-	// -> allocate beginblock
-	blocks.beginblock = (int *) safe_malloc(nrBlocks, int);
+// 	// // initialize the sparseblocks
+// 	// init_null_sparseblocks(&blocks);
+// 	// // -> allocate the tel array
+// 	// blocks.tel = (EL_TYPE *) safe_malloc(ref->totaldims * opt_dim, EL_TYPE);
+// 	// // -> allocate beginblock
+// 	// blocks.beginblock = (int *) safe_malloc(nrBlocks, int);
 
-	// allocate the ldim and sdim array
-	ldim = (int *) safe_malloc(nrBlocks, int);
-	sdim = (int *) safe_malloc(nrBlocks, int);
-}
+// 	// // allocate the ldim and sdim array
+// 	// ldim = (int *) safe_malloc(nrBlocks, int);
+// 	// sdim = (int *) safe_malloc(nrBlocks, int);
+// }

@@ -27,44 +27,44 @@
 // Usage: ones created, first renew the block layout with a solved
 // symsecMatcher before performing block calculations that take block info.
 class OverlapObject {
-	public:
-		// constructor
-		// @param:
-		//   ref = symmetry sectors of the bond in the reference T3NS
-		//   opt = symmetry sectors of the bond in the optimizing T3NS
-		//   [opt_dim] = current/bond dimension of opt
-		// @remark: if opt_dim is set to the bond dimension, no reallocation
-		//   will be needed. Remark that 2000**2 * 100 * 8 bytes is about 3Gb.
-		OverlapObject(struct symsecs * ref, struct symsecs * opt,
-				int opt_dim = -1);  // <0 => 2 * opt->totaldims
+	// public:
+	// 	// constructor
+	// 	// @param:
+	// 	//   ref = symmetry sectors of the bond in the reference T3NS
+	// 	//   opt = symmetry sectors of the bond in the optimizing T3NS
+	// 	//   [opt_dim] = current/bond dimension of opt
+	// 	// @remark: if opt_dim is set to the bond dimension, no reallocation
+	// 	//   will be needed. Remark that 2000**2 * 100 * 8 bytes is about 3Gb.
+	// 	// OverlapObject(struct symsecs * ref, struct symsecs * opt,
+	// 	// 		int opt_dim = -1) {};  // <0 => 2 * opt->totaldims
 
-		// destructor
-		~ OverlapObject() { free(blocks.beginblock); free(blocks.tel);
-				free(ldim); free(sdim); }
+	// 	// // destructor
+	// 	// ~ OverlapObject() { free(blocks.beginblock); free(blocks.tel);
+	// 	// 		free(ldim); free(sdim); }
 
-		// get the reference or optimizing symsec
-		struct symsecs * get_ref() { return ref; }
-		struct symsecs * get_opt() { return opt; }
+	// 	// // get the reference or optimizing symsec
+	// 	// struct symsecs * get_ref() { return ref; }
+	// 	// struct symsecs * get_opt() { return opt; }
 
-	private:
-		// Main data:
-		// Symmetry sectors in the reference and optimizing bond
-		//   to wich the OO is associated
-		struct symsecs * ref, * opt;
-		// Actual elements of the OverlapObject.
-		//   The block corresponding to the i'th irrep of ref starts at
-		//   blocks.tel[blocks.beginblock[i]], has leading dimension
-		//   ldim[i] and second dimension sdim[i].
-		//   If blocks.beginblock[i] == -1, the i'th block is not present.
-		struct sparseblocks blocks;  // begin blocks and element array
-		int * ldim;  // leading dimension array
-		int * sdim;  // second dimension array
+	// private:
+	// 	// Main data:
+	// 	// Symmetry sectors in the reference and optimizing bond
+	// 	//   to wich the OO is associated
+	// 	struct symsecs * ref, * opt;
+	// 	// Actual elements of the OverlapObject.
+	// 	//   The block corresponding to the i'th irrep of ref starts at
+	// 	//   blocks.tel[blocks.beginblock[i]], has leading dimension
+	// 	//   ldim[i] and second dimension sdim[i].
+	// 	//   If blocks.beginblock[i] == -1, the i'th block is not present.
+	// 	struct sparseblocks blocks;  // begin blocks and element array
+	// 	int * ldim;  // leading dimension array
+	// 	int * sdim;  // second dimension array
 
-		// Help data:
-		// size of tel array used to effectively store elements
-		int usedsize;
-		// allocated size of the tel array; should be >= usedsize
-		int allocsize;
+	// 	// Help data:
+	// 	// size of tel array used to effectively store elements
+	// 	int usedsize;
+	// 	// allocated size of the tel array; should be >= usedsize
+	// 	int allocsize;
 };
 
 #endif
