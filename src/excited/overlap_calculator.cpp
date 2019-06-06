@@ -142,13 +142,13 @@ int OverlapCalculator::get_links(int who, int other,
         // if the bond is a virtual bond
         // (possibly starting or ending in vacuum)
         if (!is_pbond(bond_inds[i])) {
-            printf("bond_inds[%d]: %d\n", i, bond_inds[i]);
+            // printf("bond_inds[%d]: %d\n", i, bond_inds[i]);
             // ask the tensors linked by the bond
             bond_link = &(network->bonds[bond_inds[i]]);
             int from = (*bond_link)[0];
-            printf("from: %d\n", from);
+            // printf("from: %d\n", from);
             int to = (*bond_link)[1];
-            printf("to: %d\n", to);
+            // printf("to: %d\n", to);
             // @TEST
             // if (to != -1 && from != -1) {
             //     printf("Eureka!");
@@ -189,7 +189,6 @@ int OverlapCalculator::get_result() {
     int nr_external = get_external_links(i, j, external);
     
 
-    //SEGFAULT!
     fprintf(stdout, "nr_internal: %d\n", nr_internal);
     fprintf(stdout, "Internal:\n");
     for (int i=0; i<nr_internal; i++) {
