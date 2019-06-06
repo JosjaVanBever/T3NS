@@ -386,7 +386,7 @@ static int initialize_program(int argc, char *argv[],
 
             tic(&chrono, INIT_OOCALC);
             OverlapCalculator * OOcalc;
-            init_overlap_calculator(&states[0], &states[1], &OOcalc);
+            init_overlap_calculator(&states[0], &states[1], &netw, &OOcalc);
 
             // moffelzone
             // ((*T3NS)[1]).nrblocks -= 1;   last moffel succesful!

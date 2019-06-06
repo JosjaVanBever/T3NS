@@ -29,7 +29,8 @@
 class OverlapCalculator {
     public:
         // constructor and destructor
-        OverlapCalculator(T3NSfill* opt, T3NSfill* ref);
+        OverlapCalculator(const T3NSfill * opt, const T3NSfill * ref,
+                const struct network * netw);
         ~OverlapCalculator();
 
         // @TEST
@@ -37,7 +38,9 @@ class OverlapCalculator {
     private:
         // Main data:
         struct TensorInfoPair * tensorpairs;
-        int nr_tensorpairs;  // length of tensorpairs
+            int nr_tensorpairs;  // length of tensorpairs
+        // OverlapObject * overlaps;
+        //     int nr_overlaps;  // length of overlaps
 
         // Help data:
         struct bookkeeper * opt_bookie;

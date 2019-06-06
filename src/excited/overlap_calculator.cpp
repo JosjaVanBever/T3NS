@@ -18,7 +18,8 @@
 #include "overlap_calculator.h"
 
 
-OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns) :
+OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
+        const T3NSfill * ref_t3ns, const struct network * netw) :
         opt_bookie(opt_t3ns->bookie), ref_bookie(ref_t3ns->bookie)
 {
     // help variables
@@ -33,7 +34,7 @@ OverlapCalculator::OverlapCalculator(T3NSfill* opt_t3ns, T3NSfill* ref_t3ns) :
     assert(opt_t3ns->bookie->nr_bonds != netw->nr_bonds);
 
     // initialize the tensorpairs
-    nr_tensorpairs = 2; // netw->sites;
+    nr_tensorpairs = netw->sites;
     tensorpairs = (struct TensorInfoPair *) malloc(nr_tensorpairs *
             sizeof(struct TensorInfoPair));
     // fill the tensorpairs
