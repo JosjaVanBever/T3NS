@@ -22,14 +22,14 @@
 
 // interface
 #include "cpp_interface.h"
-// C libraries
-#include "bookkeeper.h"
-// C++ libraries
-#include "siteTensor.h"
-#include "tensor_info.h"
+// // C libraries
+// #include "bookkeeper.h"
+// // C++ libraries
+// #include "siteTensor.h"
+// #include "tensor_info.h"
 
-// external libraries
-#include <iostream>
+// // external libraries
+// #include <iostream>
 
 #ifndef OVERLAP_OBJECT_H
 #error 'OverlapObject not defined!'
@@ -41,17 +41,17 @@ class OverlapCalculator {
     public:
         // constructor and destructor
         OverlapCalculator(const T3NSfill * opt, const T3NSfill * ref,
-                const struct network * netw);
-        ~OverlapCalculator();
+                const struct network * netw) {};
+        // ~OverlapCalculator();
 
         // // @TEST
         // int get_result();
     private:
         // Main data:
-        struct TensorInfoPair * tensorpairs;
-            int nr_tensorpairs;  // length of tensorpairs
+        // struct TensorInfoPair * tensorpairs;
+        //     int nr_tensorpairs;  // length of tensorpairs
         OverlapObject * overlaps;
-            int nr_overlaps;  // length of overlaps
+            // int nr_overlaps;  // length of overlaps
 
         // // Help data:
         // struct bookkeeper * opt_bookie;
