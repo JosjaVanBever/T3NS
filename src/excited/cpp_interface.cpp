@@ -15,17 +15,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "cpp_interface.h"
+// #include "cpp_interface.h"
 
 // void init_overlap_calculator(int test, OverlapCalculator ** result) {
 // 	*result = new OverlapCalculator(test);
 // }
 
-void init_overlap_calculator(const T3NSfill * opt, const T3NSfill * ref,
-    const struct network * netw, OverlapCalculator ** result)
-{
-    *result = new OverlapCalculator(opt, ref, netw);
-}
+// void init_overlap_calculator(const T3NSfill * opt, const T3NSfill * ref,
+//     const struct network * netw, OverlapCalculator ** result)
+// {
+//     *result = new OverlapCalculator(opt, ref, netw);
+// }
 
 // int get_result(OverlapCalculator* calc)
 // {

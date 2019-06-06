@@ -39,16 +39,16 @@ extern "C" {
 // #include "bookkeeper.h"
 #include <stdio.h>
 
-// native C functions that are called from a C++ context
-void get_bonds_of_site(int site, int * bonds);
-void print_symsecinfo(struct symsecs * ss);
-void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
-        int n, struct symsecs ** symarr, const int * bonds);
-void print_siteTensor(const struct bookkeeper * keeper, 
-        const struct siteTensor * tens);
-void init_null_sparseblocks(struct sparseblocks * blocks);
-void * safe_malloc_helper(long long s, size_t t, const char * typ, 
-        const char * file, int line, const char * func);
+// // native C functions that are called from a C++ context
+// void get_bonds_of_site(int site, int * bonds);
+// void print_symsecinfo(struct symsecs * ss);
+// void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
+//         int n, struct symsecs ** symarr, const int * bonds);
+// void print_siteTensor(const struct bookkeeper * keeper, 
+//         const struct siteTensor * tens);
+// void init_null_sparseblocks(struct sparseblocks * blocks);
+// void * safe_malloc_helper(long long s, size_t t, const char * typ, 
+//         const char * file, int line, const char * func);
 
 
 /***********************END*C++-INTERFACE*********************/
@@ -85,30 +85,30 @@ typedef struct T3NSfill {
 #endif
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// #ifdef __cplusplus
+// extern "C" {
+// #endif
 
-// declare a C interface to get acces to native C++ functions
-// from a C context
-/**********************START*C-INTERFACE**********************/
+// // declare a C interface to get acces to native C++ functions
+// // from a C context
+// /**********************START*C-INTERFACE**********************/
 
-// C interface to the public functions provided for the
-// OverlapCalculator class:
-//  -> constructor
-// extern void init_overlap_calculator(int test,
-//     OverlapCalculator** result);
-extern void init_overlap_calculator(const T3NSfill * opt,
-        const T3NSfill * ref, const struct network * netw,
-        OverlapCalculator ** result);
-// //  -> get_result
-// extern int get_result(OverlapCalculator*);
+// // C interface to the public functions provided for the
+// // OverlapCalculator class:
+// //  -> constructor
+// // extern void init_overlap_calculator(int test,
+// //     OverlapCalculator** result);
+// // extern void init_overlap_calculator(const T3NSfill * opt,
+// //         const T3NSfill * ref, const struct network * netw,
+// //         OverlapCalculator ** result);
+// // //  -> get_result
+// // extern int get_result(OverlapCalculator*);
 
-/************************END*C-INTERFACE**********************/
+// /************************END*C-INTERFACE**********************/
 
-#ifdef __cplusplus
-}
-#endif
+// #ifdef __cplusplus
+// }
+// #endif
 
 
 #endif

@@ -20,8 +20,8 @@
 
 #include "overlap_object.h"
 
-// interface
-#include "cpp_interface.h"
+// // interface
+// #include "cpp_interface.h"
 // // C libraries
 // #include "bookkeeper.h"
 // // C++ libraries
@@ -38,14 +38,14 @@
 // The overlap calculator does not allocate any of the T3NS data operated on.
 // It does allocate its own temporary results.
 class OverlapCalculator {
-    public:
-        // constructor and destructor
-        OverlapCalculator(const T3NSfill * opt, const T3NSfill * ref,
-                const struct network * netw) {};
-        // ~OverlapCalculator();
+    // public:
+    //     // constructor and destructor
+    //     OverlapCalculator(const T3NSfill * opt, const T3NSfill * ref,
+    //             const struct network * netw) {};
+    //     // ~OverlapCalculator();
 
-        // // @TEST
-        // int get_result();
+    //     // // @TEST
+    //     // int get_result();
     private:
         // Main data:
         // struct TensorInfoPair * tensorpairs;

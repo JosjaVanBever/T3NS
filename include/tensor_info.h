@@ -15,45 +15,45 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef TENSOR_INFO_H
-#define TENSOR_INFO_H
+// #ifndef TENSOR_INFO_H
+// #define TENSOR_INFO_H
 
-#include "cpp_interface.h"
-#include <stdio.h>
-
-
-class TensorInfo {
-	public:
-		// constructor
-		TensorInfo(struct siteTensor * data, struct symsecs ** syms);
-
-		// getters
-		void get_syms(struct symsecs ** result) const;
-		struct siteTensor * get_data() const { return data; }
-	private:
-		// Main data:
-		// symmetry structures in order |a>|b><c| (cf. siteTensor)
-		struct symsecs * syms[3];
-		// actual siteTensor containing the data
-		struct siteTensor * data;
-};
+// #include "cpp_interface.h"
+// #include <stdio.h>
 
 
-struct TensorInfoPair {
-	// tensor of the reference state, e.g. the ground state
-	TensorInfo ref;
-	// tensor of the state that is being optimized,
-	// e.g. the excited state
-	TensorInfo opt;
-};
+// class TensorInfo {
+// 	public:
+// 		// constructor
+// 		TensorInfo(struct siteTensor * data, struct symsecs ** syms);
+
+// 		// getters
+// 		void get_syms(struct symsecs ** result) const;
+// 		struct siteTensor * get_data() const { return data; }
+// 	private:
+// 		// Main data:
+// 		// symmetry structures in order |a>|b><c| (cf. siteTensor)
+// 		struct symsecs * syms[3];
+// 		// actual siteTensor containing the data
+// 		struct siteTensor * data;
+// };
 
 
-void print_tensorInfo(const struct bookkeeper * keeper,
-		const TensorInfo * tensor);
+// struct TensorInfoPair {
+// 	// tensor of the reference state, e.g. the ground state
+// 	TensorInfo ref;
+// 	// tensor of the state that is being optimized,
+// 	// e.g. the excited state
+// 	TensorInfo opt;
+// };
 
-void print_TensorInfoPair(const struct bookkeeper * opt_bookie,
-		const struct bookkeeper * ref_bookie,
-		const struct TensorInfoPair * pair);
+
+// void print_tensorInfo(const struct bookkeeper * keeper,
+// 		const TensorInfo * tensor);
+
+// void print_TensorInfoPair(const struct bookkeeper * opt_bookie,
+// 		const struct bookkeeper * ref_bookie,
+// 		const struct TensorInfoPair * pair);
 
 
-#endif
+// #endif
