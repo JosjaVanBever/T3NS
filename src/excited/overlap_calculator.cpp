@@ -18,6 +18,23 @@
 #include "overlap_calculator.h"
 
 
+// Declare a C interface to OverlapCalculator
+/**********************START*C-INTERFACE**********************/
+
+void init_overlap_calculator(const T3NSfill * opt, const T3NSfill * ref,
+    const struct network * netw, OverlapCalculator ** result)
+{
+    *result = new OverlapCalculator(opt, ref, netw);
+}
+
+int get_result(OverlapCalculator* calc)
+{
+    return calc->get_result();
+}
+
+/************************END*C-INTERFACE**********************/
+
+
 OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
         const T3NSfill * ref_t3ns, const struct network * netw) :
         opt_bookie(opt_t3ns->bookie), ref_bookie(ref_t3ns->bookie)

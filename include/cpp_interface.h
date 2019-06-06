@@ -37,17 +37,18 @@ extern "C" {
 // #include "network.h"
 // #include "symsecs.h"
 // #include "bookkeeper.h"
-#include <stdio.h>
+    
+#include <cstddef>  // declaration of size_t
 
 // native C functions that are called from a C++ context
-void get_bonds_of_site(int site, int * bonds);
-void print_symsecinfo(struct symsecs * ss);
-void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
+extern void get_bonds_of_site(int site, int * bonds);
+extern void print_symsecinfo(struct symsecs * ss);
+extern void bookkeeper_get_symsecs_address_arr(const struct bookkeeper * keeper,
         int n, struct symsecs ** symarr, const int * bonds);
-void print_siteTensor(const struct bookkeeper * keeper, 
+extern void print_siteTensor(const struct bookkeeper * keeper, 
         const struct siteTensor * tens);
-void init_null_sparseblocks(struct sparseblocks * blocks);
-void * safe_malloc_helper(long long s, size_t t, const char * typ, 
+extern void init_null_sparseblocks(struct sparseblocks * blocks);
+extern void * safe_malloc_helper(long long s, size_t t, const char * typ, 
         const char * file, int line, const char * func);
 
 
@@ -76,8 +77,6 @@ typedef struct T3NSfill {
 // declare a OverlapCalculator class or structure
 #ifdef __cplusplus
     class OverlapCalculator;
-    // contains the implementation of the OverlapCalculator class
-    #include "overlap_calculator.h"
 #else
     // declare a C struct to reference the OverlapCalculator
     // class from a C context
@@ -93,11 +92,9 @@ extern "C" {
 // from a C context
 /**********************START*C-INTERFACE**********************/
 
-// C interface to the public functions provided for the
-// OverlapCalculator class:
+// Functions declared in overlap_calculator.cpp:
+
 //  -> constructor
-// extern void init_overlap_calculator(int test,
-//     OverlapCalculator** result);
 extern void init_overlap_calculator(const T3NSfill * opt,
         const T3NSfill * ref, const struct network * netw,
         OverlapCalculator ** result);

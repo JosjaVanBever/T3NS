@@ -18,8 +18,7 @@
 #include "overlap_object.h"
 
 OverlapObject::OverlapObject(struct symsecs * ref, struct symsecs * opt,
-			int opt_dim) : ref(ref), opt(opt),
-			allocsize(opt_dim)
+			int opt_dim) : ref(ref), opt(opt), allocsize(opt_dim)
 {
 	// redefine opt_dim if smaller than 0
 	if (opt_dim < 0) { 2 * opt->totaldims; }

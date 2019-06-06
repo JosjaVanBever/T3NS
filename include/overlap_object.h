@@ -21,6 +21,7 @@
 #include "cpp_interface.h"
 #include "sparseblocks.h"
 #include "symsecs.h"
+#include <stdio.h>
 
 // IDEA: DO NOT REMEMBER REF AND OPT BUT TAKE IT AS INPUT
 
