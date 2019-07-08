@@ -53,6 +53,7 @@ struct symsecs {
         int totaldims;    /**< Total bond dimension in the bond. */
 };
 
+
 /* brief Initializes the symsec to a nullsymsec.
  *
  * \param [in,out] symsec The symsec to set to NULL

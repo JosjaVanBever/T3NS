@@ -29,6 +29,7 @@ class TensorInfo {
 
 		// getters
 		void get_syms(struct symsecs ** result) const;
+		struct symsecs * get_sym(int leg) const;
 		struct siteTensor * get_data() const { return data; }
 	private:
 		// Main data:

@@ -27,6 +27,7 @@
 #include "macros.h"
 #include "sort.h"
 
+
 void init_null_symsecs(struct symsecs * symsec)
 {
         const struct symsecs nullsymsec = {0, 0, NULL, NULL, NULL, 0};

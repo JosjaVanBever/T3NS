@@ -108,31 +108,10 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
     // look for the maximal bond dimension present in the reference network
     int max_dim = get_max_bond_dimension(ref_t3ns->bookie);
 
-    fprintf(stdout, "max_dim: %d\n", max_dim);  // @TEST
-
     // initialize the symsecMatchers
-    //symsecMatchers[0] = SymsecMatcher(max_dim);
-    //symsecMatchers[1] = SymsecMatcher(max_dim);
-    //symsecMatchers[2] = SymsecMatcher(max_dim);
     for (int i=0; i<3; i++) {
-        symsecMatchers[i].set_size(4);
-        //symsecMatchers[i] = SymsecMatcher(max_dim);
+        symsecMatchers[i].set_size(max_dim);
     }
-    symsecMatchers[0].set_test_result(0,4);
-    symsecMatchers[1].set_test_result(0,4);
-    symsecMatchers[2].set_test_result(4,4);
-
-    const Pair<int> * test = symsecMatchers[0].get_result();
-    const Pair<int> * ref1 = symsecMatchers[1].get_result();
-    const Pair<int> * ref2 = symsecMatchers[2].get_result();
-    for (int i=0; i<4; i++) {
-        printf("test: %d %d\n", test[i][0], test[i][1]);
-        printf("ref1: %d %d\n", ref1[i][0], ref1[i][1]);
-        printf("ref2: %d %d\n", ref2[i][0], ref2[i][1]);
-    }
-    
-    // SymsecMatcher matcher(max_dim);
-    // symsecMatchers = {matcher, matcher, matcher};  // matcher is copied
 
     // for (int i=0; i<nr_tensorpairs; i++) {
     //     fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);

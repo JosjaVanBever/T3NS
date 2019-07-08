@@ -24,6 +24,11 @@ TensorInfo::TensorInfo(struct siteTensor * data, struct symsecs ** syms)
 }
 
 
+struct symsecs * TensorInfo::get_sym(int leg) const
+{
+	return syms[leg];
+}
+
 void TensorInfo::get_syms(struct symsecs ** result) const
 {
 	for (int i=0; i<3; i++) { result[i] = syms[i]; }

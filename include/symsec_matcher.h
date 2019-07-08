@@ -15,15 +15,19 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "cpp_interface.h"
-#include "symsecs.h"
+#ifndef SYMSEC_MATCHER_H
+#define SYMSEC_MATCHER_H
 
+#include "cpp_interface.h"
+#include "macros.h"
+
+class TensorInfo;
 
 template <class T>
 class Pair {
     public:
         // constructor
-        Pair(T val1, T val2) : data(val1,val2);
+        Pair(T val1, T val2) : data{val1,val2} {};
         // access operators
         T & operator[](int ind) {return data[ind]; };       
         T const & operator[](int ind) const {return data[ind]; };
@@ -36,38 +40,22 @@ class SymsecMatcher {
         // constructor and destructor
         SymsecMatcher(int max_size=0) : size(0), max_size(max_size) {
             result = (Pair<int> *) safe_malloc(max_size, Pair<int>); }
-//            result = (int (*)[2]) safe_malloc(2 * max_size, int); }
         ~ SymsecMatcher() { free(result); }
 
         // get the current results
         int get_size() const { return size; };
         const Pair<int> * get_result() const { return result; };
-//        const int * get_result()[2] const { return result; };
 
-        void set_size(int new_size) {
-            if (new_size > max_size) {
-                // WARNING: MEMORY LEAK MIGHT BE POSSIBLE?
-                this->result = (Pair<int> *) realloc(result, new_size);
-            }
-            size = new_size;
-        }
+        // set the size
+        void set_size(int new_size);
 
-        // @TEST
-        void set_test_result(int startval, int size) {
-            this->size = size;
-            for (int i=0; i<size; i++)  {
-                result[i][0]  = (startval != 0)? startval+i : 0;
-                result[i][1]  = (startval != 0)? -startval-i : 0;
-            }
-        }
-
-        // // calculate the new results
-        // // The results are guaranteed to be sorted in the irrep index
-        // // of the first argument.
-        // void set_matching_symsec_indices(const TensorInfo * a,
-        //     const TensorInfo * b, int leg) const;
-        // void set_matching_symsec_indices(const struct symsecs * a,
-        //     const struct symsecs * b) const;
+        // calculate the new results
+        // The results are guaranteed to be sorted in the irrep index
+        // of the first argument.
+        void set_matching_symsec_indices(const TensorInfo * a,
+            const TensorInfo * b, int leg);
+        void set_matching_symsec_indices(const struct symsecs * a,
+            const struct symsecs * b);
     private:
         // data fields
         int size;  // effective space currently used
@@ -75,3 +63,6 @@ class SymsecMatcher {
         Pair<int> * result;
 //        int (*result)[2];  // pointer to array of int pairs
 };
+
+
+#endif

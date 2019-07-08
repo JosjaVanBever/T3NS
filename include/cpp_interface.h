@@ -58,6 +58,7 @@ extern void * safe_malloc_helper(long long s, size_t t, const char * typ,
 extern void print_network(void);
 extern int get_common_bond(int site1 , int site2);
 extern void print_bookkeeper(const struct bookkeeper * keeper, int fci);
+extern int search_symsec(int * symmsec, const struct symsecs * sectors);
 
 
 /***********************END*C++-INTERFACE*********************/
