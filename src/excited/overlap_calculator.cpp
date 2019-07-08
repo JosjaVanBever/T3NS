@@ -61,7 +61,7 @@ int get_max_bond_dimension(const struct bookkeeper * bookie) {
 OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
         const T3NSfill * ref_t3ns, const struct network * netw) :
         opt_bookie(opt_t3ns->bookie), ref_bookie(ref_t3ns->bookie),
-        network(netw)
+        network(netw), symsecMatchers{get_max_bond_dimension(ref_t3ns->bookie),get_max_bond_dimension(ref_t3ns->bookie),get_max_bond_dimension(ref_t3ns->bookie)}
 {
     // help variables
     // C == Current; O == Optimizing; R == Reference; B == Bond
@@ -114,10 +114,10 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
     //symsecMatchers[0] = SymsecMatcher(max_dim);
     //symsecMatchers[1] = SymsecMatcher(max_dim);
     //symsecMatchers[2] = SymsecMatcher(max_dim);
-    for (int i=0; i<3; i++) {
-        symsecMatchers[i].set_size(4);
+    //for (int i=0; i<3; i++) {
+    //    symsecMatchers[i].set_size(4);
         //symsecMatchers[i] = SymsecMatcher(max_dim);
-    }
+    //}
     symsecMatchers[0].set_test_result(0,4);
     symsecMatchers[1].set_test_result(0,4);
     symsecMatchers[2].set_test_result(4,4);
