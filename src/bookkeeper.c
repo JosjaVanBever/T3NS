@@ -377,7 +377,7 @@ void deep_copy_symsecs_to_bookie(int n, const struct symsecs * symarr,
         }
 }
 
-void print_bookkeeper(struct bookkeeper * keeper, int fci)
+void print_bookkeeper(const struct bookkeeper * keeper, int fci)
 {
         char str_one[MY_STRING_LEN];
         char str_two[MY_STRING_LEN];

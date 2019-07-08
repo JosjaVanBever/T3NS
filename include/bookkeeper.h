@@ -63,7 +63,7 @@ void destroy_bookkeeper(struct bookkeeper * keeper);
  *
  * \param [in] fci Boolean if the fcidims or the current dims should be printed.
  */
-void print_bookkeeper(struct bookkeeper * keeper, int fci);
+void print_bookkeeper(const struct bookkeeper * keeper, int fci);
 
 /**
  * \brief Returns the total number of particles in the target state.

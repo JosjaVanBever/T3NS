@@ -35,6 +35,29 @@ int get_result(OverlapCalculator* calc)
 /************************END*C-INTERFACE**********************/
 
 
+// get the maximum bond dimension present in a bookkeeper
+int get_max_bond_dimension(const struct bookkeeper * bookie) {
+//    print_bookkeeper(bookie, 1);  // @TEST
+
+    // initialize variables
+    int result = 0, bond_dim = 0;
+    // loop over the virtual bonds
+    for (int i = 0; i < bookie->nr_bonds; i++) {
+        bond_dim = bookie->v_symsecs[i].totaldims;
+//        fprintf(stdout, "bond_dim: %d\n", bond_dim);  // @TEST
+        if (result < bond_dim) { result = bond_dim; }
+    }
+    // loop over the physical bonds
+    for (int i = 0; i < bookie->psites; i++) {
+        bond_dim = bookie->p_symsecs[i].totaldims;
+//        fprintf(stdout, "bond_dim: %d\n", bond_dim);  // @TEST
+        if (result < bond_dim) { result = bond_dim; }
+    }
+//    fprintf(stdout, "result: %d\n", result);  // @TEST
+    return result;
+}
+
+
 OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
         const T3NSfill * ref_t3ns, const struct network * netw) :
         opt_bookie(opt_t3ns->bookie), ref_bookie(ref_t3ns->bookie),
@@ -81,6 +104,35 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
         bookkeeper_get_symsecs_address(opt_t3ns->bookie, &CO_syms, i);
         overlaps[i] = OverlapObject(CR_syms, CO_syms);
     }
+
+    // look for the maximal bond dimension present in the reference network
+    int max_dim = get_max_bond_dimension(ref_t3ns->bookie);
+
+    fprintf(stdout, "max_dim: %d\n", max_dim);  // @TEST
+
+    // initialize the symsecMatchers
+    //symsecMatchers[0] = SymsecMatcher(max_dim);
+    //symsecMatchers[1] = SymsecMatcher(max_dim);
+    //symsecMatchers[2] = SymsecMatcher(max_dim);
+    for (int i=0; i<3; i++) {
+        symsecMatchers[i].set_size(4);
+        //symsecMatchers[i] = SymsecMatcher(max_dim);
+    }
+    symsecMatchers[0].set_test_result(0,4);
+    symsecMatchers[1].set_test_result(0,4);
+    symsecMatchers[2].set_test_result(4,4);
+
+    const Pair<int> * test = symsecMatchers[0].get_result();
+    const Pair<int> * ref1 = symsecMatchers[1].get_result();
+    const Pair<int> * ref2 = symsecMatchers[2].get_result();
+    for (int i=0; i<4; i++) {
+        printf("test: %d %d\n", test[i][0], test[i][1]);
+        printf("ref1: %d %d\n", ref1[i][0], ref1[i][1]);
+        printf("ref2: %d %d\n", ref2[i][0], ref2[i][1]);
+    }
+    
+    // SymsecMatcher matcher(max_dim);
+    // symsecMatchers = {matcher, matcher, matcher};  // matcher is copied
 
     // for (int i=0; i<nr_tensorpairs; i++) {
     //     fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);
@@ -131,6 +183,11 @@ int OverlapCalculator::get_links(int who, int other,
         bool (*check)(int,int,int), void (*question)(int,int),
         OverlapObjectLink * result)
 {
+    // test whether the sites are neighbouring
+    if (get_common_bond(who, other) == -1 ) {
+        fprintf(stderr, "Warning: sites are not neighbouring.");
+    }
+
     int bond_inds[3];     // bond indices
     int (*bond_link)[2];  // adress of current bond
     int size = 0;         // size of the result
@@ -155,9 +212,11 @@ int OverlapCalculator::get_links(int who, int other,
             // }
             // if appropriate, add an OO_link to the result
             if (check(other, from, to)) {
+                // printf("After check: from: %d\n", from);
+                // printf("After check: to: %d\n", to);
                 (result[size]).OO = &(overlaps[bond_inds[i]]);
                 (result[size]).leg = i;
-                // and ask the question if their was one
+                // and ask the question if there was one
                 if (question) { question(to, who); }
                 size++; }}}
 
@@ -181,24 +240,22 @@ int OverlapCalculator::get_result() {
     fprintf(stdout, "Testing link searchers:\n");
     // int i = rand() % network->sites;
     // int j = rand() % network->sites;
-    int i = 0;
-    int j = 1;
+    int i = 14;
+    int j = 7;
     fprintf(stdout, "i is %d and j is %d:\n", i, j);
     OverlapObjectLink internal[3], external[6];
     int nr_internal = get_internal_link(i, j, internal);
     int nr_external = get_external_links(i, j, external);
     
 
-    fprintf(stdout, "nr_internal: %d\n", nr_internal);
     fprintf(stdout, "Internal:\n");
+    fprintf(stdout, "nr_internal: %d\n", nr_internal);
     for (int i=0; i<nr_internal; i++) {
-        fprintf(stdout, "nr_internal: %d\n", nr_external);
         print_overlap_object(ref_bookie, opt_bookie, internal[i].OO);
     }
 
-    fprintf(stdout, "nr_external: %d\n", nr_external);
-
     fprintf(stdout, "External:\n");
+    fprintf(stdout, "nr_external: %d\n", nr_external);
     for (int i=0; i<nr_external; i++) {
         print_overlap_object(ref_bookie, opt_bookie, external[i].OO);
     }

@@ -19,6 +19,7 @@
 #define OVERLAP_CALCULATOR_H
 
 #include "overlap_object.h"
+#include "symsec_matcher.h"
 
 // interface
 #include "cpp_interface.h"
@@ -66,6 +67,8 @@ class OverlapCalculator {
         const struct bookkeeper * opt_bookie;
         const struct bookkeeper * ref_bookie;
         const struct network * network;
+        // structures to search common irreps
+        SymsecMatcher symsecMatchers[3];
 
         // Help functions:
         // Get the appropriate OO links from 'who' with respect to 'other',
@@ -80,5 +83,8 @@ class OverlapCalculator {
 bool found_other(int other, int from, int to);
 // -> is other not in (from, to)?
 bool avoid_other(int other, int from, int to);
+
+// get the maximum bond dimension present in a bookkeeper
+int get_max_bond_dimension(const struct bookkeeper * bookie);
 
 #endif
