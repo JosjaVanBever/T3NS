@@ -31,6 +31,24 @@ class TensorInfo {
 		void get_syms(struct symsecs ** result) const;
 		struct symsecs * get_sym(int leg) const;
 		struct siteTensor * get_data() const { return data; }
+
+		// setters
+		void set...
+
+		// renew the symmetry sectors based on the contraction of ref via
+		// the given OO_link
+		// @param:
+		//   ref => contains the uncontracted symsecs
+		//   OO_link => maps the contracted symsec onto the optimizing symsec
+		void renew_symsec_layout(const TensorInfo * ref,
+			const struct OverlapObjectLink * OO_link);
+
+		// // renew all block information; optionally set elements to 0
+		// // @param:
+		// //   reference => contains the qnumbers
+		// //   set_zero = fill the tel array with zeros
+		// void renew_block_layout(const TensorInfo * reference, bool set_zero)
+
 	private:
 		// Main data:
 		// symmetry structures in order |a>|b><c| (cf. siteTensor)
