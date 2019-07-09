@@ -213,6 +213,27 @@ int OverlapCalculator::get_result() {
         print_overlap_object(ref_bookie, opt_bookie, &(overlaps[i]));
     }
 
+    symsecMatchers[0].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 0);
+    symsecMatchers[1].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 1);
+    symsecMatchers[2].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 2);
+    const Pair<int> * test0 = symsecMatchers[0].get_result();
+    const Pair<int> * test1 = symsecMatchers[1].get_result();
+    const Pair<int> * test2 = symsecMatchers[2].get_result();
+    for (int i=0; i<symsecMatchers[0].get_size(); i++) {
+        printf("test0: %d %d\n", test0[i][0], test0[i][1]);
+    }
+    for (int i=0; i<symsecMatchers[1].get_size(); i++) {
+        printf("test1: %d %d\n", test1[i][0], test1[i][1]);
+    }
+    for (int i=0; i<symsecMatchers[2].get_size(); i++) {
+        printf("test2: %d %d\n", test2[i][0], test2[i][1]);
+    }
+
+    print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[4]));
+    print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[8]));
+
+    print_bookkeeper(ref_bookie, 1);
+
     /* initialize random seed: */
     srand(time(NULL));
 
