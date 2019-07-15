@@ -206,61 +206,79 @@ int OverlapCalculator::get_links(int who, int other,
 
 // @ TEST
 int OverlapCalculator::get_result() {
-    print_network();
+    // print_network();
 
+    printf("\n");
     for (int i=0; i<nr_overlaps; i++) {
         fprintf(stdout, "overlaps[%d]:\n", i);
         print_overlap_object(ref_bookie, opt_bookie, &(overlaps[i]));
     }
+    printf("\n");
 
-    symsecMatchers[0].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 0);
-    symsecMatchers[1].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 1);
-    symsecMatchers[2].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 2);
-    const Pair<int> * test0 = symsecMatchers[0].get_result();
-    const Pair<int> * test1 = symsecMatchers[1].get_result();
-    const Pair<int> * test2 = symsecMatchers[2].get_result();
-    for (int i=0; i<symsecMatchers[0].get_size(); i++) {
-        printf("test0: %d %d\n", test0[i][0], test0[i][1]);
+    // symsecMatchers[0].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 0);
+    // symsecMatchers[1].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 1);
+    // symsecMatchers[2].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 2);
+    // const Pair<int> * test0 = symsecMatchers[0].get_result();
+    // const Pair<int> * test1 = symsecMatchers[1].get_result();
+    // const Pair<int> * test2 = symsecMatchers[2].get_result();
+    // for (int i=0; i<symsecMatchers[0].get_size(); i++) {
+    //     printf("test0: %d %d\n", test0[i][0], test0[i][1]);
+    // }
+    // for (int i=0; i<symsecMatchers[1].get_size(); i++) {
+    //     printf("test1: %d %d\n", test1[i][0], test1[i][1]);
+    // }
+    // for (int i=0; i<symsecMatchers[2].get_size(); i++) {
+    //     printf("test2: %d %d\n", test2[i][0], test2[i][1]);
+    // }
+
+    printf("\nBefore:\n");
+    for (int i=0; i<nr_tensorpairs; i++) {
+        printf("\n%d:", i);
+        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 2);
     }
-    for (int i=0; i<symsecMatchers[1].get_size(); i++) {
-        printf("test1: %d %d\n", test1[i][0], test1[i][1]);
+
+    tensorpairs[1].opt.set_sym(tensorpairs[0].opt.get_sym(0), 0);
+    overlaps[1].set_opt(tensorpairs[0].opt.get_sym(0));
+
+    OverlapObjectLink link;
+    get_internal_link(1, 0, &link);
+    tensorpairs[3].opt.renew_symsec_layout(&(tensorpairs[1].ref), &link);
+
+    printf("\nAfter:\n");
+    for (int i=0; i<nr_tensorpairs; i++) {
+        printf("\n%d:", i);
+        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 2);
     }
-    for (int i=0; i<symsecMatchers[2].get_size(); i++) {
-        printf("test2: %d %d\n", test2[i][0], test2[i][1]);
-    }
 
-    print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[4]));
-    print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[8]));
+    // print_bookkeeper(ref_bookie, 1);
 
-    print_bookkeeper(ref_bookie, 1);
+    // /* initialize random seed: */
+    // srand(time(NULL));
 
-    /* initialize random seed: */
-    srand(time(NULL));
-
-    fprintf(stdout, "Testing link searchers:\n");
-    // int i = rand() % network->sites;
-    // int j = rand() % network->sites;
-    int i = 14;
-    int j = 7;
-    fprintf(stdout, "i is %d and j is %d:\n", i, j);
-    OverlapObjectLink internal[3], external[6];
-    int nr_internal = get_internal_link(i, j, internal);
-    int nr_external = get_external_links(i, j, external);
+    // fprintf(stdout, "Testing link searchers:\n");
+    // // int i = rand() % network->sites;
+    // // int j = rand() % network->sites;
+    // int i = 14;
+    // int j = 7;
+    // fprintf(stdout, "i is %d and j is %d:\n", i, j);
+    // OverlapObjectLink internal[3], external[6];
+    // int nr_internal = get_internal_link(i, j, internal);
+    // int nr_external = get_external_links(i, j, external);
     
 
-    fprintf(stdout, "Internal:\n");
-    fprintf(stdout, "nr_internal: %d\n", nr_internal);
-    for (int i=0; i<nr_internal; i++) {
-        print_overlap_object(ref_bookie, opt_bookie, internal[i].OO);
-    }
+    // fprintf(stdout, "Internal:\n");
+    // fprintf(stdout, "nr_internal: %d\n", nr_internal);
+    // for (int i=0; i<nr_internal; i++) {
+    //     print_overlap_object(ref_bookie, opt_bookie, internal[i].OO);
+    // }
 
-    fprintf(stdout, "External:\n");
-    fprintf(stdout, "nr_external: %d\n", nr_external);
-    for (int i=0; i<nr_external; i++) {
-        print_overlap_object(ref_bookie, opt_bookie, external[i].OO);
-    }
+    // fprintf(stdout, "External:\n");
+    // fprintf(stdout, "nr_external: %d\n", nr_external);
+    // for (int i=0; i<nr_external; i++) {
+    //     print_overlap_object(ref_bookie, opt_bookie, external[i].OO);
+    // }
 
-    printf("We made it?\n");
+    // printf("We made it?\n");
 
     // for (int i=0; i<nr_tensorpairs; i++) {
     //     fprintf(stdout,"\n-------------\ntensorpairs[%d]:\n", i);

@@ -380,13 +380,13 @@ static int initialize_program(int argc, char *argv[],
         // print_siteTensor(&bookie, &((*T3NS)[0]));
         // print_siteTensor(&bookie, &((*T3NS)[1]));
         
-        for (int i=0; i< bookie.nr_bonds; i++) {
-            int bond[2]; bond[0] = netw.bonds[i][0], bond[1] = netw.bonds[i][1];
-            fprintf(stdout, "\nsymsecs[%d] == %d->%d:\n", i, bond[0], bond[1]);
-            struct symsecs testsymsec;
-            bookkeeper_get_symsecs(&bookie, &testsymsec, i);
-            print_symsecs(&bookie, &testsymsec, 0);
-        }
+        // for (int i=0; i< bookie.nr_bonds; i++) {
+        //     int bond[2]; bond[0] = netw.bonds[i][0], bond[1] = netw.bonds[i][1];
+        //     fprintf(stdout, "\nsymsecs[%d] == %d->%d:\n", i, bond[0], bond[1]);
+        //     struct symsecs testsymsec;
+        //     bookkeeper_get_symsecs(&bookie, &testsymsec, i);
+        //     print_symsecs(&bookie, &testsymsec, 0);
+        // }
 
         // @JOSJA
         // initialize the Overlap Object calculator for excited states

@@ -46,9 +46,11 @@ class OverlapObject {
 		// @param: opt_dim = total/bond dimension for the optimizing bond
 		void reallocate_optdim(int opt_dim);
 
-		// get the reference or optimizing symsec
+		// get or set the reference or optimizing symsec
 		struct symsecs * get_ref() { return ref; }
 		struct symsecs * get_opt() { return opt; }
+		void set_ref(struct symsecs * new_ref) { ref = new_ref; }
+		void set_opt(struct symsecs * new_opt) { opt = new_opt; }
 
 	private:
 		// help function for reallocation of the element array

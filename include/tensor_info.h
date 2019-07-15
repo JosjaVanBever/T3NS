@@ -28,12 +28,18 @@ class TensorInfo {
 		TensorInfo(struct siteTensor * data, struct symsecs ** syms);
 
 		// getters
+		// void get_syms(struct symsecs ** result) const;
 		void get_syms(struct symsecs ** result) const;
+		// struct symsecs * get_syms() const { return get_sym(0); }
 		struct symsecs * get_sym(int leg) const;
 		struct siteTensor * get_data() const { return data; }
 
 		// setters
-		void set...
+		void set_sym(struct symsecs * new_sym, int leg) {
+			syms[leg] = new_sym; }
+		// @ param: 1st element of an array of 3 pointers to symsecs
+		void set_syms(struct symsecs ** new_syms) {
+			for (int i=0; i<3; i++) { syms[i] = new_syms[i]; }}
 
 		// renew the symmetry sectors based on the contraction of ref via
 		// the given OO_link
@@ -52,7 +58,7 @@ class TensorInfo {
 	private:
 		// Main data:
 		// symmetry structures in order |a>|b><c| (cf. siteTensor)
-		struct symsecs * syms[3];
+		struct symsecs * syms[3];  // array of pointers
 		// actual siteTensor containing the data
 		struct siteTensor * data;
 };
@@ -68,11 +74,11 @@ struct TensorInfoPair {
 
 
 void print_tensorInfo(const struct bookkeeper * keeper,
-		const TensorInfo * tensor);
+		const TensorInfo * tensor, int specification=0);
 
 void print_TensorInfoPair(const struct bookkeeper * opt_bookie,
 		const struct bookkeeper * ref_bookie,
-		const struct TensorInfoPair * pair);
+		const struct TensorInfoPair * pair, int specification=0);
 
 
 #endif

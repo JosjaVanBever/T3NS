@@ -46,8 +46,15 @@ void TensorInfo::renew_symsec_layout(const TensorInfo * ref,
 	assert(OO_link->OO->get_ref() == ref->get_sym(OO_link->leg));
 
 	// set the relevant sectors
-	this->set_syms(ref->get_syms());
-	this->set_sym(contracted_leg, OO_link->OO->get_opt());
+	// struct symsecs ** 
+
+	for (int i=0; i<3; i++) {
+		this->syms[i] = (i == contracted_leg)? OO_link->OO->get_opt() :
+				ref->syms[i];
+	}
+
+	//this->set_syms(&(ref->get_syms()));
+	//this->set_sym(contracted_leg, OO_link->OO->get_opt());
 }
 
 
@@ -93,31 +100,35 @@ void TensorInfo::renew_symsec_layout(const TensorInfo * ref,
 
 
 void print_tensorInfo(const struct bookkeeper * keeper,
-		const TensorInfo * tensor)
+		const TensorInfo * tensor, int spec)
 {
-	// print the SiteTensor structure
-	fprintf(stdout,"SiteTensor data:\n");
-	print_siteTensor(keeper, tensor->get_data());
-
-	// print the Symsecs structures
-	fprintf(stdout,"Symsectors array:\n");
-	struct symsecs * syms[3];
-	tensor->get_syms(syms);
-	for (int i=0; i<3; i++) {
-		print_symsecs(keeper, syms[i], 0);
+	if (spec == 0 || spec == 1) {
+		// print the SiteTensor structure
+		fprintf(stdout,"SiteTensor data:\n");
+		print_siteTensor(keeper, tensor->get_data());
+	}
+	
+	if (spec == 0 || spec == 2) {
+		// print the Symsecs structures
+		fprintf(stdout,"Symsectors array:\n");
+		struct symsecs * syms[3];
+		tensor->get_syms(syms);
+		for (int i=0; i<3; i++) {
+			print_symsecs(keeper, syms[i], 0);
+		}
 	}
 }
 
 
 void print_TensorInfoPair(const struct bookkeeper * opt_bookie,
 		const struct bookkeeper * ref_bookie,
-		const struct TensorInfoPair * pair)
+		const struct TensorInfoPair * pair, int spec)
 {
 	// print the opt TensorInfo
 	fprintf(stdout,"TensorInfoPair with\nOPT:\n");
-	print_tensorInfo(opt_bookie, &(pair->opt));
+	print_tensorInfo(opt_bookie, &(pair->opt), spec);
 
 	// print the ref TensorInfo
 	fprintf(stdout,"REF:\n");
-	print_tensorInfo(ref_bookie, &(pair->ref));
+	print_tensorInfo(ref_bookie, &(pair->ref), spec);
 }
