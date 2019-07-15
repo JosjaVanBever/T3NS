@@ -22,16 +22,17 @@
 #include "siteTensor.h"
 
 
-TensorInfo::TensorInfo() : data(NULL), is_physical(false), usedsize(0), allocsize(0),
-		nr_allocated_blocks(0)
-{
-	for (int i=0; i<3; i++) { this->syms[i] = NULL; }
-}
+// TensorInfo::TensorInfo() : data(NULL), is_physical(false), usedsize(0), allocsize(0),
+// 		nr_allocated_blocks(0)
+// {
+// 	for (int i=0; i<3; i++) { this->syms[i] = NULL; }
+// }
 
 TensorInfo::TensorInfo(struct siteTensor * data, struct symsecs ** syms, bool is_psite)
 		: data(data), is_physical(is_psite), nr_allocated_blocks(data->nrblocks)
 {
-	usedsize = allocsize = data->blocks.beginblock[data->nrblocks];
+	usedsize = allocsize = (data->blocks.beginblock != NULL)?
+			data->blocks.beginblock[data->nrblocks] : 0;
 	for (int i=0; i<3; i++) { this->syms[i] = syms[i]; }
 }
 

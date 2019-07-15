@@ -247,8 +247,24 @@ int OverlapCalculator::get_result() {
     OverlapObjectLink link;
     get_internal_link(1, 0, &link);
 
-    struct TensorInfo TEMP;
+    struct symsecs * TEMPsyms[3];
+    struct symsecs helpsyms[3];
+    for (int i=0; i<3; i++) {
+        TEMPsyms[i] = &(helpsyms[i]);
+        init_null_symsecs(TEMPsyms[i]);
+    }
+
+    printf("\nTEST1\n"); fflush(stdout);
+
+    struct siteTensor TEMPdata;
+    // init_1siteTensor(&TEMPdata, 0, 'n');
+    init_null_siteTensor(&TEMPdata);
+
+    printf("\nTEST2\n"); fflush(stdout);
+    TensorInfo TEMP(&TEMPdata, TEMPsyms, true);
+
     printf("\nTEMP:\n");
+    printf("\nTEST3\n"); fflush(stdout);
     print_tensorInfo(ref_bookie, &TEMP, 0);
 
     printf("how the symsec?!");

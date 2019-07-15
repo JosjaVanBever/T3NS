@@ -22,7 +22,7 @@
 class TensorInfo {
 	public:
 		// constructor
-		TensorInfo();
+		// @param: syms is array of pointers to symsecs
 		TensorInfo(struct siteTensor * data, struct symsecs ** syms, bool is_psite);
 
 		// getters
