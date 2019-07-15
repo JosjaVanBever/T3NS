@@ -18,14 +18,12 @@
 #ifndef TENSOR_INFO_H
 #define TENSOR_INFO_H
 
-#include "cpp_interface.h"
-#include <stdio.h>
-
 
 class TensorInfo {
 	public:
 		// constructor
-		TensorInfo(struct siteTensor * data, struct symsecs ** syms);
+		TensorInfo();
+		TensorInfo(struct siteTensor * data, struct symsecs ** syms, bool is_psite);
 
 		// getters
 		// void get_syms(struct symsecs ** result) const;
@@ -33,6 +31,9 @@ class TensorInfo {
 		// struct symsecs * get_syms() const { return get_sym(0); }
 		struct symsecs * get_sym(int leg) const;
 		struct siteTensor * get_data() const { return data; }
+		int get_usedsize() const { return usedsize; }
+		int get_allocsize() const { return allocsize; }
+		int get_nr_allocated_blocks() const { return nr_allocated_blocks; }
 
 		// setters
 		void set_sym(struct symsecs * new_sym, int leg) {
@@ -49,11 +50,11 @@ class TensorInfo {
 		void renew_symsec_layout(const TensorInfo * ref,
 			const struct OverlapObjectLink * OO_link);
 
-		// // renew all block information; optionally set elements to 0
-		// // @param:
-		// //   reference => contains the qnumbers
-		// //   set_zero = fill the tel array with zeros
-		// void renew_block_layout(const TensorInfo * reference, bool set_zero)
+		// renew all block information; optionally set elements to 0
+		// @param:
+		//   reference => contains the qnumbers
+		//   set_zero = fill the tel array with zeros
+		void renew_block_layout(const TensorInfo * reference, bool set_zero);
 
 	private:
 		// Main data:
@@ -61,6 +62,26 @@ class TensorInfo {
 		struct symsecs * syms[3];  // array of pointers
 		// actual siteTensor containing the data
 		struct siteTensor * data;
+		// is the tensor a physical or branching tensor?
+		bool is_physical;
+
+		// Help data:
+		// size of tel array used to effectively store elements
+		int usedsize;
+		// allocated size of the tel array; should be >= usedsize
+		int allocsize;
+		// allocated number of blocks
+		int nr_allocated_blocks;
+
+		// Help functions:
+		// get the bond dimension for a certain leg and symmetry sector
+		int get_block_dimension(int leg, int sym_index) const;
+		// get the bond dimensions for a certain block and all legs
+		void get_block_dimensions(int blocknr, int * dims) const;
+		// get the index of the symmetry sector of a block for a certain leg
+		int get_sym_index(int blocknr, int leg) const;
+		// get the indices of the symmetry sectors of a block for all legs
+		void get_sym_indices(int blocknr, int * result) const;
 };
 
 

@@ -151,6 +151,24 @@ inline void indexize(int * ids, QN_TYPE qn, const struct symsecs * ss)
         assert(ids[2] < ss[2].nrSecs);
 }
 
+// @JOSJA: previous function can be redirected to this one
+/**
+ * @brief Changes a single quantumnumber @ref qn to its appropriate indices.
+ *
+ * @param[out] ids Array of length 3 were the indices are stored. Should
+ * already be allocated.
+ * @param[in] qn The quantumnumber to indexize.
+ * @param[in] ss Array of pointers to three symsecs linked with each index.
+ */
+inline void indexize_address(int * ids, QN_TYPE qn, const struct symsecs * const * ss)
+{
+        ids[0] = qn % ss[0]->nrSecs;
+        qn /= ss[0]->nrSecs;
+        ids[1] = qn % ss[1]->nrSecs;
+        ids[2] = qn / ss[1]->nrSecs;
+        assert(ids[2] < ss[2]->nrSecs);
+}
+
 /**
  * @brief Changes 3 indexes to its appopriate quantum number (column major).
  *

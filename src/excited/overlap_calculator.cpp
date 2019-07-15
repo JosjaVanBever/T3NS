@@ -90,10 +90,10 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
 
         // create opt TensorInfo
         bookkeeper_get_symsecs_address_arr(opt_t3ns->bookie, 3, COB_syms, CB_nrs);
-        tensorpairs[i].opt = TensorInfo(&(opt_t3ns->data[i]), COB_syms);
+        tensorpairs[i].opt = TensorInfo(&(opt_t3ns->data[i]), COB_syms, is_psite(i));
         // create ref TensorInfo
         bookkeeper_get_symsecs_address_arr(ref_t3ns->bookie, 3, CRB_syms, CB_nrs);
-        tensorpairs[i].ref = TensorInfo(&(ref_t3ns->data[i]), CRB_syms);
+        tensorpairs[i].ref = TensorInfo(&(ref_t3ns->data[i]), CRB_syms, is_psite(i));
     }
 
     // initialize empty overlaps
@@ -215,6 +215,9 @@ int OverlapCalculator::get_result() {
     }
     printf("\n");
 
+    //printf("data->blocks.beginblock: %d\n", *(tensorpairs[1].opt.get_data()->blocks.beginblock));
+    //printf("data->blocks.beginblock: %d\n", tensorpairs[1].opt.get_data()->blocks->beginblock);
+
     // symsecMatchers[0].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 0);
     // symsecMatchers[1].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 1);
     // symsecMatchers[2].set_matching_symsec_indices(&(tensorpairs[4].ref), &(tensorpairs[8].opt), 2);
@@ -231,24 +234,64 @@ int OverlapCalculator::get_result() {
     //     printf("test2: %d %d\n", test2[i][0], test2[i][1]);
     // }
 
+
     printf("\nBefore:\n");
-    for (int i=0; i<nr_tensorpairs; i++) {
-        printf("\n%d:", i);
-        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 2);
+    for (int i=0; i<3; i++) {
+        printf("\n\n%d:", i);
+        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 3);
     }
 
-    tensorpairs[1].opt.set_sym(tensorpairs[0].opt.get_sym(0), 0);
-    overlaps[1].set_opt(tensorpairs[0].opt.get_sym(0));
+    // tensorpairs[1].opt.set_sym(tensorpairs[0].opt.get_sym(0), 0);
+    // overlaps[1].set_opt(tensorpairs[0].opt.get_sym(0));
 
     OverlapObjectLink link;
     get_internal_link(1, 0, &link);
-    tensorpairs[3].opt.renew_symsec_layout(&(tensorpairs[1].ref), &link);
+
+    struct TensorInfo TEMP;
+    printf("\nTEMP:\n");
+    print_tensorInfo(ref_bookie, &TEMP, 0);
+
+    printf("how the symsec?!");
+    fflush(stdout);
+
+    TEMP.renew_symsec_layout(&(tensorpairs[1].ref), &link);
+
+    printf("how the blocklayout?!");
+    fflush(stdout);
+
+    TEMP.renew_block_layout(&(tensorpairs[1].ref), true);
+    fflush(stdout);
+    // tensorpairs[2].opt.renew_symsec_layout(&(tensorpairs[1].ref), &link);
+    // tensorpairs[2].opt.renew_block_layout(&(tensorpairs[1].ref), true);
 
     printf("\nAfter:\n");
-    for (int i=0; i<nr_tensorpairs; i++) {
-        printf("\n%d:", i);
-        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 2);
+    for (int i=0; i<3; i++) {
+        printf("\n\n%d:", i);
+        fflush(stdout);
+        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 3);
     }
+    printf("\nTEMP:\n");
+    fflush(stdout);
+    print_tensorInfo(ref_bookie, &TEMP, 0);
+
+    // printf("\nBefore:\n");
+    // for (int i=0; i<nr_tensorpairs; i++) {
+    //     printf("\n%d:", i);
+    //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 2);
+    // }
+
+    // tensorpairs[1].opt.set_sym(tensorpairs[0].opt.get_sym(0), 0);
+    // overlaps[1].set_opt(tensorpairs[0].opt.get_sym(0));
+
+    // OverlapObjectLink link;
+    // get_internal_link(1, 0, &link);
+    // tensorpairs[3].opt.renew_symsec_layout(&(tensorpairs[1].ref), &link);
+
+    // printf("\nAfter:\n");
+    // for (int i=0; i<nr_tensorpairs; i++) {
+    //     printf("\n%d:", i);
+    //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 2);
+    // }
 
     // print_bookkeeper(ref_bookie, 1);
 

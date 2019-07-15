@@ -39,10 +39,12 @@ extern "C" {
 // #include "bookkeeper.h"
     
 #include <cstddef>  // declaration of size_t
+#include "macros.h"  // declaration of QN_TYPE
 
 // native C functions that are called from a C++ context
 extern void get_bonds_of_site(int site, int * bonds);
 extern bool is_pbond(int bond);
+extern int  is_psite (int site);
 extern void print_symsecinfo(struct symsecs * ss);
 extern void print_symsecs(const struct bookkeeper * keeper,
         const struct symsecs *cursymsec, int fci);
@@ -59,6 +61,7 @@ extern void print_network(void);
 extern int get_common_bond(int site1 , int site2);
 extern void print_bookkeeper(const struct bookkeeper * keeper, int fci);
 extern int search_symsec(int * symmsec, const struct symsecs * sectors);
+extern void indexize_address(int * ids, QN_TYPE qn, const struct symsecs * const * ss);
 
 
 /***********************END*C++-INTERFACE*********************/
