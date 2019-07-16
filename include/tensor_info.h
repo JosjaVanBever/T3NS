@@ -35,6 +35,11 @@ class TensorInfo {
 		int get_allocsize() const { return allocsize; }
 		int get_nr_allocated_blocks() const { return nr_allocated_blocks; }
 
+		// get the bond dimension for a certain leg and symmetry sector
+		int get_block_dimension(int leg, int sym_index) const;
+		// get the bond dimensions for a certain block and all legs
+		void get_block_dimensions(int blocknr, int * dims) const;
+
 		// setters
 		void set_sym(struct symsecs * new_sym, int leg) {
 			syms[leg] = new_sym; }
@@ -74,10 +79,6 @@ class TensorInfo {
 		int nr_allocated_blocks;
 
 		// Help functions:
-		// get the bond dimension for a certain leg and symmetry sector
-		int get_block_dimension(int leg, int sym_index) const;
-		// get the bond dimensions for a certain block and all legs
-		void get_block_dimensions(int blocknr, int * dims) const;
 		// get the index of the symmetry sector of a block for a certain leg
 		int get_sym_index(int blocknr, int leg) const;
 		// get the indices of the symmetry sectors of a block for all legs

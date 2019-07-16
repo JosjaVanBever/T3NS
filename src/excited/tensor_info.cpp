@@ -104,14 +104,11 @@ inline void TensorInfo::get_sym_indices(int blocknr, int * result) const
 
 void TensorInfo::renew_block_layout(const TensorInfo * ref, bool set_zero)
 {
-	printf("inside renew_block_layout");
+	printf("inside renew_block_layout\n");
 	fflush(stdout);
 
 	// number of blocks of the new structure
 	int nrblocks = ref->data->nrblocks;
-
-	printf("somewhere over the rainbow, even earlier");
-	fflush(stdout);
 
 	// reallocate qnumbers and beginblock if necessary
 	if (nr_allocated_blocks < nrblocks) {
@@ -131,15 +128,41 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref, bool set_zero)
 	printf("somewhere over the rainbow");
 	fflush(stdout);
 
+	// set number of blocks
+	data->nrblocks = nrblocks;
+
+
+	int testdims[3];
+	printf("\nthis:\n");
+	for (int i=0; i<this->data->nrblocks; i++) {
+		this->get_block_dimensions(i, testdims);
+		printf("beginblock[%d]: %d\n", i, this->data->blocks.beginblock[i]);
+		printf("block %d: %d %d %d\n", i, testdims[0], testdims[1], testdims[2]);
+	}
+	printf("\nref:\n");
+	for (int i=0; i<ref->data->nrblocks; i++) {
+		ref->get_block_dimensions(i, testdims);
+		printf("beginblock[%d]: %d\n", i, ref->data->blocks.beginblock[i]);
+		printf("block %d: %d %d %d\n", i, testdims[0], testdims[1], testdims[2]);
+	}
+
+
 	// fill beginblock
 	usedsize = 0;
 	int dims[3];  // dimensions of the current block
 	for (int i=0; i<nrblocks; i++) {
-		ref->get_block_dimensions(i, dims);
+		get_block_dimensions(i, dims);
 		data->blocks.beginblock[i] = usedsize;
 		// Might not always be true, e.g. at edges:
 		assert(usedsize == ref->data->blocks.beginblock[i]);
 		usedsize += dims[0] * dims[1] * dims[2];
+	}
+
+	printf("\nthis:\n");
+	for (int i=0; i<this->data->nrblocks; i++) {
+		this->get_block_dimensions(i, testdims);
+		printf("beginblock[%d]: %d\n", i, this->data->blocks.beginblock[i]);
+		printf("block %d: %d %d %d\n", i, testdims[0], testdims[1], testdims[2]);
 	}
 
 	// // fill beginblock
@@ -200,6 +223,16 @@ void print_tensorInfo(const struct bookkeeper * keeper,
 		fprintf(stdout, "nr_allocated_blocks: %d\n", tensor->get_nr_allocated_blocks());
 		fprintf(stdout, "usedsize: %d\n", tensor->get_usedsize());
 		fprintf(stdout, "allocsize: %d\n", tensor->get_allocsize());
+	}
+
+	if (spec == 4 || spec == 0) {
+		int dims[3];  // dimensions of the current block
+		fprintf(stdout, "Block details:\n");
+		for (int i=0; i<tensor->get_data()->nrblocks; i++) {
+			tensor->get_block_dimensions(i, dims);
+			fprintf(stdout, "beginblock[%d]: %d\n", i, tensor->get_data()->blocks.beginblock[i]);
+			fprintf(stdout, "block %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
+		}
 	}
 }
 
