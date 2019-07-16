@@ -238,7 +238,7 @@ int OverlapCalculator::get_result() {
     printf("\nBefore:\n");
     for (int i=0; i<3; i++) {
         printf("\n\n%d:", i);
-        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 3);
+        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
     }
 
     // tensorpairs[1].opt.set_sym(tensorpairs[0].opt.get_sym(0), 0);
@@ -264,16 +264,11 @@ int OverlapCalculator::get_result() {
     TensorInfo TEMP(&TEMPdata, TEMPsyms, true);
 
     printf("\nTEMP:\n");
-    printf("\nTEST3\n"); fflush(stdout);
     print_tensorInfo(ref_bookie, &TEMP, 0);
 
-    printf("how the symsec?!");
-    fflush(stdout);
 
     TEMP.renew_symsec_layout(&(tensorpairs[1].ref), &link);
 
-    printf("how the blocklayout?!");
-    fflush(stdout);
 
     TEMP.renew_block_layout(&(tensorpairs[1].ref), true);
     fflush(stdout);
@@ -284,7 +279,7 @@ int OverlapCalculator::get_result() {
     for (int i=0; i<3; i++) {
         printf("\n\n%d:", i);
         fflush(stdout);
-        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 3);
+        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
     }
     printf("\nTEMP:\n");
     fflush(stdout);

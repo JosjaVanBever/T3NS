@@ -30,6 +30,10 @@ void write_to_disk(const char * hdf5_loc, const struct siteTensor * const T3NS,
 int read_from_disk(const char filename[], struct siteTensor ** const T3NS, 
                    struct rOperators ** const ops);
 
+// @JOSJA
+int read_reference_from_disk(const char filename[], struct siteTensor ** const T3NS,
+        struct bookkeeper * const bookie);
+
 void write_dataset(hid_t id, const char datname[], const void * dat, 
                    hsize_t size, enum hdf5type kind);
 

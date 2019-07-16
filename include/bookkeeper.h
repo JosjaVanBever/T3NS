@@ -52,6 +52,7 @@ struct bookkeeper {
 
 /// The global bookkeeper
 extern struct bookkeeper bookie;
+extern struct bookkeeper reference_bookie; //@ JOSJA
 
 /**
  * \brief Frees the memory allocated to the global bookie variable.
@@ -152,6 +153,11 @@ int translate_DOCI_to_qchem(struct bookkeeper * keeper,
 struct bookkeeper shallow_copy_bookkeeper(struct bookkeeper * tocopy);
 
 int preparebookkeeper(struct bookkeeper * prevbookie, int max_dim,
+                      int interm_scale, int minocc, int * changedSS);
+
+
+// @JOSJA
+int prepare_reference_bookkeeper(struct bookkeeper * prevbookie, int max_dim,
                       int interm_scale, int minocc, int * changedSS);
 
 

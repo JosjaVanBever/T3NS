@@ -266,6 +266,7 @@ static void cleanup_before_exit(struct siteTensor **T3NS,
 {
         destroy_network();
         destroy_bookkeeper(&bookie);
+        destroy_bookkeeper(&reference_bookie);  // @JOSJA
         destroy_T3NS(T3NS);
         destroy_all_rops(rops);
         destroy_hamiltonian();
@@ -343,6 +344,12 @@ static int initialize_program(int argc, char *argv[],
         tic(&chrono, PREP_BOOKIE);
         printf(">> Preparing bookkeeper...\n");
         int changedSS = 0;
+
+        printf("arguments.h5file: %s\n", arguments.h5file);
+        struct bookkeeper * test = arguments.h5file ? &prevbookie : NULL;
+        printf("test: %p\n", test);
+        if (test == NULL) { printf("WTF");}
+
         if (preparebookkeeper(arguments.h5file ? &prevbookie : NULL, 
                               scheme->regimes[0].svd_sel.minD, 1, minocc, 
                               &changedSS)) {
@@ -362,19 +369,39 @@ static int initialize_program(int argc, char *argv[],
         if (init_operators(rops, T3NS)) { return 1; }
         toc(&chrono, INIT_OPS);
 
+        /********************************************************************/
         // @JOSJA
+
         // hardcoded settings to test excited state calculations
         // excitation = 0 for ground state, 1 for 1st excitation ...
         int excitation = 1;
         int nr_states = excitation + 1;
         // info necessary to create overlap object calculators
-        // hardcoded initialisation to optimizing T3NS
-        struct T3NSfill * states = malloc(nr_states * sizeof(struct T3NSfill));
-        for (int i=0; i<nr_states; i++) {
-            // extract_addresses(T3NS, netw->nr_sites_opt, states[i].data);
-            states[i].data = *T3NS;
-            states[i].bookie = &bookie;
+
+        struct siteTensor *argument_refT3NS = NULL;
+        struct siteTensor **refT3NS = &argument_refT3NS;
+        printf(">> Preparing reference bookkeeper...\n");
+        struct bookkeeper reference_prevbookie = shallow_copy_bookkeeper(&reference_bookie);
+        int reference_changedSS = 0;
+        if (prepare_reference_bookkeeper(&reference_prevbookie, 
+                              scheme->regimes[0].svd_sel.minD, 1, minocc, 
+                              &reference_changedSS)) {
+                return 1;
         }
+        printf(">> Reading reference from reference.h5 ...\n");
+        if(read_reference_from_disk("reference.h5", refT3NS, &reference_bookie)) { return 1; }
+     
+        // hardcoded initialisation of T3NSen
+        struct T3NSfill * states = malloc(nr_states * sizeof(struct T3NSfill));
+        states[0].data = *T3NS;
+        states[0].bookie = &bookie;
+        states[1].data = *refT3NS;
+        states[1].bookie = &reference_bookie;
+        // for (int i=0; i<nr_states; i++) {
+        //     // extract_addresses(T3NS, netw->nr_sites_opt, states[i].data);
+        //     states[i].data = *T3NS;
+        //     states[i].bookie = &bookie;
+        // }
 
         // // @TEST
         // print_siteTensor(&bookie, &((*T3NS)[0]));
@@ -394,6 +421,7 @@ static int initialize_program(int argc, char *argv[],
 
             tic(&chrono, INIT_OOCALC);
             OverlapCalculator * OOcalc;
+            // first opt, then ref
             init_overlap_calculator(&states[0], &states[1], &netw, &OOcalc);
 
             // moffelzone
@@ -408,6 +436,8 @@ static int initialize_program(int argc, char *argv[],
 
         // input information for OO calculators not necessary anymore
         free(states);
+
+        /***********************************************************/
 
         print_input(scheme);
 
@@ -455,6 +485,7 @@ int main(int argc, char *argv[])
         // execute_optScheme(T3NS, rops, &scheme, pbuffer);
         // disentangle_state(T3NS, &sch, 0);
         // print_target_state_coeff(T3NS);
+        /*****************************************/
 
         cleanup_before_exit(&T3NS, &rops, &scheme);
         printf("SUCCESFULL END!\n");

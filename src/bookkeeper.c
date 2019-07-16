@@ -28,6 +28,7 @@
 #include "sort.h"
 
 struct bookkeeper bookie;
+struct bookkeeper reference_bookie; //@ JOSJA
 
 static void kick_impossibles(struct symsecs * const sector)
 {
@@ -537,6 +538,8 @@ static void DOCI_irrep_to_seniority(int irrepDOCI, int * irrepSEN,
 int translate_DOCI_to_qchem(struct bookkeeper * keeper, 
                             enum symmetrygroup * sgs, int nrSyms)
 {
+        printf("\nHELP: %d and %s\n", keeper->nrSyms, get_symstring(keeper->sgs[0]));  //@TEST
+
         if (keeper->nrSyms != 1 && keeper->sgs[0] != U1) {
                 fprintf(stderr, "The inputted bookkeeper is not from a DOCI calculation\n");
                 return 1;
@@ -593,15 +596,23 @@ struct bookkeeper shallow_copy_bookkeeper(struct bookkeeper * tocopy)
         return copy;
 }
 
-static int translate_symmetries(struct bookkeeper * prevbookie, int * changedSS)
+static int translate_symmetries(struct bookkeeper * prevbookie, int * changedSS,
+        struct bookkeeper * newbookie)
 {
-        if (prevbookie->nrSyms == bookie.nrSyms) {
+        printf("prevbookie->nrSyms: %d\n", prevbookie->nrSyms);
+        if (prevbookie->nrSyms == newbookie->nrSyms) {
+
+                printf("I want to be free!");
+
                 // No change in symmetries
                 int i;
-                for (i = 0; i < bookie.nrSyms; ++i) {
-                        if (bookie.sgs[i] != prevbookie->sgs[i]) { break; }
+                for (i = 0; i < newbookie->nrSyms; ++i) {
+                        if (newbookie->sgs[i] != prevbookie->sgs[i]) { break; }
                 }
-                if (i == bookie.nrSyms) { return 0; }
+
+                printf("i: %d, newbookie->nrSyms: %d\n", i, newbookie->nrSyms);
+
+                if (i == newbookie->nrSyms) { return 0; }
         }
 
         printf(" > Translating symmetries of T3NS:\n");
@@ -611,21 +622,21 @@ static int translate_symmetries(struct bookkeeper * prevbookie, int * changedSS)
                        i == prevbookie->nrSyms - 1 ? "" : " ");
         }
         printf("]\n   To   [");
-        for (int i = 0; i < bookie.nrSyms; ++i) {
-                printf("%s%s", get_symstring(bookie.sgs[i]),
-                       i == bookie.nrSyms - 1 ? "" : " ");
+        for (int i = 0; i < newbookie->nrSyms; ++i) {
+                printf("%s%s", get_symstring(newbookie->sgs[i]),
+                       i == newbookie->nrSyms - 1 ? "" : " ");
         }
         printf("]\n");
-        if (translate_DOCI_to_qchem(prevbookie, bookie.sgs, bookie.nrSyms)) {
+        if (translate_DOCI_to_qchem(prevbookie, newbookie->sgs, newbookie->nrSyms)) {
                 return 1;
         }
         *changedSS = 1;
-        bookie.v_symsecs = safe_malloc(bookie.nr_bonds, *bookie.v_symsecs);
-        for (int i = 0; i < bookie.nr_bonds; ++i) {
-                deep_copy_symsecs(&bookie.v_symsecs[i],
+        newbookie->v_symsecs = safe_malloc(newbookie->nr_bonds, *(*newbookie).v_symsecs);
+        for (int i = 0; i < newbookie->nr_bonds; ++i) {
+                deep_copy_symsecs(&newbookie->v_symsecs[i],
                                   &prevbookie->v_symsecs[i]);
         }
-        create_p_symsecs(&bookie);
+        create_p_symsecs(newbookie);
         return 0;
 }
 
@@ -722,9 +733,56 @@ static void select_highest_ss_dim(struct symsecs * oss, struct symsecs * nss)
         }
 }
 
+// @JOSJA
+int prepare_reference_bookkeeper(struct bookkeeper * prevbookie, int max_dim,
+                      int interm_scale, int minocc, int * changedSS)
+{
+        if (changedSS != NULL) { *changedSS = 0; }
+
+        printf("prevbookie: %p\n", prevbookie);
+
+        if (prevbookie == NULL) {
+                create_p_symsecs(&reference_bookie);
+                create_v_symsecs(max_dim, interm_scale, minocc);
+                return 0;
+        }
+
+        if (translate_symmetries(prevbookie, changedSS, &reference_bookie)) { return 1; }
+        // if (change_targetstate(&reference_bookie, changedSS)) { printf("oeps"); return 1; }
+        if (minocc) {
+                printf(" > Adding previously removed symmetry sectors.\n");
+                printf("   The wave function will be filled with noise in these sectors.\n");
+                if (!*changedSS) {
+                        *changedSS = 1;
+                        // Copying bookkeeper
+                        reference_bookie.v_symsecs = safe_malloc(reference_bookie.nr_bonds, 
+                                                       *reference_bookie.v_symsecs);
+                        for (int i = 0; i < reference_bookie.nr_bonds; ++i) {
+                                deep_copy_symsecs(&reference_bookie.v_symsecs[i], 
+                                                  &prevbookie->v_symsecs[i]);
+                        }
+                        create_p_symsecs(&reference_bookie);
+                }
+                struct symsecs * lofss = reference_bookie.v_symsecs;
+                create_v_symsecs(max_dim, interm_scale, minocc);
+                for (int i = 0; i < reference_bookie.nr_bonds; ++i) {
+                        select_highest_ss_dim(&lofss[i], 
+                                              &reference_bookie.v_symsecs[i]);
+                }
+                for (int i = 0; i < reference_bookie.nr_bonds; ++i) {
+                        destroy_symsecs(&lofss[i]);
+                }
+                safe_free(lofss);
+        }
+        return 0;
+}
+
+
 int preparebookkeeper(struct bookkeeper * prevbookie, int max_dim,
                       int interm_scale, int minocc, int * changedSS)
 {
+         printf("prevbookie: %p\n", prevbookie);
+
         if (changedSS != NULL) { *changedSS = 0; }
         if (prevbookie == NULL) {
                 create_p_symsecs(&bookie);
@@ -732,7 +790,7 @@ int preparebookkeeper(struct bookkeeper * prevbookie, int max_dim,
                 return 0;
         }
 
-        if (translate_symmetries(prevbookie, changedSS)) { return 1; }
+        if (translate_symmetries(prevbookie, changedSS, &bookie)) { return 1; }
         if (change_targetstate(&bookie, changedSS)) { return 1; }
         if (minocc) {
                 printf(" > Adding previously removed symmetry sectors.\n");
@@ -848,6 +906,7 @@ void bookkeeper_get_symsecs_address(const struct bookkeeper * keeper,
                 *res = &(keeper->v_symsecs[bond]);
         } else if (bond  == -1) {
                 get_hamiltoniansymsecs(res, bond);
+                // @JOSJA: left open because '-1' doesn't say too much and I guess this is an option that I don't need
         } else {
                 fprintf(stderr, "Error @%s: asked symsec of bond %d.\n", 
                         __func__, bond);

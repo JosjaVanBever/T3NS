@@ -143,6 +143,45 @@ static void read_bookkeeper_from_disk(const hid_t file_id)
         H5Gclose(group_id);
 }
 
+
+// @JOSJA
+static void read_reference_bookkeeper_from_disk(const hid_t file_id)
+{
+        const hid_t group_id = H5Gopen(file_id, "/bookkeeper", H5P_DEFAULT);
+
+        read_attribute(group_id, "nrSyms", &reference_bookie.nrSyms);
+        if (reference_bookie.nrSyms > MAX_SYMMETRIES) {
+                fprintf(stderr, "Error: This wave function can not be read.\n"
+                        "The currently compiled program can not run with the specified number of symmetries.\n"
+                        "Specified: %d, maximal allowed: %d.\n"
+                        "Recompile with a higher MAX_SYMMETRIES", reference_bookie.nrSyms, MAX_SYMMETRIES);
+                exit(EXIT_FAILURE);
+        }
+        int offset;
+        read_attribute(group_id, "Max_symmetries", &offset);
+
+        read_attribute(group_id, "sgs", (int *) reference_bookie.sgs);
+
+        read_attribute(group_id, "target_state", reference_bookie.target_state);
+
+        read_attribute(group_id, "nr_bonds", &reference_bookie.nr_bonds);
+
+        reference_bookie.v_symsecs = safe_malloc(reference_bookie.nr_bonds, struct symsecs);
+        for (int i = 0 ; i < reference_bookie.nr_bonds; ++i) {
+                read_symsec_from_disk(group_id, &reference_bookie.v_symsecs[i], i, 
+                                      offset, reference_bookie.nrSyms, 'v');
+        }
+
+        read_attribute(group_id, "psites", &reference_bookie.psites);
+        reference_bookie.p_symsecs = safe_malloc(reference_bookie.psites, struct symsecs);
+        for (int i = 0 ; i < reference_bookie.psites; ++i) {
+                read_symsec_from_disk(group_id, &reference_bookie.p_symsecs[i], i, 
+                                      offset, reference_bookie.nrSyms, 'p');
+        }
+        H5Gclose(group_id);
+}
+
+
 static void write_sparseblocks_to_disk(const hid_t id, 
                                        const struct sparseblocks * block, 
                                        const int nrblocks, const int nmbr)
@@ -485,6 +524,27 @@ int read_from_disk(const char filename[], struct siteTensor ** const T3NS,
         H5Fclose(file_id);
         return 0;
 }
+
+
+// @JOSJA
+int read_reference_from_disk(const char filename[], struct siteTensor ** const T3NS,
+        struct bookkeeper * const bookie)
+{
+        if (access(filename, F_OK) != 0) {
+                fprintf(stderr, "Error in %s: Can not read from disk.\n"
+                        "%s was not found.\n", __func__, filename);
+                return 1;
+        }
+
+        hid_t file_id = H5Fopen(filename, H5F_ACC_RDONLY, H5P_DEFAULT);
+
+        read_reference_bookkeeper_from_disk(file_id);
+        read_T3NS_from_disk(file_id, T3NS);
+
+        H5Fclose(file_id);
+        return 0;
+}
+
 
 void write_attribute(hid_t group_id, const char atrname[], const void * atr, 
                      hsize_t size, enum hdf5type kind)

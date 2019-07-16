@@ -199,13 +199,7 @@ void print_tensorInfo(const struct bookkeeper * keeper,
 		}
 		fprintf(stdout, "nr_allocated_blocks: %d\n", tensor->get_nr_allocated_blocks());
 		fprintf(stdout, "usedsize: %d\n", tensor->get_usedsize());
-
-		printf("BOE????");
-
 		fprintf(stdout, "allocsize: %d\n", tensor->get_allocsize());
-
-		printf("BOE");
-		fflush(stdout);
 	}
 }
 
