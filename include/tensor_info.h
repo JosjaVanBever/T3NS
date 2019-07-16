@@ -47,19 +47,23 @@ class TensorInfo {
 		void set_syms(struct symsecs ** new_syms) {
 			for (int i=0; i<3; i++) { syms[i] = new_syms[i]; }}
 
-		// renew the symmetry sectors based on the contraction of ref via
-		// the given OO_link
-		// @param:
-		//   ref => contains the uncontracted symsecs
-		//   OO_link => maps the contracted symsec onto the optimizing symsec
-		void renew_symsec_layout(const TensorInfo * ref,
-			const struct OverlapObjectLink * OO_link);
+		// // renew the symmetry sectors based on the contraction of ref via
+		// // the given OO_link
+		// // @param:
+		// //   ref => contains the uncontracted symsecs
+		// //   OO_link => maps the contracted symsec onto the optimizing symsec
+		// void renew_symsec_layout(const TensorInfo * ref,
+		// 	const struct OverlapObjectLink * OO_link);
+
+		// copy the symmetry sector and tesnsor type from ref
+		void copy_symmetry_layout(const TensorInfo * ref);
 
 		// renew all block information; optionally set elements to 0
 		// @param:
 		//   reference => contains the qnumbers
 		//   set_zero = fill the tel array with zeros
-		void renew_block_layout(const TensorInfo * reference, bool set_zero);
+		void renew_block_layout(const TensorInfo * reference,
+				const struct OverlapObjectLink * OO_link, bool set_zero);
 
 	private:
 		// Main data:

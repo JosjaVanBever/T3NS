@@ -23,6 +23,8 @@
 #include "symsecs.h"
 #include <stdio.h>
 
+class SymsecMatcher;
+
 // IDEA: DO NOT REMEMBER REF AND OPT BUT TAKE IT AS INPUT
 
 // Usage: ones created, first renew the block layout with a solved
@@ -42,6 +44,11 @@ class OverlapObject {
 		// destructor
 		~OverlapObject();
 
+		// renew the beginblocks and tel array
+		// @param: match should contain the matches between ref and opt;
+		//   no assumptations are made about the ordering of matching symsecs
+		void renew_block_layout(const SymsecMatcher * match, bool set_zero);
+
 		// reallocate the element array explicitely
 		// @param: opt_dim = total/bond dimension for the optimizing bond
 		void reallocate_optdim(int opt_dim);
@@ -51,10 +58,13 @@ class OverlapObject {
 		struct symsecs * get_opt() { return opt; }
 		void set_ref(struct symsecs * new_ref) { ref = new_ref; }
 		void set_opt(struct symsecs * new_opt) { opt = new_opt; }
+		// get the dimensions of block i (indexing based on ref)
+		int get_ldim(int i) const { return ldim[i]; }  // leading, based on ref
+		int get_sdim(int i) const { return sdim[i]; }  // second, based on opt
 
 	private:
 		// help function for reallocation of the element array
-		void reallocate_bytes(int bytes);
+		void reallocate_elements(int elements);
 
 		// Main data:
 		// Symmetry sectors in the reference and optimizing bond
@@ -66,8 +76,8 @@ class OverlapObject {
 		//   ldim[i] and second dimension sdim[i].
 		//   If blocks.beginblock[i] == -1, the i'th block is not present.
 		struct sparseblocks blocks;  // begin blocks and element array
-		int * ldim;  // leading dimension array
-		int * sdim;  // second dimension array
+		int * ldim;  // leading dimension array -> from reference
+		int * sdim;  // second dimension array -> from optimizing
 
 		// Help data:
 		// size of tel array used to effectively store elements

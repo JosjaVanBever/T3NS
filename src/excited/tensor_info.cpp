@@ -48,24 +48,52 @@ void TensorInfo::get_syms(struct symsecs ** result) const
 }
 
 
-void TensorInfo::renew_symsec_layout(const TensorInfo * ref,
-		const OverlapObjectLink * OO_link)
+void TensorInfo::copy_symmetry_layout(const TensorInfo * ref)
 {
 	// set correct type of tensor
 	this->is_physical = ref->is_physical;
 
-	// extract the index of the leg over which is contracted
-	int contracted_leg = OO_link->leg;
-
-	// check whether the contraction is valid
-	assert(OO_link->OO->get_ref() == ref->get_sym(OO_link->leg));
-
-	// set the relevant sectors
+	// set the sectors
 	for (int i=0; i<3; i++) {
-		this->syms[i] = (i == contracted_leg)? OO_link->OO->get_opt() :
-				ref->syms[i];
+		this->syms[i] = ref->syms[i];
 	}
 }
+
+
+// void TensorInfo::renew_symsec_layout(const TensorInfo * ref,
+// 		const OverlapObjectLink * OO_link)
+// {
+// 	// check whether the contraction is valid
+// 	assert(OO_link->OO->get_ref() == ref->get_sym(OO_link->leg));
+
+// 	// set correct type of tensor
+// 	this->is_physical = ref->is_physical;
+
+// 	// set the sectors
+// 	for (int i=0; i<3; i++) {
+// 		this->syms[i] = ref->syms[i];
+// 	}
+// }
+
+
+// void TensorInfo::renew_symsec_layout(const TensorInfo * ref,
+// 		const OverlapObjectLink * OO_link)
+// {
+// 	// set correct type of tensor
+// 	this->is_physical = ref->is_physical;
+
+// 	// extract the index of the leg over which is contracted
+// 	int contracted_leg = OO_link->leg;
+
+// 	// check whether the contraction is valid
+// 	assert(OO_link->OO->get_ref() == ref->get_sym(OO_link->leg));
+
+// 	// set the relevant sectors
+// 	for (int i=0; i<3; i++) {
+// 		this->syms[i] = (i == contracted_leg)? OO_link->OO->get_opt() :
+// 				ref->syms[i];
+// 	}
+// }
 
 // usage: reallocate<T>(&ptr, size)
 template <typename T>
@@ -102,13 +130,13 @@ inline void TensorInfo::get_sym_indices(int blocknr, int * result) const
 }
 /////////////////////////////////////
 
-void TensorInfo::renew_block_layout(const TensorInfo * ref, bool set_zero)
+void TensorInfo::renew_block_layout(const TensorInfo * ref,
+		const struct OverlapObjectLink * OO_link, bool set_zero)
 {
-	printf("inside renew_block_layout\n");
-	fflush(stdout);
-
 	// number of blocks of the new structure
 	int nrblocks = ref->data->nrblocks;
+	// set number of blocks
+	data->nrblocks = nrblocks;
 
 	// reallocate qnumbers and beginblock if necessary
 	if (nr_allocated_blocks < nrblocks) {
@@ -117,79 +145,127 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref, bool set_zero)
 		nr_allocated_blocks = nrblocks;
 	}
 
-	printf("somewhere over the rainbow earlier");
-	fflush(stdout);
-
 	// fill qnumbers
 	for (int i=0; i<nrblocks; i++) {
-		data->qnumbers[i] = ref->data->qnumbers[i];  // data is NULL!!!!
+		data->qnumbers[i] = ref->data->qnumbers[i];
 	}
-
-	printf("somewhere over the rainbow");
-	fflush(stdout);
-
-	// set number of blocks
-	data->nrblocks = nrblocks;
-
-
-	int testdims[3];
-	printf("\nthis:\n");
-	for (int i=0; i<this->data->nrblocks; i++) {
-		this->get_block_dimensions(i, testdims);
-		printf("beginblock[%d]: %d\n", i, this->data->blocks.beginblock[i]);
-		printf("block %d: %d %d %d\n", i, testdims[0], testdims[1], testdims[2]);
-	}
-	printf("\nref:\n");
-	for (int i=0; i<ref->data->nrblocks; i++) {
-		ref->get_block_dimensions(i, testdims);
-		printf("beginblock[%d]: %d\n", i, ref->data->blocks.beginblock[i]);
-		printf("block %d: %d %d %d\n", i, testdims[0], testdims[1], testdims[2]);
-	}
-
 
 	// fill beginblock
 	usedsize = 0;
 	int dims[3];  // dimensions of the current block
+	int ids[3];   // symmetry indices of the current block
 	for (int i=0; i<nrblocks; i++) {
-		get_block_dimensions(i, dims);
-		data->blocks.beginblock[i] = usedsize;
-		// Might not always be true, e.g. at edges:
-		assert(usedsize == ref->data->blocks.beginblock[i]);
+		get_sym_indices(i, ids);
+		// loop over all legs
+		for (int j=0; j<3; j++) {
+			// set the appropriate dimension
+			dims[j] = (j == OO_link->leg)? OO_link->OO->get_sdim(i) :
+					get_block_dimension(j, ids[j]); }
+		// increase the usedsize
 		usedsize += dims[0] * dims[1] * dims[2];
 	}
-
-	printf("\nthis:\n");
-	for (int i=0; i<this->data->nrblocks; i++) {
-		this->get_block_dimensions(i, testdims);
-		printf("beginblock[%d]: %d\n", i, this->data->blocks.beginblock[i]);
-		printf("block %d: %d %d %d\n", i, testdims[0], testdims[1], testdims[2]);
-	}
-
-	// // fill beginblock
-	//  usedsize = 0;
-	// int dims[3];  // dimensions of the current block
-	// for (int i=0; i<nrblocks; i++) {
-	// 	ref->get_block_dimensions(i, dims);
-	// 	data->blocks.beginblock[i] = usedsize;
-	// 	usedsize += dims[0] * dims[1] * dims[2];
-	// }
-
-	// set number of blocks
-	data->nrblocks = nrblocks;
 
 	// reallocate tel if necessary
 	if (usedsize > allocsize) {
 		allocsize = 2 * usedsize;
-		//data->blocks->tel = reallocate
 		reallocate<EL_TYPE>(&(data->blocks.tel), allocsize);
-		//this->reallocate(allocsize); }
 	}
+
 	if (set_zero) {
 		// fill tel up with zeros
 		for (int i=0; i<usedsize; i++) {
 			data->blocks.tel[i] = 0; }
 	}
 }
+
+// void TensorInfo::renew_block_layout(const TensorInfo * ref, bool set_zero)
+// {
+// 	printf("inside renew_block_layout\n");
+// 	fflush(stdout);
+
+// 	// number of blocks of the new structure
+// 	int nrblocks = ref->data->nrblocks;
+
+// 	// reallocate qnumbers and beginblock if necessary
+// 	if (nr_allocated_blocks < nrblocks) {
+// 		reallocate<QN_TYPE>(&(data->qnumbers), nrblocks);
+// 		reallocate<int>(&(data->blocks.beginblock), nrblocks);
+// 		nr_allocated_blocks = nrblocks;
+// 	}
+
+// 	printf("somewhere over the rainbow earlier");
+// 	fflush(stdout);
+
+// 	// fill qnumbers
+// 	for (int i=0; i<nrblocks; i++) {
+// 		data->qnumbers[i] = ref->data->qnumbers[i];  // data is NULL!!!!
+// 	}
+
+// 	printf("somewhere over the rainbow");
+// 	fflush(stdout);
+
+// 	// set number of blocks
+// 	data->nrblocks = nrblocks;
+
+
+// 	int testdims[3];
+// 	printf("\nthis:\n");
+// 	for (int i=0; i<this->data->nrblocks; i++) {
+// 		this->get_block_dimensions(i, testdims);
+// 		printf("beginblock[%d]: %d\n", i, this->data->blocks.beginblock[i]);
+// 		printf("block %d: %d %d %d\n", i, testdims[0], testdims[1], testdims[2]);
+// 	}
+// 	printf("\nref:\n");
+// 	for (int i=0; i<ref->data->nrblocks; i++) {
+// 		ref->get_block_dimensions(i, testdims);
+// 		printf("beginblock[%d]: %d\n", i, ref->data->blocks.beginblock[i]);
+// 		printf("block %d: %d %d %d\n", i, testdims[0], testdims[1], testdims[2]);
+// 	}
+
+
+// 	// fill beginblock
+// 	usedsize = 0;
+// 	int dims[3];  // dimensions of the current block
+// 	for (int i=0; i<nrblocks; i++) {
+// 		get_block_dimensions(i, dims);
+// 		data->blocks.beginblock[i] = usedsize;
+// 		// Might not always be true, e.g. at edges:
+// 		assert(usedsize == ref->data->blocks.beginblock[i]);
+// 		usedsize += dims[0] * dims[1] * dims[2];
+// 	}
+
+// 	printf("\nthis:\n");
+// 	for (int i=0; i<this->data->nrblocks; i++) {
+// 		this->get_block_dimensions(i, testdims);
+// 		printf("beginblock[%d]: %d\n", i, this->data->blocks.beginblock[i]);
+// 		printf("block %d: %d %d %d\n", i, testdims[0], testdims[1], testdims[2]);
+// 	}
+
+// 	// // fill beginblock
+// 	//  usedsize = 0;
+// 	// int dims[3];  // dimensions of the current block
+// 	// for (int i=0; i<nrblocks; i++) {
+// 	// 	ref->get_block_dimensions(i, dims);
+// 	// 	data->blocks.beginblock[i] = usedsize;
+// 	// 	usedsize += dims[0] * dims[1] * dims[2];
+// 	// }
+
+// 	// set number of blocks
+// 	data->nrblocks = nrblocks;
+
+// 	// reallocate tel if necessary
+// 	if (usedsize > allocsize) {
+// 		allocsize = 2 * usedsize;
+// 		//data->blocks->tel = reallocate
+// 		reallocate<EL_TYPE>(&(data->blocks.tel), allocsize);
+// 		//this->reallocate(allocsize); }
+// 	}
+// 	if (set_zero) {
+// 		// fill tel up with zeros
+// 		for (int i=0; i<usedsize; i++) {
+// 			data->blocks.tel[i] = 0; }
+// 	}
+// }
 
 
 void print_tensorInfo(const struct bookkeeper * keeper,

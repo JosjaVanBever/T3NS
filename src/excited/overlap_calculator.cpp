@@ -267,10 +267,10 @@ int OverlapCalculator::get_result() {
     print_tensorInfo(ref_bookie, &TEMP, 0);
 
 
-    TEMP.renew_symsec_layout(&(tensorpairs[1].ref), &link);
+    // TEMP.renew_symsec_layout(&(tensorpairs[1].ref), &link);
+    TEMP.copy_symmetry_layout(&(tensorpairs[1].ref));
 
-
-    TEMP.renew_block_layout(&(tensorpairs[1].ref), true);
+    TEMP.renew_block_layout(&(tensorpairs[1].ref), &link, true);
     fflush(stdout);
     // tensorpairs[2].opt.renew_symsec_layout(&(tensorpairs[1].ref), &link);
     // tensorpairs[2].opt.renew_block_layout(&(tensorpairs[1].ref), true);
