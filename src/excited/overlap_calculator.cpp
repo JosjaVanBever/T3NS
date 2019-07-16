@@ -16,21 +16,31 @@
 */
 
 #include "overlap_calculator.h"
+#include "2site_overlap_calculator.h"
 
-
-// Declare a C interface to OverlapCalculator
+// Declare a C interface to OverlapCalculator subclasses
 /**********************START*C-INTERFACE**********************/
 
 void init_overlap_calculator(const T3NSfill * opt, const T3NSfill * ref,
-    const struct network * netw, OverlapCalculator ** result)
+    const struct network * netw, OverlapCalculator ** result, int nsites)
 {
-    *result = new OverlapCalculator(opt, ref, netw);
+    if (nsites == 2) {
+        *result = new TwoSiteOverlapCalculator(opt, ref, netw);
+    } else {
+        printf("Only 2 site optimizations are for free.\n");
+        printf("Extensions to 3 and 4 sites require a doctoral grant.\n");
+    }
 }
 
-int get_result(OverlapCalculator* calc)
+int perform_testing_main(OverlapCalculator* calc)
 {
-    return calc->get_result();
+    return calc->perform_testing();
 }
+
+// void can_you_find_me_too(OverlapCalculator* calc)
+// {
+//     calc->can_you_find_me();
+// }
 
 /************************END*C-INTERFACE**********************/
 
@@ -204,8 +214,10 @@ int OverlapCalculator::get_links(int who, int other,
 }
 
 
-// @ TEST
-int OverlapCalculator::get_result() {
+// @ TEST: common features of OverlapObjectCalculator
+int OverlapCalculator::perform_testing() {
+    printf("GO BACK TO YOUR HOME COUNTRY!");
+
     // print_network();
 
     printf("\n");
@@ -340,4 +352,5 @@ int OverlapCalculator::get_result() {
     // }
     // std::cout << "tensorpairs[i].opt.data: ";
     // print_siteTensor(opt_bookie, tensorpairs[0].opt.get_data());
-    return 0; };
+    return 0;
+}

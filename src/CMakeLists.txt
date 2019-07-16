@@ -44,6 +44,7 @@ set(T3NSLIB_SOURCE_FILES
     "excited/tensor_info.cpp"
     "excited/overlap_object.cpp"
     "excited/symsec_matcher.cpp"
+    "excited/2site_overlap_calculator.cpp"
     )
 
 add_library(T3NS-shared SHARED ${T3NSLIB_SOURCE_FILES})

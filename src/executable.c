@@ -420,14 +420,14 @@ static int initialize_program(int argc, char *argv[],
         if (excitation > 0) {
 
             tic(&chrono, INIT_OOCALC);
-            OverlapCalculator * OOcalc;
+            TwoSiteOverlapCalculator * OOcalc;
             // first opt, then ref
-            init_overlap_calculator(&states[0], &states[1], &netw, &OOcalc);
+            init_overlap_calculator(&states[0], &states[1], &netw, &OOcalc, 2);
 
             // moffelzone
             // ((*T3NS)[1]).nrblocks -= 1;   last moffel succesful!
             // bookie.v_symsecs[0].totaldims = 10;
-            int result = get_result(OOcalc);
+            int result = perform_testing_2site(OOcalc);
             // fprintf(stdout, "The result is %d\n", result);
 
             //if (init_OOcalculator(excitation, statefiles, ...)) { return 1; }

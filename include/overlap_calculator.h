@@ -38,6 +38,7 @@
 #error 'OverlapObject not defined!'
 #endif
 
+
 // The overlap calculator does not allocate any of the T3NS data operated on.
 // It does allocate its own temporary results.
 class OverlapCalculator {
@@ -54,8 +55,10 @@ class OverlapCalculator {
         int get_external_links(int who, int exclude, OverlapObjectLink * result);
 
         // @TEST
-        int get_result();
-    private:
+        int perform_testing();
+        /*virtual void can_you_find_the_other();*/
+        // void can_you_find_me() { /*this->can_you_find_the_other();*/ printf("Took the wrong door, idiot!");};
+    protected:
         // Main data:
         struct TensorInfoPair * tensorpairs;
             int nr_tensorpairs;  // length of tensorpairs

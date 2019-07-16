@@ -1,14 +1,50 @@
-// class TwoSiteOverlapCalculator : public OverlapCalculator {
-// 	public:
-// 		TwoSiteOverlapCalculator
-// 	private:
-// 		void set_OO_to_contraction(const TensorInfo * A, const TensorInfo * B,
-// 				int leg, OverlapObject * OO);
-// 		// storage of intermediate results
-// 		struct TensorInfo[2] tensmem; // tensor memory
-// 		// backup tensor memory for branching tensor calculations
-// 		struct TensorInfo[2] tensbmem;
-// 		// indices of the last optimization center used
-// 		// the indices are stored such that last_optimized
-// 		int last_optimized[2];
-// };
+/*
+    T3NS: an implementation of the Three-Legged Tree Tensor Network algorithm
+    Copyright (C) 2018-2019 Josja Van Bever <Josja.VanBever@UGent.be>
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 3.
+    
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+
+#ifndef TWOSITEOVERLAPCALCULATOR_H
+#define TWOSITEOVERLAPCALCULATOR_H
+
+
+#include "overlap_calculator.h"
+class TensorInfo;
+class OverlapObject;
+
+class TwoSiteOverlapCalculator : public OverlapCalculator {
+	public:
+		// constructor and destructor
+        TwoSiteOverlapCalculator(const T3NSfill * opt, const T3NSfill * ref,
+                const struct network * netw) : OverlapCalculator(opt, ref, netw) {};
+	
+		// @TEST
+        int perform_testing();
+        // void can_you_find_me() {printf("Here you are!");};
+
+	// private:
+		void set_OO_to_contraction(const TensorInfo * A, const TensorInfo * B,
+				int leg, OverlapObject * OO);
+		// // storage of intermediate results
+		// struct TensorInfo[2] tensmem; // tensor memory
+		// // backup tensor memory for branching tensor calculations
+		// struct TensorInfo[2] tensbmem;
+		// // indices of the last optimization center used
+		// // the indices are stored such that last_optimized
+		// int last_optimized[2];
+};
+
+
+#endif

@@ -91,10 +91,12 @@ typedef struct T3NSfill {
 
 // declare a OverlapCalculator class or structure
 #ifdef __cplusplus
+    class TwoSiteOverlapCalculator;
     class OverlapCalculator;
 #else
     // declare a C struct to reference the OverlapCalculator
     // class from a C context
+    typedef struct TwoSiteOverlapCalculator TwoSiteOverlapCalculator;
     typedef struct OverlapCalculator OverlapCalculator;
 #endif
 
@@ -112,9 +114,12 @@ extern "C" {
 //  -> constructor
 extern void init_overlap_calculator(const T3NSfill * opt,
         const T3NSfill * ref, const struct network * netw,
-        OverlapCalculator ** result);
-//  -> get_result
-extern int get_result(OverlapCalculator*);
+        OverlapCalculator ** result, int nsites);
+//  -> perform_testing
+extern int perform_testing_main(OverlapCalculator*);
+extern int perform_testing_2site(TwoSiteOverlapCalculator*);
+// extern void can_you_find_me_too(OverlapCalculator* calc);
+// extern void can_you_find_me(TwoSiteOverlapCalculator* calc);
 
 /************************END*C-INTERFACE**********************/
 
