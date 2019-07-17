@@ -31,7 +31,7 @@ class SymsecMatcher;
 // symsecMatcher before performing block calculations that take block info.
 class OverlapObject {
 	public:
-		// constructors
+		// constructors and destructor
 		// @param:
 		//   ref = symmetry sectors of the bond in the reference T3NS
 		//   opt = symmetry sectors of the bond in the optimizing T3NS
@@ -41,13 +41,11 @@ class OverlapObject {
 		OverlapObject(struct symsecs * ref, struct symsecs * opt,
 				int opt_dim = -1);  // <0 => 2 * opt->totaldims
 		OverlapObject(const OverlapObject &);  // Copy constructor
+		~OverlapObject();  // destructor
 
 		// Assignment operator
 		OverlapObject& operator=(const OverlapObject &);
-
-		// destructor
-		~OverlapObject();
-
+		
 		// renew the beginblocks and tel array
 		// @param: match should contain the matches between ref and opt;
 		//   no assumptations are made about the ordering of matching symsecs
@@ -60,7 +58,7 @@ class OverlapObject {
 		// get or set the reference or optimizing symsec
 		struct symsecs * get_ref() { return ref; }
 		struct symsecs * get_opt() { return opt; }
-		// void set_ref(struct symsecs * new_ref) { ref = new_ref; } REALLOCATE!
+	//	void set_ref(struct symsecs * new_ref) { ref = new_ref; } REALLOCATE!
 		void set_opt(struct symsecs * new_opt) { opt = new_opt; }
 		// get the dimensions of block i (indexing based on ref)
 		int get_ldim(int i) const { return ldim[i]; }  // leading, based on ref

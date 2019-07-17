@@ -422,9 +422,7 @@ static int initialize_program(int argc, char *argv[],
             tic(&chrono, INIT_OOCALC);
             TwoSiteOverlapCalculator * OOcalc;
             // first opt, then ref
-            printf("Before init_overlap_calculator\n");
             init_overlap_calculator(&states[0], &states[1], &netw, &OOcalc, 2);
-            printf("After init_overlap_calculator\n");
             // moffelzone
             // ((*T3NS)[1]).nrblocks -= 1;   last moffel succesful!
             // bookie.v_symsecs[0].totaldims = 10;

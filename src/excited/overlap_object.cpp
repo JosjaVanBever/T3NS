@@ -23,24 +23,16 @@
 OverlapObject::OverlapObject(struct symsecs * ref, struct symsecs * opt,
 			int opt_dim) : ref(ref), opt(opt)
 {
-	fprintf(stdout, "Busy building.\n"); fflush(stdout);
-
 	// redefine opt_dim if smaller than 0
 	if (opt_dim < 0) { opt_dim = 2 * opt->totaldims; }
 
 	// help variable
 	int nrBlocks = ref->nrSecs;
 
-	init_memory_sparseblocks(&blocks, nrBlocks, ref->totaldims * opt_dim);
-
 	// initialize the sparseblocks
-	// init_null_sparseblocks(&blocks);
-	// // -> allocate the tel array
-	// blocks.tel = (EL_TYPE *) safe_malloc(ref->totaldims * opt_dim, EL_TYPE);
+	init_memory_sparseblocks(&blocks, nrBlocks, ref->totaldims * opt_dim);
 	allocsize = ref->totaldims * opt_dim;
 	usedsize = 0;
-	// // -> allocate beginblock
-	// blocks.beginblock = (int *) safe_malloc(nrBlocks + 1, int);
 
 	// allocate the ldim and sdim array
 	ldim = (int *) safe_malloc(nrBlocks, int);
@@ -55,18 +47,13 @@ OverlapObject::OverlapObject(const OverlapObject & copy) : ref(copy.ref),
 	this->copy(copy);
 }
 
-
-// // help variable
-// 	int nr_blocks = copy->get_nr_blocks()
-// 	// sparseblocks
-// 	deep_copy_sparseblocks(this->blocks, copy->blocks, nr_blocks);
-// 	// ldim and sdim
-// 	ldim = (int *) safe_malloc(nr_blocks, int);
-// 	sdim = (int *) safe_malloc(nr_blocks, int);
-// 	for (int i=0; i<nr_blocks; i++) {
-// 		ldim[i] = copy->ldim[i];
-// 		sdim[i] = copy->sdim[i];
-// 	}
+// Destructor
+OverlapObject::~OverlapObject()
+{
+	// destroy_sparseblocks(struct sparseblocks * blocks);
+	destroy_sparseblocks(&blocks);
+	safe_free(ldim); safe_free(sdim);
+}
 
 // Assignment operator
 OverlapObject& OverlapObject::operator=(const OverlapObject & rhs)
@@ -77,6 +64,7 @@ OverlapObject& OverlapObject::operator=(const OverlapObject & rhs)
 	return *this;
 }
 
+// help function to copy
 void OverlapObject::copy (const OverlapObject & copy)
 {
 	// help variable
@@ -92,13 +80,17 @@ void OverlapObject::copy (const OverlapObject & copy)
 	}
 }
 
-// void OverlapObject::swap(OverlapObject& s) noexcept
+// void OverlapObject::set_ref(struct symsecs * new_ref)
 // {
-// 	using std::swap;
-// 	swap(this.mArray,s.mArray);
-// 	swap(this.mSize ,s.mSize);
-// }
+// 	// help variable
+// 	int nrBlocks = new_ref->nrSecs;
+// 	// reallocate if necessary
+// 	if (nrBlocks > get_nr_blocks()) {
 
+// 	}
+// 	// set the ref variable
+// 	this->ref = new_ref;
+// }
 
 // renew the beginblocks and tel array
 // match should contain the matches between ref and opt
@@ -106,8 +98,6 @@ void OverlapObject::copy (const OverlapObject & copy)
 void OverlapObject::renew_block_layout(const SymsecMatcher * match,
 		bool set_zero)
 {
-	printf("Inside renew_block_layout\n");
-
 	// help variables
 	usedsize = 0;
 	int nrBlocks = ref->nrSecs;   //what if nr blocks change!!!!!!!!!!
@@ -115,18 +105,14 @@ void OverlapObject::renew_block_layout(const SymsecMatcher * match,
 
 	// // do extra reallocation just for testing @TEST
 	// blocks.beginblock = (int *) realloc(blocks.beginblock, nrBlocks); // @TEST
-	ldim = (int *) realloc(ldim, nrBlocks);// @TEST
-	sdim = (int *) realloc(sdim, nrBlocks);// @TEST
-
-	printf("Calling1\n");
+//	ldim = (int *) realloc(ldim, nrBlocks);// @TEST
+//	sdim = (int *) realloc(sdim, nrBlocks);// @TEST
 
 	// reset the beginblock and dimension arrays
 	for (int i=0; i<nrBlocks; i++) {
 		blocks.beginblock[i] = -1;  // default value
 	 	ldim[i] = sdim[i] = 0; }    // start empty
 	blocks.beginblock[nrBlocks] = -1;
-
-	printf("Calling2\n");
 
 	// fill the beginblock and dimension arrays
 	for (int j=0; j<match->get_size(); j++) {
@@ -145,14 +131,6 @@ void OverlapObject::renew_block_layout(const SymsecMatcher * match,
 	 	usedsize += ldim[index] * sdim[index]; }
 	blocks.beginblock[nrBlocks] = usedsize;
 
-	printf("usedsize: %d; allocsize: %d\n", usedsize, allocsize);
-
-	//blocks.tel = (EL_TYPE *) realloc(blocks.tel, usedsize  * sizeof(EL_TYPE)); // @TEST
-
-	// safe_free(blocks.tel);   //WTF!!!!!!!!!!!!!!!
-//	blocks.tel = (EL_TYPE *) malloc(usedsize  * sizeof(EL_TYPE));
-//	blocks.tel[0] = 0;    // SEGMENTATION FAULT!!!!!!!!!!!!!!!!!!!!!!
-
 	// reallocate tel if necessary
 	if (usedsize > allocsize) {
 		allocsize = 2 * usedsize;
@@ -160,26 +138,14 @@ void OverlapObject::renew_block_layout(const SymsecMatcher * match,
 		//this->reallocate_elements(allocsize);
 	}
 
-	printf("usedsize: %d; allocsize: %d\n", usedsize, allocsize);
-
 	assert(usedsize <= allocsize);
 
 	if (set_zero) {
 		// fill tel up with zeros
 		for (int i=0; i<usedsize; i++) {
-	 		blocks.tel[i] = 0;                 // SEGMENTATION FAULT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	 		blocks.tel[i] = 0;
 		}
 	}
-}
-
-
-OverlapObject::~OverlapObject()
-{
-	// destroy_sparseblocks(struct sparseblocks * blocks);
-	fprintf(stdout, "Busy destroying.\n"); fflush(stdout);
-	// safe_free(blocks.beginblock); safe_free(blocks.tel);
-	destroy_sparseblocks(&blocks);
-	safe_free(ldim); safe_free(sdim);
 }
 
 
