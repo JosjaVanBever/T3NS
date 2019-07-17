@@ -54,9 +54,9 @@ void TwoSiteOverlapCalculator::set_OO_to_contraction(const TensorInfo * ref,
     // modify the block layout of OO
     OO->renew_block_layout(&symsecMatchers[open_leg] , true);
 
-    // // irrep indices for the reference and optimizing blocks currently
-    // // contributing
-    // int r[3], o[3];
+    // irrep indices for the reference and optimizing blocks currently
+    // contributing
+    int r[3], o[3];
 
     // // Remark: outer loop is completely parallelizable: no overlap in write
     // //   access since independ blocks are manipulated

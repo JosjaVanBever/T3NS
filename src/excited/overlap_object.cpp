@@ -87,8 +87,13 @@ void OverlapObject::copy (const OverlapObject & copy)
 // 	int nrBlocks = new_ref->nrSecs;
 // 	// reallocate if necessary
 // 	if (nrBlocks > get_nr_blocks()) {
-
+// 		reallocate<int>(ldim, nrBlocks);
+// 		reallocate<int>(sdim, nrBlocks);
+// 		reallocate<int>(blocks.beginblock, nrBlocks);
 // 	}
+// 	// values and length of tel array are not meaningfull anymore
+// 	blocks.beginblock[nrBlocks] = 0;
+
 // 	// set the ref variable
 // 	this->ref = new_ref;
 // }
@@ -101,13 +106,7 @@ void OverlapObject::renew_block_layout(const SymsecMatcher * match,
 {
 	// help variables
 	usedsize = 0;
-	int nrBlocks = ref->nrSecs;   //what if nr blocks change!!!!!!!!!!
-								  //cannot be the case!
-
-	// // do extra reallocation just for testing @TEST
-	// blocks.beginblock = (int *) realloc(blocks.beginblock, nrBlocks); // @TEST
-//	ldim = (int *) realloc(ldim, nrBlocks);// @TEST
-//	sdim = (int *) realloc(sdim, nrBlocks);// @TEST
+	int nrBlocks = ref->nrSecs;
 
 	// reset the beginblock and dimension arrays
 	for (int i=0; i<nrBlocks; i++) {
@@ -135,13 +134,7 @@ void OverlapObject::renew_block_layout(const SymsecMatcher * match,
 	// reallocate tel if necessary
 	if (usedsize > allocsize) {
 		allocsize = 2 * usedsize;
-		reallocate<EL_TYPE>(&blocks.tel, allocsize);
-	 	// blocks.tel = (EL_TYPE *) realloc(blocks.tel, allocsize  * sizeof(EL_TYPE)); // @TEST
-		//this->reallocate_elements(allocsize);
-	}
-
-	assert(usedsize <= allocsize);
-
+		reallocate<EL_TYPE>(&blocks.tel, allocsize); }
 	if (set_zero) {
 		// fill tel up with zeros
 		for (int i=0; i<usedsize; i++) {

@@ -58,8 +58,8 @@ class OverlapObject {
 		// get or set the reference or optimizing symsec
 		struct symsecs * get_ref() { return ref; }
 		struct symsecs * get_opt() { return opt; }
-	//	void set_ref(struct symsecs * new_ref) { ref = new_ref; } REALLOCATE!
-		void set_opt(struct symsecs * new_opt) { opt = new_opt; }
+		//void set_ref(struct symsecs * new_ref) { ref = new_ref; } REALLOCATE!
+		//void set_opt(struct symsecs * new_opt) { opt = new_opt; } DO NOT DO THIS EITHER!
 		// get the dimensions of block i (indexing based on ref)
 		int get_ldim(int i) const { return ldim[i]; }  // leading, based on ref
 		int get_sdim(int i) const { return sdim[i]; }  // second, based on opt
