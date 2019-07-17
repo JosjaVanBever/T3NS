@@ -73,6 +73,7 @@ extern void init_memory_sparseblocks(struct sparseblocks * blocks,
         int nr_blocks, int nr_elements);
 extern void deep_copy_sparseblocks(struct sparseblocks * copy,
         const struct sparseblocks * tocopy, int nrblocks);
+extern void destroy_siteTensor(struct siteTensor * const tens);
 
 /***********************END*C++-INTERFACE*********************/
 

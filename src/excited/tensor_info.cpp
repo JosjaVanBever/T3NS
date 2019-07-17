@@ -23,11 +23,11 @@
 #include "cpp_tools.h"
 
 
-// TensorInfo::TensorInfo() : data(NULL), is_physical(false), usedsize(0), allocsize(0),
-// 		nr_allocated_blocks(0)
-// {
-// 	for (int i=0; i<3; i++) { this->syms[i] = NULL; }
-// }
+TensorInfo::TensorInfo() : data(NULL), is_physical(false), usedsize(0), allocsize(0),
+		nr_allocated_blocks(0)
+{
+	for (int i=0; i<3; i++) { this->syms[i] = NULL; }
+}
 
 TensorInfo::TensorInfo(struct siteTensor * data, struct symsecs ** syms, bool is_psite)
 		: data(data), is_physical(is_psite), nr_allocated_blocks(data->nrblocks)
@@ -307,6 +307,22 @@ void print_tensorInfo(const struct bookkeeper * keeper,
 			fprintf(stdout, "block %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
 		}
 	}
+}
+
+
+// initialize the memory for a tensorInfo object while
+// setting its syms to NULL
+void init_dataMemory_tensorInfo(TensorInfo * tensor_info)
+{
+    // syms will be ented onto external structure
+    struct symsecs * symptrs[3] = {NULL, NULL, NULL};
+    // siteTensor data is explicitly allocated
+    struct siteTensor * data;
+    mallocate<struct siteTensor>(&data, 1);
+    init_null_siteTensor(data);
+    // put everything together in a tensorInfo object
+    TensorInfo tensor(data, symptrs, true);
+    *tensor_info = tensor;  // == shallow copying
 }
 
 

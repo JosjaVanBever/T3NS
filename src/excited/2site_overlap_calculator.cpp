@@ -35,6 +35,27 @@ int perform_testing_2site(TwoSiteOverlapCalculator* calc)
 /************************END*C-INTERFACE**********************/
 
 
+// Constructor
+TwoSiteOverlapCalculator::TwoSiteOverlapCalculator(const T3NSfill * opt, const T3NSfill * ref,
+        const struct network * netw) : OverlapCalculator(opt, ref, netw)
+{
+    // last_optimization is set by default to [-1,-1]
+    last_optimized[0] = last_optimized[1] = -1;
+    // help tensorInfo's are created, explicitely allocating their data
+    for (int i=0; i<2; i++) {
+        init_dataMemory_tensorInfo(&(tensmem[i]));
+        init_dataMemory_tensorInfo(&(tensbmem[i]));
+    }
+}
+
+TwoSiteOverlapCalculator::~TwoSiteOverlapCalculator()
+{
+    for (int i=0; i<2; i++) {
+        destroy_siteTensor(tensmem[i].get_data());
+        destroy_siteTensor(tensbmem[i].get_data());
+    }
+}
+
 // Set OO equal to the contraction of A and B. 'leg' determines the index
 // that is not contracted and which symsec of A will determine OO's blocking.
 void TwoSiteOverlapCalculator::set_OO_to_contraction(const TensorInfo * ref,

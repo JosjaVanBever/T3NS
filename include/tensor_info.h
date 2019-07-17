@@ -18,10 +18,11 @@
 #ifndef TENSOR_INFO_H
 #define TENSOR_INFO_H
 
-
+// WARNING: a TensorInfo instance does not allocate anything!
 class TensorInfo {
 	public:
-		// constructor
+		// constructors
+		TensorInfo();
 		// @param: syms is array of pointers to symsecs
 		TensorInfo(struct siteTensor * data, struct symsecs ** syms, bool is_psite);
 		// default copy constructor and assignment operator are sufficient
@@ -98,6 +99,11 @@ struct TensorInfoPair {
 	// e.g. the excited state
 	TensorInfo opt;
 };
+
+
+// initialize the memory for a tensorInfo object while
+// setting its syms to NULL
+void init_dataMemory_tensorInfo(TensorInfo * tensor_info);
 
 
 void print_tensorInfo(const struct bookkeeper * keeper,

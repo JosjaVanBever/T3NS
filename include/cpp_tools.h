@@ -15,8 +15,21 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef CPP_TOOLS
+#define CPP_TOOLS
+
+#include "macros.h"
+
 // usage: reallocate<T>(&ptr, size)
 template <typename T>
 void reallocate(T ** ptr, int size) {
 	*ptr = (T *) realloc(*ptr, size * sizeof(T));
 }
+
+// usage: mallocate<T>(&ptr, size)
+template <typename T>
+void mallocate(T ** ptr, int size) {
+	*ptr = (T *) safe_malloc(size, T);
+}
+
+#endif
