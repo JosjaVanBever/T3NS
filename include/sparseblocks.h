@@ -61,6 +61,10 @@ struct sparseblocks {
  */
 void init_null_sparseblocks(struct sparseblocks * blocks);
 
+
+// @JOSJA
+void init_memory_sparseblocks(struct sparseblocks * blocks, int nr_blocks, int nr_elements);
+
 /** 
  * @brief Makes a sparseblocks instance with malloc or calloc
  *

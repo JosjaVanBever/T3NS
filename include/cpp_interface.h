@@ -61,11 +61,18 @@ extern void print_network(void);
 extern int get_common_bond(int site1 , int site2);
 extern void print_bookkeeper(const struct bookkeeper * keeper, int fci);
 extern int search_symsec(int * symmsec, const struct symsecs * sectors);
-extern void indexize_address(int * ids, QN_TYPE qn, const struct symsecs * const * ss);
+extern void indexize_address(int * ids, QN_TYPE qn,
+        const struct symsecs * const * ss);
 extern void init_null_siteTensor(struct siteTensor * const tens);
-extern void init_1siteTensor(struct siteTensor * const tens, const int site, const char o);
+extern void init_1siteTensor(struct siteTensor * const tens,
+        const int site, const char o);
 extern void init_null_symsecs(struct symsecs * symsec);
 
+extern void destroy_sparseblocks(struct sparseblocks * blocks);
+extern void init_memory_sparseblocks(struct sparseblocks * blocks,
+        int nr_blocks, int nr_elements);
+extern void deep_copy_sparseblocks(struct sparseblocks * copy,
+        const struct sparseblocks * tocopy, int nrblocks);
 
 /***********************END*C++-INTERFACE*********************/
 

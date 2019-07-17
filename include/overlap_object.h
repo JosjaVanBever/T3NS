@@ -31,7 +31,7 @@ class SymsecMatcher;
 // symsecMatcher before performing block calculations that take block info.
 class OverlapObject {
 	public:
-		// constructor
+		// constructors
 		// @param:
 		//   ref = symmetry sectors of the bond in the reference T3NS
 		//   opt = symmetry sectors of the bond in the optimizing T3NS
@@ -40,6 +40,10 @@ class OverlapObject {
 		//   will be needed. Remark that 2000**2 * 100 * 8 bytes is about 3Gb.
 		OverlapObject(struct symsecs * ref, struct symsecs * opt,
 				int opt_dim = -1);  // <0 => 2 * opt->totaldims
+		OverlapObject(const OverlapObject &);  // Copy constructor
+
+		// Assignment operator
+		OverlapObject& operator=(const OverlapObject &);
 
 		// destructor
 		~OverlapObject();
@@ -56,15 +60,21 @@ class OverlapObject {
 		// get or set the reference or optimizing symsec
 		struct symsecs * get_ref() { return ref; }
 		struct symsecs * get_opt() { return opt; }
-		void set_ref(struct symsecs * new_ref) { ref = new_ref; }
+		// void set_ref(struct symsecs * new_ref) { ref = new_ref; } REALLOCATE!
 		void set_opt(struct symsecs * new_opt) { opt = new_opt; }
 		// get the dimensions of block i (indexing based on ref)
 		int get_ldim(int i) const { return ldim[i]; }  // leading, based on ref
 		int get_sdim(int i) const { return sdim[i]; }  // second, based on opt
+		int get_nr_blocks() const { return ref->nrSecs; }  // number of blocks
+		// get the help variables
+		int get_usedsize() const { return usedsize; }
+		int get_allocsize() const { return allocsize; }
 
 	private:
 		// help function for reallocation of the element array
 		void reallocate_elements(int elements);
+		// help function for copying
+		void copy (const OverlapObject & copy);
 
 		// Main data:
 		// Symmetry sectors in the reference and optimizing bond
@@ -76,8 +86,8 @@ class OverlapObject {
 		//   ldim[i] and second dimension sdim[i].
 		//   If blocks.beginblock[i] == -1, the i'th block is not present.
 		struct sparseblocks blocks;  // begin blocks and element array
-		int * ldim;  // leading dimension array -> from reference
-		int * sdim;  // second dimension array -> from optimizing
+		int * ldim;     // leading dimension array -> from reference
+		int * sdim;     // second dimension array -> from optimizing
 
 		// Help data:
 		// size of tel array used to effectively store elements

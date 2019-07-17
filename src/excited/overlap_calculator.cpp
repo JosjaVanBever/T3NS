@@ -25,7 +25,9 @@ void init_overlap_calculator(const T3NSfill * opt, const T3NSfill * ref,
     const struct network * netw, OverlapCalculator ** result, int nsites)
 {
     if (nsites == 2) {
+        printf("Before new TwoSiteOverlapCalculator\n");
         *result = new TwoSiteOverlapCalculator(opt, ref, netw);
+        printf("After new TwoSiteOverlapCalculator\n");
     } else {
         printf("Only 2 site optimizations are for free.\n");
         printf("Extensions to 3 and 4 sites require a doctoral grant.\n");
@@ -108,12 +110,24 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
 
     // initialize empty overlaps
     nr_overlaps = network->nr_bonds;
+
+    printf("Before overlaps = (OverlapObject *) safe_malloc(nr_overlaps, OverlapObject)\n");
+
     overlaps = (OverlapObject *) safe_malloc(nr_overlaps, OverlapObject);
+
+    printf("After overlaps = (OverlapObject *) safe_malloc(nr_overlaps, OverlapObject)\n");
+
     for (int i=0; i<nr_overlaps; i++) {
         bookkeeper_get_symsecs_address(ref_t3ns->bookie, &CR_syms, i);
         bookkeeper_get_symsecs_address(opt_t3ns->bookie, &CO_syms, i);
+
+        printf("Before overlaps[i] = OverlapObject(CR_syms, CO_syms)\n");
+
         overlaps[i] = OverlapObject(CR_syms, CO_syms);
+
+        printf("After overlaps[i] = OverlapObject(CR_syms, CO_syms)\n");
     }
+    overlaps[3].~OverlapObject(); //@TEST
 
     // look for the maximal bond dimension present in the reference network
     int max_dim = get_max_bond_dimension(ref_t3ns->bookie);

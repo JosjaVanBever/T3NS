@@ -24,6 +24,7 @@ class TensorInfo {
 		// constructor
 		// @param: syms is array of pointers to symsecs
 		TensorInfo(struct siteTensor * data, struct symsecs ** syms, bool is_psite);
+		// default copy constructor and assignment operator are sufficient
 
 		// getters
 		// void get_syms(struct symsecs ** result) const;

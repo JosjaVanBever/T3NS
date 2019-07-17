@@ -34,6 +34,13 @@ void init_null_sparseblocks(struct sparseblocks * blocks)
         blocks->tel        = NULL;
 }
 
+void init_memory_sparseblocks(struct sparseblocks * blocks, int nr_blocks, int nr_elements)
+{
+        blocks->beginblock = safe_malloc(nr_blocks + 1, int);
+        blocks->tel        = safe_malloc(nr_elements, EL_TYPE);
+        blocks->beginblock[nr_blocks] = nr_elements;
+}
+
 void init_sparseblocks(struct sparseblocks * blocks, const int * beginblock, 
                        int nr_blocks, char o)
 {
