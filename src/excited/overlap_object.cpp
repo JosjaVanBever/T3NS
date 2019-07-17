@@ -19,12 +19,13 @@
 #include "overlap_object.h"
 #include "symsec_matcher.h"
 #include "sparseblocks.h"
+#include "cpp_tools.h"
 
 OverlapObject::OverlapObject(struct symsecs * ref, struct symsecs * opt,
 			int opt_dim) : ref(ref), opt(opt)
 {
 	// redefine opt_dim if smaller than 0
-	if (opt_dim < 0) { opt_dim = 2 * opt->totaldims; }
+	if (opt_dim < 0) { opt_dim = opt->totaldims; }
 
 	// help variable
 	int nrBlocks = ref->nrSecs;
@@ -134,7 +135,8 @@ void OverlapObject::renew_block_layout(const SymsecMatcher * match,
 	// reallocate tel if necessary
 	if (usedsize > allocsize) {
 		allocsize = 2 * usedsize;
-	 	blocks.tel = (EL_TYPE *) realloc(blocks.tel, allocsize  * sizeof(EL_TYPE)); // @TEST
+		reallocate<EL_TYPE>(&blocks.tel, allocsize);
+	 	// blocks.tel = (EL_TYPE *) realloc(blocks.tel, allocsize  * sizeof(EL_TYPE)); // @TEST
 		//this->reallocate_elements(allocsize);
 	}
 
@@ -151,15 +153,16 @@ void OverlapObject::renew_block_layout(const SymsecMatcher * match,
 
 void OverlapObject::reallocate_optdim(int opt_dim)
 {
-	reallocate_elements(ref->totaldims * opt_dim);
+	// reallocate_elements(ref->totaldims * opt_dim);
+	reallocate<EL_TYPE>(&blocks.tel, ref->totaldims * opt_dim);
 }
 
 
-void OverlapObject::reallocate_elements(int elements)
-{
-	allocsize = elements;
-	blocks.tel = (EL_TYPE *) realloc(blocks.tel, elements * sizeof(EL_TYPE));
-}
+// void OverlapObject::reallocate_elements(int elements)
+// {
+// 	allocsize = elements;
+// 	blocks.tel = (EL_TYPE *) realloc(blocks.tel, elements * sizeof(EL_TYPE));
+// }
 
 
 void print_overlap_object(const struct bookkeeper * ref_bookie,

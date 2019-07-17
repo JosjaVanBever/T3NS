@@ -36,10 +36,10 @@ class OverlapObject {
 		//   ref = symmetry sectors of the bond in the reference T3NS
 		//   opt = symmetry sectors of the bond in the optimizing T3NS
 		//   [opt_dim] = current/bond dimension of opt
-		// @remark: if opt_dim is set to the bond dimension, no reallocation
+		// @remark: if opt_dim is set to the bond dimension, almost no reallocation
 		//   will be needed. Remark that 2000**2 * 100 * 8 bytes is about 3Gb.
 		OverlapObject(struct symsecs * ref, struct symsecs * opt,
-				int opt_dim = -1);  // <0 => 2 * opt->totaldims
+				int opt_dim = -1);  // <0 => opt->totaldims
 		OverlapObject(const OverlapObject &);  // Copy constructor
 		~OverlapObject();  // destructor
 
@@ -69,8 +69,8 @@ class OverlapObject {
 		int get_allocsize() const { return allocsize; }
 
 	private:
-		// help function for reallocation of the element array
-		void reallocate_elements(int elements);
+		// // help function for reallocation of the element array
+		// void reallocate_elements(int elements);
 		// help function for copying
 		void copy (const OverlapObject & copy);
 

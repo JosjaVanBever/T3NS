@@ -52,7 +52,6 @@ void TwoSiteOverlapCalculator::set_OO_to_contraction(const TensorInfo * ref,
     }
 
     // modify the block layout of OO
-    // HERE IS A SEGMENTATION FAULT GENERATED!
     OO->renew_block_layout(&symsecMatchers[open_leg] , true);
 
     // // irrep indices for the reference and optimizing blocks currently
@@ -97,7 +96,7 @@ int TwoSiteOverlapCalculator::perform_testing() {
     //     print_overlap_object(ref_bookie, opt_bookie, &(overlaps[i]));
     // }
     // printf("\n");
-/*
+
     printf("\nBefore:\n");
     for (int i=1; i<2; i++) {
         printf("\n\n%d:", i);
@@ -106,7 +105,7 @@ int TwoSiteOverlapCalculator::perform_testing() {
 
     fprintf(stdout, "\noverlaps[%d]:\n", 1);
     print_overlap_object(ref_bookie, opt_bookie, &(overlaps[2]));
-*/
+
     // tensorpairs[1].opt.set_sym(tensorpairs[0].opt.get_sym(0), 0);
     // overlaps[1].set_opt(tensorpairs[0].opt.get_sym(0));
 
@@ -133,7 +132,7 @@ int TwoSiteOverlapCalculator::perform_testing() {
 
     // TEMP.copy_symmetry_layout(&(tensorpairs[1].ref));
     // TEMP.renew_block_layout(&(tensorpairs[1].ref), &link, true);
-/*
+
     printf("\nAfter:\n");
     for (int i=1; i<2; i++) {
         printf("\n\n%d:", i);
@@ -143,7 +142,7 @@ int TwoSiteOverlapCalculator::perform_testing() {
 
     fprintf(stdout, "overlaps[%d]:\n", 1);
     print_overlap_object(ref_bookie, opt_bookie, &(overlaps[2]));
-*/
+
     // printf("\nTEMP:\n");
     // fflush(stdout);
     // print_tensorInfo(ref_bookie, &TEMP, 0);

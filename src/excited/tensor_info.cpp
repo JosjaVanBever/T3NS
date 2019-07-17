@@ -20,6 +20,7 @@
 #include "overlap_object.h"
 #include <stdio.h>
 #include "siteTensor.h"
+#include "cpp_tools.h"
 
 
 // TensorInfo::TensorInfo() : data(NULL), is_physical(false), usedsize(0), allocsize(0),
@@ -95,11 +96,7 @@ void TensorInfo::copy_symmetry_layout(const TensorInfo * ref)
 // 	}
 // }
 
-// usage: reallocate<T>(&ptr, size)
-template <typename T>
-void reallocate(T ** ptr, int size) {
-	*ptr = (T *) realloc(*ptr, size * sizeof(T));
-}
+
 ////////////////////////////////
 inline int TensorInfo::get_block_dimension(int leg, int sym_index) const
 {
