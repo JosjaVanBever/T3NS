@@ -159,6 +159,20 @@ void OverlapCalculator::contract_reference_with_OO(const TensorInfo * reference,
 }
 
 
+void OverlapCalculator::contract_reference_with_OO_list(const TensorInfo * ref,
+            const OverlapObjectLink * OO_link_list, TensorInfo * memory,
+            TensorInfo * result)
+{
+    if (ref->is_physical_tensor()) {
+        contract_reference_with_OO(ref, &(OO_link_list[0]), result);
+    } else {
+        printf("going branching");
+        contract_reference_with_OO(ref, &(OO_link_list[0]), memory);
+        contract_reference_with_OO(memory, &(OO_link_list[1]), result);
+    }
+}
+
+
 // get the OO link attached to who and pointing to other
 int OverlapCalculator::get_internal_link(int who, int other,
         OverlapObjectLink * result)

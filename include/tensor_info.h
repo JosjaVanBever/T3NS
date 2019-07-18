@@ -36,6 +36,8 @@ class TensorInfo {
 		int get_usedsize() const { return usedsize; }
 		int get_allocsize() const { return allocsize; }
 		int get_nr_allocated_blocks() const { return nr_allocated_blocks; }
+		// is the tensor a physical or branching tensor?
+		bool is_physical_tensor() const { return is_physical; }
 
 		// get the bond dimension for a certain leg and symmetry sector
 		int get_block_dimension(int leg, int sym_index) const;
@@ -104,12 +106,18 @@ struct TensorInfoPair {
 void init_dataMemory_tensorInfo(TensorInfo * tensor_info);
 
 
+void print_tensorInfo(const struct bookkeeper ** keepers,
+		const TensorInfo * tensor, int specification=0);
+
 void print_tensorInfo(const struct bookkeeper * keeper,
 		const TensorInfo * tensor, int specification=0);
+
+void print_TensorInfoPair(const struct bookkeeper ** opt_bookies,
+		const struct bookkeeper ** ref_bookies,
+		const struct TensorInfoPair * pair, int specification=0, char which='a');
 
 void print_TensorInfoPair(const struct bookkeeper * opt_bookie,
 		const struct bookkeeper * ref_bookie,
 		const struct TensorInfoPair * pair, int specification=0, char which='a');
-
 
 #endif

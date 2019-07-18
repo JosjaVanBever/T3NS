@@ -124,9 +124,9 @@ int TwoSiteOverlapCalculator::perform_testing() {
     //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
     // }
 
-    // /************print a tensorInfoPair******/
-    // printf("\n\n%d:", 1);
-    // print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[1]), 0);
+    /************print a tensorInfoPair******/
+    // printf("\n\n%d:", 2);
+    // print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[2]), 0);
 
     // /*************print an OO*********/
     // fprintf(stdout, "\noverlaps[%d]:\n", 1);
@@ -139,15 +139,19 @@ int TwoSiteOverlapCalculator::perform_testing() {
 
     set_OO_to_contraction(&(tensorpairs[1].ref), &(tensorpairs[1].opt),
             2, &(overlaps[2]));
+
+    set_OO_to_contraction(&(tensorpairs[2].ref), &(tensorpairs[2].opt),
+            2, &(overlaps[4]));
     /********************/
 
 
     /*******get OO link******************/
-    OverlapObjectLink link;
-    get_internal_link(12, 1, &link);
+    OverlapObjectLink links[2];
+    get_internal_link(12, 1, &(links[0]));
+    get_internal_link(12, 2, &(links[1]));
 
-    assert(link.OO->ref == overlaps[2]->syms[2] && link.OO->opt == opt->syms[2]);
-    assert(link.leg == 0);
+    assert(links[0].OO->ref == overlaps[2]->syms[2] && links[0].OO->opt == opt->syms[2]);
+    assert(links[0].leg == 0);
 
 
     // printf("\nAfter:\n");
@@ -157,21 +161,21 @@ int TwoSiteOverlapCalculator::perform_testing() {
     //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
     // }
 
-    /******create and print temporary tensorInfo**********/
-    struct symsecs * TEMPsyms[3];
-    struct symsecs helpsyms[3];
-    for (int i=0; i<3; i++) {
-        TEMPsyms[i] = &(helpsyms[i]);
-        init_null_symsecs(TEMPsyms[i]);
-    }
+    // /******create and print temporary tensorInfo**********/
+    // struct symsecs * TEMPsyms[3];
+    // struct symsecs helpsyms[3];
+    // for (int i=0; i<3; i++) {
+    //     TEMPsyms[i] = &(helpsyms[i]);
+    //     init_null_symsecs(TEMPsyms[i]);
+    // }
 
-    struct siteTensor TEMPdata;
-    init_null_siteTensor(&TEMPdata);
-    TensorInfo TEMP(&TEMPdata, TEMPsyms, true);
+    // struct siteTensor TEMPdata;
+    // init_null_siteTensor(&TEMPdata);
+    // TensorInfo TEMP(&TEMPdata, TEMPsyms, true);
 
-    printf("\nTEMP:\n");
-    print_tensorInfo(ref_bookie, &TEMP, 0);
-    /*******************************************/
+    // printf("\nTEMP:\n");
+    // print_tensorInfo(ref_bookie, &TEMP, 0);
+    // /*******************************************/
 
     /**********set TEMP to a contraction*************/
     // //TEMP.copy_symmetry_layout(&(tensorpairs[12].ref));
@@ -179,7 +183,9 @@ int TwoSiteOverlapCalculator::perform_testing() {
     // TEMP.renew_block_layout(&(tensorpairs[12].ref), &link, true);
 
     // contract_reference_with_OO(&(tensorpairs[12].ref), &link, &TEMP);
-    contract_reference_with_OO(&(tensorpairs[12].ref), &link, &(tensmem[0]));
+    // contract_reference_with_OO(&(tensorpairs[12].ref), &links[0], &(tensmem[0]));
+    contract_reference_with_OO_list(&(tensorpairs[12].ref), links,
+            &(tensbmem[0]), &(tensmem[0]));
 
     printf("\nAfter:\n");
 
@@ -192,11 +198,23 @@ int TwoSiteOverlapCalculator::perform_testing() {
     fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[2][0], netw.bonds[2][1]);
     print_overlap_object(ref_bookie, opt_bookie, &(overlaps[2]));
 
+    fprintf(stdout, "overlaps[%d]:\n", 4);
+    fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[4][0], netw.bonds[4][1]);
+    print_overlap_object(ref_bookie, opt_bookie, &(overlaps[4]));
+
     /******************print temporary space***********/
+    const struct bookkeeper * tensb_bookies[3] = {opt_bookie,ref_bookie,ref_bookie};
+    const struct bookkeeper * tens_bookies[3]  = {opt_bookie,opt_bookie,ref_bookie};
+
+    printf("\ntensbmem[0]:\n");
+    print_tensorInfo(tensb_bookies, &(tensbmem[0]), 2);
+    print_tensorInfo(tensb_bookies, &(tensbmem[0]), 3);
+    print_tensorInfo(tensb_bookies, &(tensbmem[0]), 4);
+
     printf("\ntensmem[0]:\n");
-    print_tensorInfo(ref_bookie, &(tensmem[0]), 2);
-    print_tensorInfo(ref_bookie, &(tensmem[0]), 3);
-    print_tensorInfo(ref_bookie, &(tensmem[0]), 4);
+    print_tensorInfo(tens_bookies, &(tensmem[0]), 2);
+    print_tensorInfo(tens_bookies, &(tensmem[0]), 3);
+    print_tensorInfo(tens_bookies, &(tensmem[0]), 4);
 
     return 0;
 }

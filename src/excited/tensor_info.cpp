@@ -160,16 +160,18 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref,
 		// loop over all legs
 		for (int j=0; j<3; j++) {
 			// set the appropriate dimension
-			dims[j] = (j == OO_link->leg)? OO_link->OO->get_sdim(ids[j]) :   //WRONG!!!
+			dims[j] = (j == OO_link->leg)? OO_link->OO->get_sdim(ids[j]) :
 					get_block_dimension(j, ids[j]); }
 		// set the element in beginblock
 		data->blocks.beginblock[i] = usedsize;
 		// increase the usedsize
 		usedsize += dims[0] * dims[1] * dims[2];
 
-		fprintf(stdout, "beginblock[%d]: %d\n", i, data->blocks.beginblock[i]);
-		fprintf(stdout, "block dimensions %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
-		fprintf(stdout, "      symindices %d: %d %d %d\n", i, ids[0], ids[1], ids[2]);
+		// ERROR: WHEN THE OO CONTAINS (0,0) BLOCKS, THE DIMENSION IS NOT READ OUT CORRECTLY WHEN PRINTING AFTERWARDS!
+
+		// fprintf(stdout, "beginblock[%d]: %d\n", i, data->blocks.beginblock[i]);
+		// fprintf(stdout, "block dimensions %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
+		// fprintf(stdout, "      symindices %d: %d %d %d\n", i, ids[0], ids[1], ids[2]);
 
 	}
 
@@ -327,16 +329,16 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref,
 // }
 
 
-void print_tensorInfo(const struct bookkeeper * keeper,
+void print_tensorInfo(const struct bookkeeper ** keepers,
 		const TensorInfo * tensor, int spec)
 {
-	if (spec == 1 || spec == 0) {
-		// print the SiteTensor structure
-		fprintf(stdout,"SiteTensor data:\n");
-		if (tensor->get_data() != NULL) {
-			print_siteTensor(keeper, tensor->get_data());
-		}
-	}
+	// if (spec == 1 || spec == 0) {
+	// 	// print the SiteTensor structure
+	// 	fprintf(stdout,"SiteTensor data:\n");
+	// 	if (tensor->get_data() != NULL) {
+	// 		print_siteTensor(keeper, tensor->get_data());
+	// 	}
+	// }
 	
 	if (spec == 2 || spec == 0) {
 		// print the Symsecs structures
@@ -345,7 +347,7 @@ void print_tensorInfo(const struct bookkeeper * keeper,
 		tensor->get_syms(syms);
 		for (int i=0; i<3; i++) {
 			if (syms[i] != NULL) {
-				print_symsecs(keeper, syms[i], 0);
+				print_symsecs(keepers[i], syms[i], 0);
 			}
 		}
 	}
@@ -374,6 +376,14 @@ void print_tensorInfo(const struct bookkeeper * keeper,
 }
 
 
+void print_tensorInfo(const struct bookkeeper * keeper,
+		const TensorInfo * tensor, int spec)
+{
+	const struct bookkeeper * bookies[3] = {keeper,keeper,keeper};
+	print_tensorInfo(bookies, tensor, spec);
+}
+
+
 // initialize the memory for a tensorInfo object while
 // setting its syms to NULL
 void init_dataMemory_tensorInfo(TensorInfo * tensor_info)
@@ -390,19 +400,28 @@ void init_dataMemory_tensorInfo(TensorInfo * tensor_info)
 }
 
 
-void print_TensorInfoPair(const struct bookkeeper * opt_bookie,
-		const struct bookkeeper * ref_bookie,
+void print_TensorInfoPair(const struct bookkeeper ** opt_bookies,
+		const struct bookkeeper ** ref_bookies,
 		const struct TensorInfoPair * pair, int spec, char which)
 {
 	if (which == 'a' || which == 'o') {
 		// print the opt TensorInfo
 		fprintf(stdout,"TensorInfoPair with\nOPT:\n");
-		print_tensorInfo(opt_bookie, &(pair->opt), spec);
+		print_tensorInfo(opt_bookies, &(pair->opt), spec);
 	}
 
 	if (which == 'a' || which == 'r') {
 		// print the ref TensorInfo
 		fprintf(stdout,"REF:\n");
-		print_tensorInfo(ref_bookie, &(pair->ref), spec);
+		print_tensorInfo(ref_bookies, &(pair->ref), spec);
 	}
+}
+
+void print_TensorInfoPair(const struct bookkeeper * opt_bookie,
+		const struct bookkeeper * ref_bookie,
+		const struct TensorInfoPair * pair, int spec, char which)
+{
+	const struct bookkeeper * opt_bookies[3] = {opt_bookie,opt_bookie,opt_bookie};
+	const struct bookkeeper * ref_bookies[3] = {ref_bookie,ref_bookie,ref_bookie};
+	print_TensorInfoPair(opt_bookies, ref_bookies, pair, spec, which);
 }
