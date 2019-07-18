@@ -41,6 +41,10 @@ class TensorInfo {
 		int get_block_dimension(int leg, int sym_index) const;
 		// get the bond dimensions for a certain block and all legs
 		void get_block_dimensions(int blocknr, int * dims) const;
+		// get the index of the symmetry sector of a block for a certain leg
+		int get_sym_index(int blocknr, int leg) const;
+		// get the indices of the symmetry sectors of a block for all legs
+		void get_sym_indices(int blocknr, int * result) const;
 
 		// setters
 		void set_sym(struct symsecs * new_sym, int leg) {
@@ -49,13 +53,13 @@ class TensorInfo {
 		void set_syms(struct symsecs ** new_syms) {
 			for (int i=0; i<3; i++) { syms[i] = new_syms[i]; }}
 
-		// // renew the symmetry sectors based on the contraction of ref via
-		// // the given OO_link
-		// // @param:
-		// //   ref => contains the uncontracted symsecs
-		// //   OO_link => maps the contracted symsec onto the optimizing symsec
-		// void renew_symsec_layout(const TensorInfo * ref,
-		// 	const struct OverlapObjectLink * OO_link);
+		// renew the symmetry sectors based on the contraction of ref via
+		// the given OO_link
+		// @param:
+		//   ref => contains the uncontracted symsecs
+		//   OO_link => maps the contracted symsec onto the optimizing symsec
+		void renew_symsec_layout(const TensorInfo * ref,
+			const struct OverlapObjectLink * OO_link);
 
 		// copy the symmetry sector and tesnsor type from ref
 		void copy_symmetry_layout(const TensorInfo * ref);
@@ -82,13 +86,7 @@ class TensorInfo {
 		// allocated size of the tel array; should be >= usedsize
 		int allocsize;
 		// allocated number of blocks
-		int nr_allocated_blocks;
-
-		// Help functions:
-		// get the index of the symmetry sector of a block for a certain leg
-		int get_sym_index(int blocknr, int leg) const;
-		// get the indices of the symmetry sectors of a block for all legs
-		void get_sym_indices(int blocknr, int * result) const;
+		int nr_allocated_blocks;	
 };
 
 
@@ -111,7 +109,7 @@ void print_tensorInfo(const struct bookkeeper * keeper,
 
 void print_TensorInfoPair(const struct bookkeeper * opt_bookie,
 		const struct bookkeeper * ref_bookie,
-		const struct TensorInfoPair * pair, int specification=0);
+		const struct TensorInfoPair * pair, int specification=0, char which='a');
 
 
 #endif

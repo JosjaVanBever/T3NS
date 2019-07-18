@@ -215,3 +215,9 @@ inline void translate_indices(const int * oids, const struct symsecs * oss,
  */
 QN_TYPE translate_qn(QN_TYPE qn, const struct symsecs * oss,
                   const struct symsecs * nss);
+
+
+//@JOSJA: geen zaken kopieren waarvan we de inhoud niet horen te kennen
+// => arrays van 3 adressen
+QN_TYPE translate_qn_address(QN_TYPE qn, const struct symsecs * const * oss,
+                  const struct symsecs * const * nss);

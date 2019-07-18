@@ -75,6 +75,9 @@ extern void deep_copy_sparseblocks(struct sparseblocks * copy,
         const struct sparseblocks * tocopy, int nrblocks);
 extern void destroy_siteTensor(struct siteTensor * const tens);
 
+extern QN_TYPE translate_qn_address(QN_TYPE qn, const struct symsecs * const * oss,
+                  const struct symsecs * const * nss);
+
 /***********************END*C++-INTERFACE*********************/
 
 }

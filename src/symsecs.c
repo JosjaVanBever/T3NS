@@ -194,3 +194,20 @@ QN_TYPE translate_qn(QN_TYPE qn, const struct symsecs * oss,
         if (oids[0] < 0 || oids[1] < 0 || oids[2] < 0) { return -1; }
         return qntypize(nids, nss);
 }
+
+QN_TYPE translate_qn_address(QN_TYPE qn, const struct symsecs * const * ossptrs,
+                  const struct symsecs * const * nssptrs)
+{
+        // ok, dan maar intern knoeien ...
+        struct symsecs oss[3], nss[3];
+        for (int i=0; i<3; i++) {
+            oss[i] = *ossptrs[i];
+            nss[i] = *nssptrs[i];
+        }
+
+        int oids[3], nids[3];
+        indexize(oids, qn, oss);
+        translate_indices(oids, oss, nids, nss, 3);
+        if (oids[0] < 0 || oids[1] < 0 || oids[2] < 0) { return -1; }
+        return qntypize(nids, nss);
+}

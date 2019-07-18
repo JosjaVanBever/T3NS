@@ -119,54 +119,81 @@ int TwoSiteOverlapCalculator::perform_testing() {
     // printf("\n");
 
     printf("\nBefore:\n");
-    for (int i=1; i<2; i++) {
-        printf("\n\n%d:", i);
-        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
-    }
+    // for (int i=1; i<2; i++) {
+    //     printf("\n\n%d:", i);
+    //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
+    // }
 
-    fprintf(stdout, "\noverlaps[%d]:\n", 1);
-    print_overlap_object(ref_bookie, opt_bookie, &(overlaps[2]));
+    // /************print a tensorInfoPair******/
+    // printf("\n\n%d:", 1);
+    // print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[1]), 0);
 
+    // /*************print an OO*********/
+    // fprintf(stdout, "\noverlaps[%d]:\n", 1);
+    // fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[1][0], netw.bonds[1][1]);
+    // print_overlap_object(ref_bookie, opt_bookie, &(overlaps[1]));
+
+    /**********fill the OO **********/
     // tensorpairs[1].opt.set_sym(tensorpairs[0].opt.get_sym(0), 0);
     // overlaps[1].set_opt(tensorpairs[0].opt.get_sym(0));
 
-    // HERE IS A SEGMENTATION FAULT GENERATED!
     set_OO_to_contraction(&(tensorpairs[1].ref), &(tensorpairs[1].opt),
             2, &(overlaps[2]));
+    /********************/
 
-    // OverlapObjectLink link;
-    // get_internal_link(1, 12, &link);
 
-    // struct symsecs * TEMPsyms[3];
-    // struct symsecs helpsyms[3];
-    // for (int i=0; i<3; i++) {
-    //     TEMPsyms[i] = &(helpsyms[i]);
-    //     init_null_symsecs(TEMPsyms[i]);
+    /*******get OO link******************/
+    OverlapObjectLink link;
+    get_internal_link(12, 1, &link);
+
+    assert(link.OO->ref == overlaps[2]->syms[2] && link.OO->opt == opt->syms[2]);
+    assert(link.leg == 0);
+
+
+    // printf("\nAfter:\n");
+    // for (int i=1; i<2; i++) {
+    //     printf("\n\n%d:", i);
+    //     fflush(stdout);
+    //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
     // }
 
-    // struct siteTensor TEMPdata;
-    // init_null_siteTensor(&TEMPdata);
-    // TensorInfo TEMP(&TEMPdata, TEMPsyms, true);
-
-    // printf("\nTEMP:\n");
-    // print_tensorInfo(ref_bookie, &TEMP, 0);
-
-    // TEMP.copy_symmetry_layout(&(tensorpairs[1].ref));
-    // TEMP.renew_block_layout(&(tensorpairs[1].ref), &link, true);
-
-    printf("\nAfter:\n");
-    for (int i=1; i<2; i++) {
-        printf("\n\n%d:", i);
-        fflush(stdout);
-        print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
+    /******create and print temporary tensorInfo**********/
+    struct symsecs * TEMPsyms[3];
+    struct symsecs helpsyms[3];
+    for (int i=0; i<3; i++) {
+        TEMPsyms[i] = &(helpsyms[i]);
+        init_null_symsecs(TEMPsyms[i]);
     }
 
-    fprintf(stdout, "overlaps[%d]:\n", 1);
+    struct siteTensor TEMPdata;
+    init_null_siteTensor(&TEMPdata);
+    TensorInfo TEMP(&TEMPdata, TEMPsyms, true);
+
+    printf("\nTEMP:\n");
+    print_tensorInfo(ref_bookie, &TEMP, 0);
+    /*******************************************/
+
+    /**********set TEMP to a contraction*************/
+    //TEMP.copy_symmetry_layout(&(tensorpairs[12].ref));
+    TEMP.renew_symsec_layout(&(tensorpairs[12].ref), &link);
+    TEMP.renew_block_layout(&(tensorpairs[12].ref), &link, true);
+
+    printf("\nAfter:\n");
+
+    /*****************print tensor info ******************/
+    printf("\n\n%d:", 12);
+    print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[12]), 0, 'r');
+
+    /*****************print relevant OO********/
+    fprintf(stdout, "overlaps[%d]:\n", 2);
+    fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[2][0], netw.bonds[2][1]);
     print_overlap_object(ref_bookie, opt_bookie, &(overlaps[2]));
 
-    // printf("\nTEMP:\n");
-    // fflush(stdout);
-    // print_tensorInfo(ref_bookie, &TEMP, 0);
+    /******************print temporary space***********/
+    printf("\nTEMP:\n");
+    print_tensorInfo(ref_bookie, &TEMP, 2);
+    print_tensorInfo(ref_bookie, &TEMP, 3);
+    print_tensorInfo(ref_bookie, &TEMP, 4);
 
     return 0;
 }

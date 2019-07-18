@@ -58,6 +58,8 @@ void TensorInfo::copy_symmetry_layout(const TensorInfo * ref)
 	for (int i=0; i<3; i++) {
 		this->syms[i] = ref->syms[i];
 	}
+
+	printf("temporary solution used for symsecs!\n");
 }
 
 
@@ -77,24 +79,24 @@ void TensorInfo::copy_symmetry_layout(const TensorInfo * ref)
 // }
 
 
-// void TensorInfo::renew_symsec_layout(const TensorInfo * ref,
-// 		const OverlapObjectLink * OO_link)
-// {
-// 	// set correct type of tensor
-// 	this->is_physical = ref->is_physical;
+void TensorInfo::renew_symsec_layout(const TensorInfo * ref,
+		const OverlapObjectLink * OO_link)
+{
+	// set correct type of tensor
+	this->is_physical = ref->is_physical;
 
-// 	// extract the index of the leg over which is contracted
-// 	int contracted_leg = OO_link->leg;
+	// extract the index of the leg over which is contracted
+	int contracted_leg = OO_link->leg;
 
-// 	// check whether the contraction is valid
-// 	assert(OO_link->OO->get_ref() == ref->get_sym(OO_link->leg));
+	// check whether the contraction is valid
+	assert(OO_link->OO->get_ref() == ref->get_sym(OO_link->leg));
 
-// 	// set the relevant sectors
-// 	for (int i=0; i<3; i++) {
-// 		this->syms[i] = (i == contracted_leg)? OO_link->OO->get_opt() :
-// 				ref->syms[i];
-// 	}
-// }
+	// set the relevant sectors
+	for (int i=0; i<3; i++) {
+		this->syms[i] = (i == contracted_leg)? OO_link->OO->get_opt() :
+				ref->syms[i];
+	}
+}
 
 
 ////////////////////////////////
@@ -132,6 +134,7 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref,
 {
 	// number of blocks of the new structure
 	int nrblocks = ref->data->nrblocks;
+	// int nrblocks = OO_link->OO->get_nr_blocks();  //WRONG!!!!!!!
 	// set number of blocks
 	data->nrblocks = nrblocks;
 
@@ -144,7 +147,8 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref,
 
 	// fill qnumbers
 	for (int i=0; i<nrblocks; i++) {
-		data->qnumbers[i] = ref->data->qnumbers[i];
+		data->qnumbers[i] = translate_qn_address(ref->data->qnumbers[i], ref->syms, this->syms);
+		//data->qnumbers[i] = ref->data->qnumbers[i]; // hier translate qnumber als symsec aangepast!!!
 	}
 
 	// fill beginblock
@@ -152,19 +156,26 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref,
 	int dims[3];  // dimensions of the current block
 	int ids[3];   // symmetry indices of the current block
 	for (int i=0; i<nrblocks; i++) {
-		get_sym_indices(i, ids);
+		get_sym_indices(i, ids);  //impliciet qnumbers bekijken!!!
 		// loop over all legs
 		for (int j=0; j<3; j++) {
 			// set the appropriate dimension
-			dims[j] = (j == OO_link->leg)? OO_link->OO->get_sdim(i) :
+			dims[j] = (j == OO_link->leg)? OO_link->OO->get_sdim(ids[j]) :   //WRONG!!!
 					get_block_dimension(j, ids[j]); }
+		// set the element in beginblock
+		data->blocks.beginblock[i] = usedsize;
 		// increase the usedsize
 		usedsize += dims[0] * dims[1] * dims[2];
+
+		fprintf(stdout, "beginblock[%d]: %d\n", i, data->blocks.beginblock[i]);
+		fprintf(stdout, "block dimensions %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
+		fprintf(stdout, "      symindices %d: %d %d %d\n", i, ids[0], ids[1], ids[2]);
+
 	}
 
 	// reallocate tel if necessary
 	if (usedsize > allocsize) {
-		allocsize = 2 * usedsize;
+		allocsize = usedsize;
 		reallocate<EL_TYPE>(&(data->blocks.tel), allocsize);
 	}
 
@@ -174,6 +185,57 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref,
 			data->blocks.tel[i] = 0; }
 	}
 }
+
+
+// void TensorInfo::renew_block_layout(const TensorInfo * ref,
+// 		const struct OverlapObjectLink * OO_link, bool set_zero)
+// {
+// 	// number of blocks of the new structure
+// 	int nrblocks = ref->data->nrblocks;
+// 	// set number of blocks
+// 	data->nrblocks = nrblocks;
+
+// 	// reallocate qnumbers and beginblock if necessary
+// 	if (nr_allocated_blocks < nrblocks) {
+// 		reallocate<QN_TYPE>(&(data->qnumbers), nrblocks);
+// 		reallocate<int>(&(data->blocks.beginblock), nrblocks);
+// 		nr_allocated_blocks = nrblocks;
+// 	}
+
+// 	// fill qnumbers
+// 	for (int i=0; i<nrblocks; i++) {
+// 		data->qnumbers[i] = ref->data->qnumbers[i]; // hier translate qnumber
+// 	}
+
+// 	// fill beginblock
+// 	usedsize = 0;
+// 	int dims[3];  // dimensions of the current block
+// 	int ids[3];   // symmetry indices of the current block
+// 	for (int i=0; i<nrblocks; i++) {
+// 		get_sym_indices(i, ids);
+// 		// loop over all legs
+// 		for (int j=0; j<3; j++) {
+// 			// set the appropriate dimension
+// 			dims[j] = (j == OO_link->leg)? OO_link->OO->get_sdim(i) :
+// 					get_block_dimension(j, ids[j]); }
+// 		// increase the usedsize
+// 		usedsize += dims[0] * dims[1] * dims[2];
+// 	}
+
+// 	// reallocate tel if necessary
+// 	if (usedsize > allocsize) {
+// 		allocsize = 2 * usedsize;
+// 		reallocate<EL_TYPE>(&(data->blocks.tel), allocsize);
+// 	}
+
+// 	if (set_zero) {
+// 		// fill tel up with zeros
+// 		for (int i=0; i<usedsize; i++) {
+// 			data->blocks.tel[i] = 0; }
+// 	}
+// }
+
+
 
 // void TensorInfo::renew_block_layout(const TensorInfo * ref, bool set_zero)
 // {
@@ -304,7 +366,9 @@ void print_tensorInfo(const struct bookkeeper * keeper,
 		for (int i=0; i<tensor->get_data()->nrblocks; i++) {
 			tensor->get_block_dimensions(i, dims);
 			fprintf(stdout, "beginblock[%d]: %d\n", i, tensor->get_data()->blocks.beginblock[i]);
-			fprintf(stdout, "block %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
+			fprintf(stdout, "block dimensions %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
+			fprintf(stdout, "      symindices %d: %d %d %d\n", i, tensor->get_sym_index(i,0),
+					tensor->get_sym_index(i,1), tensor->get_sym_index(i,2));
 		}
 	}
 }
@@ -328,13 +392,17 @@ void init_dataMemory_tensorInfo(TensorInfo * tensor_info)
 
 void print_TensorInfoPair(const struct bookkeeper * opt_bookie,
 		const struct bookkeeper * ref_bookie,
-		const struct TensorInfoPair * pair, int spec)
+		const struct TensorInfoPair * pair, int spec, char which)
 {
-	// print the opt TensorInfo
-	fprintf(stdout,"TensorInfoPair with\nOPT:\n");
-	print_tensorInfo(opt_bookie, &(pair->opt), spec);
+	if (which == 'a' || which == 'o') {
+		// print the opt TensorInfo
+		fprintf(stdout,"TensorInfoPair with\nOPT:\n");
+		print_tensorInfo(opt_bookie, &(pair->opt), spec);
+	}
 
-	// print the ref TensorInfo
-	fprintf(stdout,"REF:\n");
-	print_tensorInfo(ref_bookie, &(pair->ref), spec);
+	if (which == 'a' || which == 'r') {
+		// print the ref TensorInfo
+		fprintf(stdout,"REF:\n");
+		print_tensorInfo(ref_bookie, &(pair->ref), spec);
+	}
 }

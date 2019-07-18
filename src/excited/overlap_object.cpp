@@ -174,6 +174,7 @@ void print_overlap_object(const struct bookkeeper * ref_bookie,
 	fprintf(stdout, "\n");
 
 	fprintf(stdout, "Internal data:\n");
+	fprintf(stdout, "nr_blocks: %d\n", OO->get_nr_blocks());
 	fprintf(stdout, "usedsize: %d\n", OO->get_usedsize());
 	fprintf(stdout, "allocsize: %d\n", OO->get_allocsize());
 }
