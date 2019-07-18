@@ -137,6 +137,28 @@ OverlapCalculator::~OverlapCalculator()
 }
 
 
+void OverlapCalculator::contract_reference_with_OO(const TensorInfo * reference,
+            const OverlapObjectLink * OO_link, TensorInfo * result)
+{
+    // prepare the symsecs of the result
+    result->renew_symsec_layout(reference, OO_link);
+    // prepare the block layout of the result
+    result->renew_block_layout(reference, OO_link, true);
+
+    // // perform the actual block contractions
+    // int contracted_leg = OO_link->leg;
+    // for (int i=0; i < reference->data->nrblocks; i++) {
+    //     double prefactor = get_1leg_contraction_prefactor(); 
+    //     // labeling in the OO is done using a single leg 
+    //     j = tensor->get_leg_index(i,contracted_leg);
+    //     add_1leg_contraction(prefactor, contracted_leg,
+    //             reference->get_block_info(i),
+    //             OO_link->OO->get_block_info(j),
+    //             result->get_block_info(i));
+    // }
+}
+
+
 // get the OO link attached to who and pointing to other
 int OverlapCalculator::get_internal_link(int who, int other,
         OverlapObjectLink * result)

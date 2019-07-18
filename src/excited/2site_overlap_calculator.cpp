@@ -174,9 +174,12 @@ int TwoSiteOverlapCalculator::perform_testing() {
     /*******************************************/
 
     /**********set TEMP to a contraction*************/
-    //TEMP.copy_symmetry_layout(&(tensorpairs[12].ref));
-    TEMP.renew_symsec_layout(&(tensorpairs[12].ref), &link);
-    TEMP.renew_block_layout(&(tensorpairs[12].ref), &link, true);
+    // //TEMP.copy_symmetry_layout(&(tensorpairs[12].ref));
+    // TEMP.renew_symsec_layout(&(tensorpairs[12].ref), &link);
+    // TEMP.renew_block_layout(&(tensorpairs[12].ref), &link, true);
+
+    // contract_reference_with_OO(&(tensorpairs[12].ref), &link, &TEMP);
+    contract_reference_with_OO(&(tensorpairs[12].ref), &link, &(tensmem[0]));
 
     printf("\nAfter:\n");
 
@@ -190,10 +193,10 @@ int TwoSiteOverlapCalculator::perform_testing() {
     print_overlap_object(ref_bookie, opt_bookie, &(overlaps[2]));
 
     /******************print temporary space***********/
-    printf("\nTEMP:\n");
-    print_tensorInfo(ref_bookie, &TEMP, 2);
-    print_tensorInfo(ref_bookie, &TEMP, 3);
-    print_tensorInfo(ref_bookie, &TEMP, 4);
+    printf("\ntensmem[0]:\n");
+    print_tensorInfo(ref_bookie, &(tensmem[0]), 2);
+    print_tensorInfo(ref_bookie, &(tensmem[0]), 3);
+    print_tensorInfo(ref_bookie, &(tensmem[0]), 4);
 
     return 0;
 }

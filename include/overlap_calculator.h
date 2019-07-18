@@ -74,6 +74,9 @@ class OverlapCalculator {
         SymsecMatcher symsecMatchers[3];
 
         // Help functions:
+        // Save in result the contraction of a reference tensor with an OO
+        void contract_reference_with_OO(const TensorInfo * reference,
+            const OverlapObjectLink * OO_link, TensorInfo * result);
         // Get the appropriate OO links from 'who' with respect to 'other',
         //   using the criterium 'check' and performing the action
         //   question(to, who) to the matches 'to' with the criterium.
