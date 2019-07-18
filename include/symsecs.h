@@ -19,6 +19,8 @@
 #include "macros.h"
 #include "network.h"
 
+#include <stdio.h>
+
 /**
  * \file symsecs.h
  * \brief Header file for the bookkeeper struct and related methods.
@@ -201,6 +203,8 @@ inline void translate_indices(const int * oids, const struct symsecs * oss,
 {
         for (int i = 0; i < n; ++i) {
                 nids[i] = search_symsec(oss[i].irreps[oids[i]], &nss[i]);
+                if (nids[i] == -1) {printf("WARNING from symsecs.h\n");};
+                //assert(nids[i] != -1);
         }
 }
 

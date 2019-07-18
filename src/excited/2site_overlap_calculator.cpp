@@ -62,7 +62,7 @@ void TwoSiteOverlapCalculator::set_OO_to_contraction(const TensorInfo * ref,
             const TensorInfo * opt, int open_leg, OverlapObject * OO)
 {
     // assert that OO is associated to the open leg
-    assert(OO->ref == ref->syms[open_leg] && OO->opt == opt->syms[open_leg]);
+    assert(OO->get_ref() == ref->get_sym(open_leg) && OO->get_opt() == opt->get_sym(open_leg));
 
     // Indices are permuted (=:per) such that the outermost loop corresponds
     // with the index in the open leg == block index in the OverlapObject
@@ -150,7 +150,9 @@ int TwoSiteOverlapCalculator::perform_testing() {
     get_internal_link(12, 1, &(links[0]));
     get_internal_link(12, 2, &(links[1]));
 
-    assert(links[0].OO->ref == overlaps[2]->syms[2] && links[0].OO->opt == opt->syms[2]);
+    //assert((links[0].OO)->get_ref() == (tensorpairs[12].ref).get_sym(0))// &&
+          // links[0].OO->get_opt() == tensorpairs[12].opt->get_sym(open_leg));
+    assert(links[0].OO == &overlaps[2]);
     assert(links[0].leg == 0);
 
 

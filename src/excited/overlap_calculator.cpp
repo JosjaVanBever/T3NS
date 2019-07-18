@@ -84,7 +84,7 @@ OverlapCalculator::OverlapCalculator(const T3NSfill * opt_t3ns,
 
     // do some consistency checks of the input
     assert(opt_t3ns->bookie->nr_bonds == ref_t3ns->bookie->nr_bonds);
-    assert(opt_t3ns->bookie->nr_bonds != network->nr_bonds);
+    assert(opt_t3ns->bookie->nr_bonds == network->nr_bonds);
 
     // initialize the tensorpairs
     nr_tensorpairs = network->sites;
@@ -252,7 +252,7 @@ int OverlapCalculator::get_links(int who, int other,
 
 // @ TEST: common features of OverlapObjectCalculator
 int OverlapCalculator::perform_testing() {
-    printf("GO BACK TO YOUR HOME COUNTRY!");
+    printf("wrong!");
 
     // print_network();
 
@@ -315,8 +315,8 @@ int OverlapCalculator::perform_testing() {
     print_tensorInfo(ref_bookie, &TEMP, 0);
 
 
-    // TEMP.renew_symsec_layout(&(tensorpairs[1].ref), &link);
-    TEMP.copy_symmetry_layout(&(tensorpairs[1].ref));
+    TEMP.renew_symsec_layout(&(tensorpairs[1].ref), &link);
+    // TEMP.copy_symmetry_layout(&(tensorpairs[1].ref));
 
     TEMP.renew_block_layout(&(tensorpairs[1].ref), &link, true);
     fflush(stdout);

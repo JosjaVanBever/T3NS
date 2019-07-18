@@ -63,8 +63,8 @@ class TensorInfo {
 		void renew_symsec_layout(const TensorInfo * ref,
 			const struct OverlapObjectLink * OO_link);
 
-		// copy the symmetry sector and tesnsor type from ref
-		void copy_symmetry_layout(const TensorInfo * ref);
+		// // copy the symmetry sector and tesnsor type from ref
+		// void copy_symmetry_layout(const TensorInfo * ref);
 
 		// renew all block information; optionally set elements to 0
 		// @param:

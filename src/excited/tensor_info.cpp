@@ -49,18 +49,18 @@ void TensorInfo::get_syms(struct symsecs ** result) const
 }
 
 
-void TensorInfo::copy_symmetry_layout(const TensorInfo * ref)
-{
-	// set correct type of tensor
-	this->is_physical = ref->is_physical;
+// void TensorInfo::copy_symmetry_layout(const TensorInfo * ref)
+// {
+// 	// set correct type of tensor
+// 	this->is_physical = ref->is_physical;
 
-	// set the sectors
-	for (int i=0; i<3; i++) {
-		this->syms[i] = ref->syms[i];
-	}
+// 	// set the sectors
+// 	for (int i=0; i<3; i++) {
+// 		this->syms[i] = ref->syms[i];
+// 	}
 
-	printf("temporary solution used for symsecs!\n");
-}
+// 	printf("temporary solution used for symsecs!\n");
+// }
 
 
 // void TensorInfo::renew_symsec_layout(const TensorInfo * ref,
@@ -147,7 +147,10 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref,
 
 	// fill qnumbers
 	for (int i=0; i<nrblocks; i++) {
+		printf("%d -> ", data->qnumbers[i]);
 		data->qnumbers[i] = translate_qn_address(ref->data->qnumbers[i], ref->syms, this->syms);
+		assert(data->qnumbers[i] != -1);
+		printf("%d due to %d\n", data->qnumbers[i], ref->data->qnumbers[i]);
 		//data->qnumbers[i] = ref->data->qnumbers[i]; // hier translate qnumber als symsec aangepast!!!
 	}
 
@@ -160,6 +163,7 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref,
 		// loop over all legs
 		for (int j=0; j<3; j++) {
 			// set the appropriate dimension
+			// dims[j] = get_block_dimension(j, ids[j]); }
 			dims[j] = (j == OO_link->leg)? OO_link->OO->get_sdim(ids[j]) :
 					get_block_dimension(j, ids[j]); }
 		// set the element in beginblock
@@ -167,11 +171,17 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref,
 		// increase the usedsize
 		usedsize += dims[0] * dims[1] * dims[2];
 
+		assert(dims[1] == get_block_dimension(1, ids[1]));
+		assert(dims[2] == get_block_dimension(2, ids[2]));
+		//assert(dims[0] == get_block_dimension(0, ids[0]));
+		if (dims[0] != get_block_dimension(0, ids[0])) {printf("WARNING from tensor_info.cpp\n");};
+
+
 		// ERROR: WHEN THE OO CONTAINS (0,0) BLOCKS, THE DIMENSION IS NOT READ OUT CORRECTLY WHEN PRINTING AFTERWARDS!
 
-		// fprintf(stdout, "beginblock[%d]: %d\n", i, data->blocks.beginblock[i]);
-		// fprintf(stdout, "block dimensions %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
-		// fprintf(stdout, "      symindices %d: %d %d %d\n", i, ids[0], ids[1], ids[2]);
+		fprintf(stdout, "beginblock[%d]: %d\n", i, data->blocks.beginblock[i]);
+		fprintf(stdout, "block dimensions %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
+		fprintf(stdout, "      symindices %d: %d %d %d\n", i, ids[0], ids[1], ids[2]);
 
 	}
 
