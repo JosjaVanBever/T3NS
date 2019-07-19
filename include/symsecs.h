@@ -90,6 +90,8 @@ void destroy_symsecs(struct symsecs *sectors);
  */
 int search_symsec(int * symmsec, const struct symsecs * sectors);
 
+int search_symsec_address(int * symmsec, const struct symsecs ** sectors);
+
 /**
  * \brief Gives you a string of the specified sector.
  *
@@ -188,6 +190,18 @@ inline QN_TYPE qntypize(const int * ids, const struct symsecs * ss)
                 ids[2] * ss[0].nrSecs * ss[1].nrSecs;
 }
 
+
+inline QN_TYPE qntypize_address(const int * ids, const struct symsecs * const * ss)
+{
+        assert(ids[0] < ss[0]->nrSecs);
+        assert(ids[1] < ss[1]->nrSecs);
+        assert(ids[2] < ss[2]->nrSecs);
+
+        return ids[0] + ids[1] * ss[0]->nrSecs + 
+                ids[2] * ss[0]->nrSecs * ss[1]->nrSecs;
+}
+
+
 /**
  * @brief Changes indices associated with an old set of symmetry sectors to 
  * indices associated with a new set of symmetry sectors.
@@ -206,6 +220,13 @@ inline void translate_indices(const int * oids, const struct symsecs * oss,
                 if (nids[i] == -1) {printf("WARNING from symsecs.h\n");};
                 //assert(nids[i] != -1);
         }
+}
+
+inline int translate_index(int oid, const struct symsecs * oss, 
+        const struct symsecs * nss)
+{
+    // returns -1 if no match
+    return search_symsec(oss->irreps[oid], nss);
 }
 
 /**

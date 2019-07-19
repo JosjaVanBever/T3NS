@@ -136,8 +136,76 @@ int TwoSiteOverlapCalculator::perform_set_OO_to_contraction_test() {
 
 
 // @TEST
+int TwoSiteOverlapCalculator::perform_contract_reference_with_OO_list_test() {
+
+    printf("\nBefore:\n");
+
+    /**********fill the OOs **********/
+    // tensorpairs[1].opt.set_sym(tensorpairs[0].opt.get_sym(0), 0);
+    // overlaps[1].set_opt(tensorpairs[0].opt.get_sym(0));
+
+    set_OO_to_contraction(&(tensorpairs[1].ref), &(tensorpairs[1].opt),
+            2, &(overlaps[2]));
+
+    set_OO_to_contraction(&(tensorpairs[2].ref), &(tensorpairs[2].opt),
+            2, &(overlaps[4]));
+    /********************/
+
+    /*******get an check OO links******************/
+    OverlapObjectLink links[2];
+    get_internal_link(12, 1, &(links[0]));
+    get_internal_link(12, 2, &(links[1]));
+
+    assert(links[0].OO == &overlaps[2]);
+    assert(links[0].leg == 0);
+
+    assert(links[1].OO == &overlaps[4]);
+    assert(links[1].leg == 1);
+    /*********************************************/
+
+    /*********perform contraction of the reference site with the OOs************/
+    contract_reference_with_OO_list(&(tensorpairs[12].ref), links,
+            &(tensbmem[0]), &(tensmem[0]));
+
+    printf("\nAfter:\n");
+
+    /*****************print tensor info ******************/
+    printf("\n\n%d:", 12);
+    print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[12]), 0, 'r');
+
+    /*****************print relevant OOs********/
+    fprintf(stdout, "overlaps[%d]:\n", 2);
+    fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[2][0], netw.bonds[2][1]);
+    print_overlap_object(ref_bookie, opt_bookie, &(overlaps[2]));
+
+    fprintf(stdout, "overlaps[%d]:\n", 4);
+    fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[4][0], netw.bonds[4][1]);
+    print_overlap_object(ref_bookie, opt_bookie, &(overlaps[4]));
+    /*********************************************/
+
+    /******************print temporary space***********/
+    const struct bookkeeper * tensb_bookies[3] = {opt_bookie,ref_bookie,ref_bookie};
+    const struct bookkeeper * tens_bookies[3]  = {opt_bookie,opt_bookie,ref_bookie};
+
+    printf("\ntensbmem[0]:\n");
+    print_tensorInfo(tensb_bookies, &(tensbmem[0]), 2);
+    print_tensorInfo(tensb_bookies, &(tensbmem[0]), 3);
+    print_tensorInfo(tensb_bookies, &(tensbmem[0]), 4);
+
+    printf("\ntensmem[0]:\n");
+    print_tensorInfo(tens_bookies, &(tensmem[0]), 2);
+    print_tensorInfo(tens_bookies, &(tensmem[0]), 3);
+    print_tensorInfo(tens_bookies, &(tensmem[0]), 4);
+    /*********************************************/
+
+    return 0;
+}
+
+
+// @TEST
 int TwoSiteOverlapCalculator::perform_testing() {
-    perform_set_OO_to_contraction_test();
+    // perform_set_OO_to_contraction_test();
+    perform_contract_reference_with_OO_list_test();
 
     // // print_network();
 

@@ -781,7 +781,7 @@ int prepare_reference_bookkeeper(struct bookkeeper * prevbookie, int max_dim,
 int preparebookkeeper(struct bookkeeper * prevbookie, int max_dim,
                       int interm_scale, int minocc, int * changedSS)
 {
-         printf("prevbookie: %p\n", prevbookie);
+        //printf("prevbookie: %p\n", prevbookie);
 
         if (changedSS != NULL) { *changedSS = 0; }
         if (prevbookie == NULL) {

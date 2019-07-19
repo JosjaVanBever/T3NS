@@ -167,6 +167,16 @@ int search_symsec(int * symmsec, const struct symsecs * sectors)
         }
 }
 
+int search_symsec_address(int * symmsec, const struct symsecs ** sectors_address) {
+        // ok, dan maar intern knoeien ...
+        struct symsecs sectors[3];
+        for (int i=0; i<3; i++) {
+            sectors[i] = *sectors_address[i];
+        }
+        return search_symsec(symmsec, sectors);
+}
+
+
 void print_symsecinfo(struct symsecs * ss)
 {
         printf("bond dimension : %d ", ss->totaldims);

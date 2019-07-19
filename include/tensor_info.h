@@ -66,12 +66,17 @@ class TensorInfo {
 		// // copy the symmetry sector and tesnsor type from ref
 		// void copy_symmetry_layout(const TensorInfo * ref);
 
+		// // renew all block information; optionally set elements to 0
+		// // @param:
+		// //   reference => contains the qnumbers
+		// //   set_zero = fill the tel array with zeros
+		// void renew_block_layout(const TensorInfo * reference,
+		// 		const struct OverlapObjectLink * OO_link, bool set_zero);
+
 		// renew all block information; optionally set elements to 0
 		// @param:
-		//   reference => contains the qnumbers
-		//   set_zero = fill the tel array with zeros
-		void renew_block_layout(const TensorInfo * reference,
-				const struct OverlapObjectLink * OO_link, bool set_zero);
+	    //      set_zero = fill the tel array with zeros
+		void renew_block_layout(bool set_zero);
 
 	private:
 		// Main data:

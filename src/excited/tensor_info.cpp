@@ -129,60 +129,49 @@ inline void TensorInfo::get_sym_indices(int blocknr, int * result) const
 }
 /////////////////////////////////////
 
-void TensorInfo::renew_block_layout(const TensorInfo * ref,
-		const struct OverlapObjectLink * OO_link, bool set_zero)
+
+void TensorInfo::renew_block_layout(bool set_zero)
 {
+	// number of symmetry sectors in each leg
+	int nrSecs[3];
+	for (int i=0; i<3; i++) { nrSecs[i] = syms[i]->nrSecs; }
 	// number of blocks of the new structure
-	int nrblocks = ref->data->nrblocks;
-	// int nrblocks = OO_link->OO->get_nr_blocks();  //WRONG!!!!!!!
-	// set number of blocks
+	int nrblocks = nrSecs[0] * nrSecs[1] * nrSecs[2];
+	// set the number of blocks
 	data->nrblocks = nrblocks;
 
 	// reallocate qnumbers and beginblock if necessary
 	if (nr_allocated_blocks < nrblocks) {
-		reallocate<QN_TYPE>(&(data->qnumbers), nrblocks);
+//		reallocate<QN_TYPE>(&(data->qnumbers), nrblocks);
 		reallocate<int>(&(data->blocks.beginblock), nrblocks);
 		nr_allocated_blocks = nrblocks;
 	}
 
-	// fill qnumbers
-	for (int i=0; i<nrblocks; i++) {
-		printf("%d -> ", data->qnumbers[i]);
-		data->qnumbers[i] = translate_qn_address(ref->data->qnumbers[i], ref->syms, this->syms);
-		assert(data->qnumbers[i] != -1);
-		printf("%d due to %d\n", data->qnumbers[i], ref->data->qnumbers[i]);
-		//data->qnumbers[i] = ref->data->qnumbers[i]; // hier translate qnumber als symsec aangepast!!!
-	}
-
-	// fill beginblock
+	int counter = 0;
 	usedsize = 0;
-	int dims[3];  // dimensions of the current block
-	int ids[3];   // symmetry indices of the current block
-	for (int i=0; i<nrblocks; i++) {
-		get_sym_indices(i, ids);  //impliciet qnumbers bekijken!!!
-		// loop over all legs
-		for (int j=0; j<3; j++) {
-			// set the appropriate dimension
-			// dims[j] = get_block_dimension(j, ids[j]); }
-			dims[j] = (j == OO_link->leg)? OO_link->OO->get_sdim(ids[j]) :
-					get_block_dimension(j, ids[j]); }
-		// set the element in beginblock
-		data->blocks.beginblock[i] = usedsize;
-		// increase the usedsize
-		usedsize += dims[0] * dims[1] * dims[2];
+	// fill beginblocks:
+	// -> for all symmetry sectors
+	for (int i=0; i < syms[0]->nrSecs; i++) {
+		for (int j=0; j < syms[1]->nrSecs; j++) {
+			for (int k=0; k < syms[2]->nrSecs; k++)
+			{
+				// collect the symmetry indices of all legs
+				int ids[3] = {i,j,k};
+				int dims[3];
+				// for all legs
+				for (int l=0; l<3; l++) {
+					// get the appropriate dimension
+					dims[l] = get_block_dimension(l, ids[l]);
+				}
 
-		assert(dims[1] == get_block_dimension(1, ids[1]));
-		assert(dims[2] == get_block_dimension(2, ids[2]));
-		//assert(dims[0] == get_block_dimension(0, ids[0]));
-		if (dims[0] != get_block_dimension(0, ids[0])) {printf("WARNING from tensor_info.cpp\n");};
+				// set the appropriate data
+				data->blocks.beginblock[counter] = usedsize;
 
-
-		// ERROR: WHEN THE OO CONTAINS (0,0) BLOCKS, THE DIMENSION IS NOT READ OUT CORRECTLY WHEN PRINTING AFTERWARDS!
-
-		fprintf(stdout, "beginblock[%d]: %d\n", i, data->blocks.beginblock[i]);
-		fprintf(stdout, "block dimensions %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
-		fprintf(stdout, "      symindices %d: %d %d %d\n", i, ids[0], ids[1], ids[2]);
-
+				// increase the counter and used size
+				counter++;
+				usedsize += dims[0] * dims[1] * dims[2];
+			}
+		}
 	}
 
 	// reallocate tel if necessary
@@ -197,6 +186,80 @@ void TensorInfo::renew_block_layout(const TensorInfo * ref,
 			data->blocks.tel[i] = 0; }
 	}
 }
+
+
+// void TensorInfo::renew_block_layout(const TensorInfo * ref,
+// 		const struct OverlapObjectLink * OO_link, bool set_zero)
+// {
+// 	// number of blocks of the new structure
+// 	int nrblocks = ref->data->nrblocks;
+// 	// set number of blocks
+// 	data->nrblocks = nrblocks;
+
+// 	// reallocate qnumbers and beginblock if necessary
+// 	if (nr_allocated_blocks < nrblocks) {
+// 		reallocate<QN_TYPE>(&(data->qnumbers), nrblocks);
+// 		reallocate<int>(&(data->blocks.beginblock), nrblocks);
+// 		nr_allocated_blocks = nrblocks;
+// 	}
+
+// 	// fill qnumbers
+// 	for (int i=0; i<nrblocks; i++) {
+// 		//printf("%d -> ", data->qnumbers[i]);
+// 		data->qnumbers[i] = translate_qn_address(ref->data->qnumbers[i], ref->syms, this->syms);
+// 		assert(data->qnumbers[i] != -1);
+// 		//printf("%d due to %d\n", data->qnumbers[i], ref->data->qnumbers[i]);
+// 		//data->qnumbers[i] = ref->data->qnumbers[i]; // hier translate qnumber als symsec aangepast!!!
+// 	}
+
+// 	// fill beginblock
+// 	usedsize = 0;
+// 	int dims[3];  // dimensions of the current block
+// 	int ids[3];   // symmetry indices of the current block
+// 	for (int i=0; i<nrblocks; i++) {
+// 		// set the element in beginblock
+// 		data->blocks.beginblock[i] = usedsize;
+
+// 		get_sym_indices(i, ids);  //impliciet qnumbers bekijken!!!
+// 		// loop over all legs
+// 		for (int j=0; j<3; j++) {
+// 			// set the appropriate dimension
+// 			dims[j] = get_block_dimension(j, ids[j]);
+// 		}
+
+
+// 		// dims[j] = (j == OO_link->leg)? OO_link->OO->get_sdim(ids[j]) :  // warning: dim-convention!
+// 		//		get_block_dimension(j, ids[j]); }
+// 		// increase the usedsize
+// 		usedsize += dims[0] * dims[1] * dims[2];
+		
+
+// 		// assert(dims[1] == get_block_dimension(1, ids[1]));
+// 		// assert(dims[2] == get_block_dimension(2, ids[2]));
+// 		// assert(dims[0] == get_block_dimension(0, ids[0]));
+// 		//if (dims[0] != get_block_dimension(0, ids[0])) {printf("WARNING from tensor_info.cpp\n");};
+
+
+// 		// ERROR: WHEN THE OO CONTAINS (0,0) BLOCKS, THE DIMENSION IS NOT READ OUT CORRECTLY WHEN PRINTING AFTERWARDS!
+
+// 		fprintf(stdout, "beginblock[%d]: %d\n", i, data->blocks.beginblock[i]);
+// 		fprintf(stdout, "block dimensions %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
+// 		fprintf(stdout, "      symindices %d: %d %d %d\n", i, ids[0], ids[1], ids[2]);
+
+// 	}
+
+// 	// reallocate tel if necessary
+// 	if (usedsize > allocsize) {
+// 		allocsize = usedsize;
+// 		reallocate<EL_TYPE>(&(data->blocks.tel), allocsize);
+// 	}
+
+// 	if (set_zero) {
+// 		// fill tel up with zeros
+// 		for (int i=0; i<usedsize; i++) {
+// 			data->blocks.tel[i] = 0; }
+// 	}
+// }
 
 
 // void TensorInfo::renew_block_layout(const TensorInfo * ref,
@@ -376,7 +439,10 @@ void print_tensorInfo(const struct bookkeeper ** keepers,
 		int dims[3];  // dimensions of the current block
 		fprintf(stdout, "Block details:\n");
 		for (int i=0; i<tensor->get_data()->nrblocks; i++) {
+
+			// THIS CUASES OFF COURSE A SEGMENTATION FAULT BECAUSE THE FUNCTION SHOULD BE ADOPTED TO MORE LOGICAL NUMBERING
 			tensor->get_block_dimensions(i, dims);
+
 			fprintf(stdout, "beginblock[%d]: %d\n", i, tensor->get_data()->blocks.beginblock[i]);
 			fprintf(stdout, "block dimensions %d: %d %d %d\n", i, dims[0], dims[1], dims[2]);
 			fprintf(stdout, "      symindices %d: %d %d %d\n", i, tensor->get_sym_index(i,0),

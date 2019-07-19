@@ -36,6 +36,7 @@ class TwoSiteOverlapCalculator : public OverlapCalculator {
 		// @TEST
         int perform_testing();
         int perform_set_OO_to_contraction_test();
+        int perform_contract_reference_with_OO_list_test();
         // void can_you_find_me() {printf("Here you are!");};
 
 	// private:
