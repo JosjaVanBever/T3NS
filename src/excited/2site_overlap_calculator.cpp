@@ -105,118 +105,150 @@ void TwoSiteOverlapCalculator::set_OO_to_contraction(const TensorInfo * ref,
 }
 
 
-// @ TEST
-int TwoSiteOverlapCalculator::perform_testing() {
-    // print_network();
-
-    printf("Hurray!\n");
-
-    // printf("\n");
-    // for (int i=2; i<3; i++) {
-    //     fprintf(stdout, "overlaps[%d]:\n", i);
-    //     print_overlap_object(ref_bookie, opt_bookie, &(overlaps[i]));
-    // }
-    // printf("\n");
+// @TEST
+int TwoSiteOverlapCalculator::perform_set_OO_to_contraction_test() {
 
     printf("\nBefore:\n");
-    // for (int i=1; i<2; i++) {
-    //     printf("\n\n%d:", i);
-    //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
-    // }
+
+    /*************print an OO*********/
+    fprintf(stdout, "overlaps[%d]:\n", 2);
+    fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[2][0], netw.bonds[2][1]);
+    print_overlap_object(ref_bookie, opt_bookie, &(overlaps[2]));
 
     /************print a tensorInfoPair******/
-    // printf("\n\n%d:", 2);
-    // print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[2]), 0);
-
-    // /*************print an OO*********/
-    // fprintf(stdout, "\noverlaps[%d]:\n", 1);
-    // fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[1][0], netw.bonds[1][1]);
-    // print_overlap_object(ref_bookie, opt_bookie, &(overlaps[1]));
+    printf("\n\n%d:", 1);
+    print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[1]), 0);
 
     /**********fill the OO **********/
-    // tensorpairs[1].opt.set_sym(tensorpairs[0].opt.get_sym(0), 0);
-    // overlaps[1].set_opt(tensorpairs[0].opt.get_sym(0));
-
     set_OO_to_contraction(&(tensorpairs[1].ref), &(tensorpairs[1].opt),
             2, &(overlaps[2]));
-
-    set_OO_to_contraction(&(tensorpairs[2].ref), &(tensorpairs[2].opt),
-            2, &(overlaps[4]));
     /********************/
 
-
-    /*******get OO link******************/
-    OverlapObjectLink links[2];
-    get_internal_link(12, 1, &(links[0]));
-    get_internal_link(12, 2, &(links[1]));
-
-    //assert((links[0].OO)->get_ref() == (tensorpairs[12].ref).get_sym(0))// &&
-          // links[0].OO->get_opt() == tensorpairs[12].opt->get_sym(open_leg));
-    assert(links[0].OO == &overlaps[2]);
-    assert(links[0].leg == 0);
-
-
-    // printf("\nAfter:\n");
-    // for (int i=1; i<2; i++) {
-    //     printf("\n\n%d:", i);
-    //     fflush(stdout);
-    //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
-    // }
-
-    // /******create and print temporary tensorInfo**********/
-    // struct symsecs * TEMPsyms[3];
-    // struct symsecs helpsyms[3];
-    // for (int i=0; i<3; i++) {
-    //     TEMPsyms[i] = &(helpsyms[i]);
-    //     init_null_symsecs(TEMPsyms[i]);
-    // }
-
-    // struct siteTensor TEMPdata;
-    // init_null_siteTensor(&TEMPdata);
-    // TensorInfo TEMP(&TEMPdata, TEMPsyms, true);
-
-    // printf("\nTEMP:\n");
-    // print_tensorInfo(ref_bookie, &TEMP, 0);
-    // /*******************************************/
-
-    /**********set TEMP to a contraction*************/
-    // //TEMP.copy_symmetry_layout(&(tensorpairs[12].ref));
-    // TEMP.renew_symsec_layout(&(tensorpairs[12].ref), &link);
-    // TEMP.renew_block_layout(&(tensorpairs[12].ref), &link, true);
-
-    // contract_reference_with_OO(&(tensorpairs[12].ref), &link, &TEMP);
-    // contract_reference_with_OO(&(tensorpairs[12].ref), &links[0], &(tensmem[0]));
-    contract_reference_with_OO_list(&(tensorpairs[12].ref), links,
-            &(tensbmem[0]), &(tensmem[0]));
-
     printf("\nAfter:\n");
-
-    /*****************print tensor info ******************/
-    printf("\n\n%d:", 12);
-    print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[12]), 0, 'r');
 
     /*****************print relevant OO********/
     fprintf(stdout, "overlaps[%d]:\n", 2);
     fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[2][0], netw.bonds[2][1]);
     print_overlap_object(ref_bookie, opt_bookie, &(overlaps[2]));
 
-    fprintf(stdout, "overlaps[%d]:\n", 4);
-    fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[4][0], netw.bonds[4][1]);
-    print_overlap_object(ref_bookie, opt_bookie, &(overlaps[4]));
+    return 0;
+}
 
-    /******************print temporary space***********/
-    const struct bookkeeper * tensb_bookies[3] = {opt_bookie,ref_bookie,ref_bookie};
-    const struct bookkeeper * tens_bookies[3]  = {opt_bookie,opt_bookie,ref_bookie};
 
-    printf("\ntensbmem[0]:\n");
-    print_tensorInfo(tensb_bookies, &(tensbmem[0]), 2);
-    print_tensorInfo(tensb_bookies, &(tensbmem[0]), 3);
-    print_tensorInfo(tensb_bookies, &(tensbmem[0]), 4);
+// @TEST
+int TwoSiteOverlapCalculator::perform_testing() {
+    perform_set_OO_to_contraction_test();
 
-    printf("\ntensmem[0]:\n");
-    print_tensorInfo(tens_bookies, &(tensmem[0]), 2);
-    print_tensorInfo(tens_bookies, &(tensmem[0]), 3);
-    print_tensorInfo(tens_bookies, &(tensmem[0]), 4);
+    // // print_network();
+
+    // printf("Hurray!\n");
+
+    // // printf("\n");
+    // // for (int i=2; i<3; i++) {
+    // //     fprintf(stdout, "overlaps[%d]:\n", i);
+    // //     print_overlap_object(ref_bookie, opt_bookie, &(overlaps[i]));
+    // // }
+    // // printf("\n");
+
+    // printf("\nBefore:\n");
+    // // for (int i=1; i<2; i++) {
+    // //     printf("\n\n%d:", i);
+    // //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
+    // // }
+
+    // /************print a tensorInfoPair******/
+    // // printf("\n\n%d:", 2);
+    // // print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[2]), 0);
+
+    // // /*************print an OO*********/
+    // // fprintf(stdout, "\noverlaps[%d]:\n", 1);
+    // // fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[1][0], netw.bonds[1][1]);
+    // // print_overlap_object(ref_bookie, opt_bookie, &(overlaps[1]));
+
+    // /**********fill the OO **********/
+    // // tensorpairs[1].opt.set_sym(tensorpairs[0].opt.get_sym(0), 0);
+    // // overlaps[1].set_opt(tensorpairs[0].opt.get_sym(0));
+
+    // set_OO_to_contraction(&(tensorpairs[1].ref), &(tensorpairs[1].opt),
+    //         2, &(overlaps[2]));
+
+    // set_OO_to_contraction(&(tensorpairs[2].ref), &(tensorpairs[2].opt),
+    //         2, &(overlaps[4]));
+    // /********************/
+
+
+    // /*******get OO link******************/
+    // OverlapObjectLink links[2];
+    // get_internal_link(12, 1, &(links[0]));
+    // get_internal_link(12, 2, &(links[1]));
+
+    // //assert((links[0].OO)->get_ref() == (tensorpairs[12].ref).get_sym(0))// &&
+    //       // links[0].OO->get_opt() == tensorpairs[12].opt->get_sym(open_leg));
+    // assert(links[0].OO == &overlaps[2]);
+    // assert(links[0].leg == 0);
+
+
+    // // printf("\nAfter:\n");
+    // // for (int i=1; i<2; i++) {
+    // //     printf("\n\n%d:", i);
+    // //     fflush(stdout);
+    // //     print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[i]), 0);
+    // // }
+
+    // // /******create and print temporary tensorInfo**********/
+    // // struct symsecs * TEMPsyms[3];
+    // // struct symsecs helpsyms[3];
+    // // for (int i=0; i<3; i++) {
+    // //     TEMPsyms[i] = &(helpsyms[i]);
+    // //     init_null_symsecs(TEMPsyms[i]);
+    // // }
+
+    // // struct siteTensor TEMPdata;
+    // // init_null_siteTensor(&TEMPdata);
+    // // TensorInfo TEMP(&TEMPdata, TEMPsyms, true);
+
+    // // printf("\nTEMP:\n");
+    // // print_tensorInfo(ref_bookie, &TEMP, 0);
+    // // /*******************************************/
+
+    // /**********set TEMP to a contraction*************/
+    // // //TEMP.copy_symmetry_layout(&(tensorpairs[12].ref));
+    // // TEMP.renew_symsec_layout(&(tensorpairs[12].ref), &link);
+    // // TEMP.renew_block_layout(&(tensorpairs[12].ref), &link, true);
+
+    // // contract_reference_with_OO(&(tensorpairs[12].ref), &link, &TEMP);
+    // // contract_reference_with_OO(&(tensorpairs[12].ref), &links[0], &(tensmem[0]));
+    // contract_reference_with_OO_list(&(tensorpairs[12].ref), links,
+    //         &(tensbmem[0]), &(tensmem[0]));
+
+    // printf("\nAfter:\n");
+
+    // /*****************print tensor info ******************/
+    // printf("\n\n%d:", 12);
+    // print_TensorInfoPair(opt_bookie, ref_bookie, &(tensorpairs[12]), 0, 'r');
+
+    // /*****************print relevant OO********/
+    // fprintf(stdout, "overlaps[%d]:\n", 2);
+    // fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[2][0], netw.bonds[2][1]);
+    // print_overlap_object(ref_bookie, opt_bookie, &(overlaps[2]));
+
+    // fprintf(stdout, "overlaps[%d]:\n", 4);
+    // fprintf(stdout, "OO between [%d] and [%d]:\n", netw.bonds[4][0], netw.bonds[4][1]);
+    // print_overlap_object(ref_bookie, opt_bookie, &(overlaps[4]));
+
+    // /******************print temporary space***********/
+    // const struct bookkeeper * tensb_bookies[3] = {opt_bookie,ref_bookie,ref_bookie};
+    // const struct bookkeeper * tens_bookies[3]  = {opt_bookie,opt_bookie,ref_bookie};
+
+    // printf("\ntensbmem[0]:\n");
+    // print_tensorInfo(tensb_bookies, &(tensbmem[0]), 2);
+    // print_tensorInfo(tensb_bookies, &(tensbmem[0]), 3);
+    // print_tensorInfo(tensb_bookies, &(tensbmem[0]), 4);
+
+    // printf("\ntensmem[0]:\n");
+    // print_tensorInfo(tens_bookies, &(tensmem[0]), 2);
+    // print_tensorInfo(tens_bookies, &(tensmem[0]), 3);
+    // print_tensorInfo(tens_bookies, &(tensmem[0]), 4);
 
     return 0;
 }

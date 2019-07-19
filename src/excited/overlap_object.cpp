@@ -119,16 +119,20 @@ void OverlapObject::renew_block_layout(const SymsecMatcher * match,
 		// get the relevant indices
 	 	int ref_index = match->get_result()[j][0];
 	 	int opt_index = match->get_result()[j][1];
-	 	int index = ref_index;  // index used for labeling blocks
+	 	int index = opt_index;  // index used for labeling blocks   @CHANGED
 
 	 	assert(index < nrBlocks);
 
 		// set the begin and dims of the block
-	 	blocks.beginblock[index] = usedsize;
 	 	ldim[index] = ref->dims[ref_index];
 		sdim[index] = opt->dims[opt_index];
-	 	// increase the usedsize
-	 	usedsize += ldim[index] * sdim[index]; }
+		// if the block is non empty
+		if (ldim[index] && sdim[index] ) {   // true if != 0   @CHANGED
+			blocks.beginblock[index] = usedsize;
+			// increase the usedsize
+	 		usedsize += ldim[index] * sdim[index];
+		}	
+	}
 	blocks.beginblock[nrBlocks] = usedsize;
 
 	// reallocate tel if necessary

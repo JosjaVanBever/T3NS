@@ -36,7 +36,7 @@ class OverlapObject {
 		//   ref = symmetry sectors of the bond in the reference T3NS
 		//   opt = symmetry sectors of the bond in the optimizing T3NS
 		//   [opt_dim] = current/bond dimension of opt
-		// @remark: if opt_dim is set to the bond dimension, almost no reallocation
+		// @remark: if opt_dim is set to the bond dimension, no reallocation
 		//   will be needed. Remark that 2000**2 * 100 * 8 bytes is about 3Gb.
 		OverlapObject(struct symsecs * ref, struct symsecs * opt,
 				int opt_dim = -1);  // <0 => opt->totaldims
@@ -79,10 +79,10 @@ class OverlapObject {
 		//   to wich the OO is associated
 		struct symsecs * ref, * opt;
 		// Actual elements of the OverlapObject.
-		//   The block corresponding to the i'th irrep of ref starts at
+		//   The block corresponding to the i'th irrep of ref starts at   ==> label with opt instead
 		//   blocks.tel[blocks.beginblock[i]], has leading dimension
 		//   ldim[i] and second dimension sdim[i].
-		//   If blocks.beginblock[i] == -1, the i'th block is not present.
+		//   If blocks.beginblock[i] == -1, the i'th block is not present.  ==> can be used as check
 		struct sparseblocks blocks;  // begin blocks and element array
 		int * ldim;     // leading dimension array -> from reference
 		int * sdim;     // second dimension array -> from optimizing
