@@ -1,0 +1,76 @@
+diff --git a/src/Heff.c b/src/Heff.c
+index dc4a408..31eb4af 100644
+--- a/src/Heff.c
++++ b/src/Heff.c
+@@ -1050,6 +1050,8 @@ void matvecT3NS(const double * vec, double * result, void * vdata)
+ {
+         struct Heffdata * const data = vdata;
+ 
++        // Bijdrage van overlap voor excitaties in rekening brengen
++
+         for (int i = 0; i < siteTensor_get_size(&data->siteObject); ++i) {
+                 result[i] = 0;
+         }
+@@ -1218,6 +1220,10 @@ void init_Heffdata(struct Heffdata * data, const struct rOperators * Operators,
+         adaptMPOcombos(data);
+ 
+         data->sr.dimsofsb = NULL;
++
++
++        // Hier het berekenen van de overlapvector en optslaan in de data
++        // struct
+ }
+ 
+ static void destroy_secondrun(struct Heffdata * const data)
+@@ -1263,6 +1269,8 @@ void destroy_Heffdata(struct Heffdata * const data)
+         safe_free(data->MPOs);
+ 
+         destroy_secondrun(data);
++
++        // Mogelijks free-en van excitatie data
+ }
+ 
+ EL_TYPE * make_diagonal(const struct Heffdata * const data)
+@@ -1305,6 +1313,8 @@ EL_TYPE * make_diagonal(const struct Heffdata * const data)
+                 }
+         }
+ 
++        // Toepasselijk de overlapvector gebruiken voor de diagonal te maken
++
+ #ifdef T3NS_HEFF_DEBUG
+         check_diagonal((struct Heffdata *) data, result);
+ #endif
+diff --git a/src/executable.c b/src/executable.c
+index 8b37112..ce33692 100644
+--- a/src/executable.c
++++ b/src/executable.c
+@@ -357,6 +357,15 @@ static int initialize_program(int argc, char *argv[],
+         if (init_operators(rops, T3NS)) { return 1; }
+         toc(&chrono, INIT_OPS);
+ 
++
++        /* Hier oproepen van init_OOcalculator is inderdaad goed.
++         *
++         * Sla je de objecten voor excitaties op als een global of pass je ze?
++         *
++         * (tweede is aan te raden, dan zullen we gewoon wat argumenten in paar
++         * functies moeten aanpassen)
++         */
++
+         print_input(scheme);
+ 
+         printf("Timers for preparing calculation:\n");
+diff --git a/src/optimize_network.c b/src/optimize_network.c
+index 4c825bb..57062f3 100644
+--- a/src/optimize_network.c
++++ b/src/optimize_network.c
+@@ -239,6 +239,8 @@ static void postprocess_rOperators(struct rOperators * rops,
+ {
+         int unupdated = -1, unupdatedbond = -1;
+ 
++        // In deze postprocess kan je dan de overlap objecten updaten
++
+         /* first do all dmrg updates possible */
+         tic(timings, ROP_UPDP);
+         for (int i = 0; i < o_dat.specs.nr_bonds_opt; ++i) {
+
